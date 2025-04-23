@@ -1,5 +1,5 @@
 import './App.css'
-import Sidebar from './components/Dashboard/Sidebar'
+import Sidebar from './components/Sidebar'
 
 
 
