@@ -1,5 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import password_Icon from '../../../assets/password_Icon.png';
+import password_Icon from '../../../src/assets/Images/password_Icon.png';
 import './style.css';
 
 const PasswordField = () => {
