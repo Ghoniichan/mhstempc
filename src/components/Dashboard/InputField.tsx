@@ -1,5 +1,6 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import emailIcon from '../../Images/email_Icon.png';
+import emailIcon from '../../../src/Images/email_Icon.png';
+
 import './style.css';
 
 const InputField = () => {
