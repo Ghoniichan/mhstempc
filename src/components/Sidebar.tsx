@@ -4,6 +4,7 @@ import client from '../assets/client.png'
 import notif from '../assets/notification.png'
 import settings from '../assets/settings.png'
 
+
 const Sidebar = () => {
   return (
     <div className="col-md-5 col-lg-4 col-sm-4 bg-primary text-white vh-100 p-3">
