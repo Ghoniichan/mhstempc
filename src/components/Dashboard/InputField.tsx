@@ -1,5 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import emailIcon from '../../../src/Images/email_Icon.png';
+import emailIcon from '../../../src/assets/Images/email_Icon.png';
 
 import './style.css';
 
