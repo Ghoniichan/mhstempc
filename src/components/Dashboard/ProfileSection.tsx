@@ -1,6 +1,6 @@
 import '../../../src/styles/custom-bootsrap.scss';
 import './style.css';
-import ProfileIcon from '../../Images/ProfileIcon.png';
+import ProfileIcon from '../../../src/assets/Images/ProfileIcon.png';
 // import { useState } from 'react';
 
 
