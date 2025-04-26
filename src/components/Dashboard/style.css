@@ -1,0 +1,110 @@
+/* .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vh;
+} */
+
+.input {
+    position: relative;
+    width: 100%;
+}
+
+.subCont {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+}
+
+.TextLabel {
+    font-size: 15ppx;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.inputBox {
+    position: relative;
+    width: 100%;
+    height: 55px;
+    border-radius: 10px;
+    padding-left: 40px;
+}
+
+.icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 27px;
+    height: 27px;
+}
+
+.CusButton {
+    background-color: #002db2;
+    border-radius: 50px;
+    width: 340px;
+    height: 50px;
+    color: white;
+    font-size: 20px;
+}
+
+.ProfileinputBox {
+    background-color: white;
+    height: 52px;
+    width: 300px;
+    margin-bottom: 6px;
+}
+
+.gap {
+    height: 25px;
+}
+
+
+.textTitle {
+    color: #002db2;
+    font-size: 14px;
+}
+
+.profilePicture {
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileNameLoc {
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+
+.profileGenInfo {
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 15px;
+}
+
+.containerr {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.profileSection {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.sectionnn {
+    width: 100%;
+    margin: 0 auto;
+}
+
+
