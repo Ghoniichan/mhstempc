@@ -1,8 +1,8 @@
-import logo from '../../../assets/Images/logo.png'
-import dashboard from '../../../assets/dashboard.png'
-import client from '../../../assets/client.png'
-import notif from '../../../assets/notification.png'
-import settings from '../../../assets/settings.png'
+import dashboard from '../../../src/assets/Images/dashboard.png'
+import client from '../../../src/assets/Images/client.png'
+import notif from '../../../src/assets/Images/notification.png'
+import settings from '../../../src/assets/Images/settings.png'
+import logo from '../../../src/assets/Images/logo.png'
 
 
 const Sidebar = () => {
