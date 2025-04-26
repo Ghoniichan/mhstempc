@@ -27,13 +27,10 @@ function App() {
           {/* LoginCard */}
           <LoginCard/>
 
-            InputField
             <InputField/>
 
-            PasswordField
             <PasswordField/>
 
-            CustomButton
             <CustomButton/>
 
             <ProfileSection/>
