@@ -1,5 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import logo from '../../../src/assets/Images/mhstempc_logo.png';
+import logo from '../../../assets/mhstempc_logo.png';
 import './style.css';
 
 
