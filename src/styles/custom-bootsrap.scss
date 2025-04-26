@@ -1,7 +1,10 @@
 // src/styles/custom.scss
 
-// Override Bootstrap theme colors
-$primary: #002D62;   // Custom Orange Primary Color
+@use "sass:color";
+@use "sass:math";
+
+// 1. Override Bootstrap variables FIRST
+$primary: #002D62;   // Custom Primary Color
 $secondary: #6c757d; // Bootstrap default secondary color
 $success: #28a745;
 $danger: #dc3545;
@@ -10,7 +13,59 @@ $info: #17a2b8;
 $light: #f8f9fa;
 $dark: #343a40;
 
-// Import Bootstrap after setting variables
-@import "bootstrap/scss/bootstrap";
+// 2. Import Bootstrap (AFTER variables)
+@use "bootstrap/scss/bootstrap" with (
+  $primary: $primary,
+  $secondary: $secondary,
+  $success: $success,
+  $danger: $danger,
+  $warning: $warning,
+  $info: $info,
+  $light: $light,
+  $dark: $dark,
+);
 
-
+// 3. Your custom fonts
+body {
+  .alegreya-sans-regular {
+      font-family: "Alegreya Sans", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+  }
+  .alegreya-sans-bold {
+      font-family: "Alegreya Sans", sans-serif;
+      font-weight: 700;
+      font-style: normal;
+  }
+  .alegreya-sans-extrabold {
+      font-family: "Alegreya Sans", sans-serif;
+      font-weight: 800;
+      font-style: normal;
+  }
+  .gothic-a1-regular {
+      font-family: "Gothic A1", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+  }
+  .gothic-a1-semibold {
+      font-family: "Gothic A1", sans-serif;
+      font-weight: 600;
+      font-style: normal;
+  }
+  .gothic-a1-bold {
+      font-family: "Gothic A1", sans-serif;
+      font-weight: 700;
+      font-style: normal;
+  }
+  .gothic-a1-extrabold {
+      font-family: "Gothic A1", sans-serif;
+      font-weight: 800;
+      font-style: normal;
+  }
+  .inter-unique {
+      font-family: "Inter", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 700;
+      font-style: normal;
+  }
+}
