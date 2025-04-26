@@ -1,4 +1,4 @@
-import logo from '../assets/logo.png'
+import logo from '../../../src/assets/Images/logo.png'
 import dashboard from '../assets/dashboard.png'
 import client from '../assets/client.png'
 import notif from '../assets/notification.png'
