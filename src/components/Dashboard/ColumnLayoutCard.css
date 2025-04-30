@@ -1,0 +1,11 @@
+.input-with-icon {
+    background: url('/src/images/lock.png') no-repeat left 10px center;
+    background-size: 20px ; /* Adjust icon size */
+    padding-left: 40px !important; /* Push text to the right */
+  }
+  
+.responsive-card {
+    width: 90%;
+    max-width: 500px;
+    min-width: 300px;
+}

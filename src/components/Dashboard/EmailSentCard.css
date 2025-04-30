@@ -1,0 +1,15 @@
+.responsive-card {
+    width: 90%;
+    max-width: 500px;
+    min-width: 300px;
+}
+
+.icon-mail{
+    background: url('/src/images/mail.png') no-repeat left 0px center;
+    background-size: 30px; /* Adjust icon size */
+    padding-left: 40px; /* Push text to the right */
+}
+
+.text-pos{
+    padding-left: 40px;
+}
