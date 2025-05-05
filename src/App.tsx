@@ -1,6 +1,4 @@
 import './App.css'
-import React from 'react'
-import Sidebar from './components/Dashboard/Sidebar'
 import LoginCard from './components/Dashboard/LoginCard'
 import InputField from './components/Dashboard/InputField'
 import PasswordField from './components/Dashboard/PasswordField'
@@ -132,7 +130,7 @@ function App() {
             
 
           </div>
-
+ 
 
         </div>
       </div>
