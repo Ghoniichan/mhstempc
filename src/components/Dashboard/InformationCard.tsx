@@ -17,7 +17,7 @@ interface InformationCardProps {
     onSendSMS?: () => void; 
 }
 
-const InformationCard: React.FC<InformationCardProps> = ({title, department, policyNumber, address, contactNumber, loanStatus, membershipType, membershipDate, onSendSMS}) => {
+const InformationCard: React.FC<InformationCardProps> = ({title, department, policyNumber, address, contactNumber, loanStatus, membershipType, membershipDate}) => {
     const columnHeadings = [
         'Date',
         'OR',
