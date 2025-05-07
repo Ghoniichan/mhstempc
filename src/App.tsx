@@ -1,54 +1,66 @@
 import './App.css'
-import Sidebar from './components/Dashboard/Sidebar'
-import LoginCard from './components/Dashboard/LoginCard'
-import InputField from './components/Dashboard/InputField'
-import PasswordField from './components/Dashboard/PasswordField'
-import CustomButton from './components/Dashboard/CustomButton'
-import ProfileSection from './components/Dashboard/ProfileSection'
-import DateInput from './components/Dashboard/DateInput'
+import LoginCard from './components/Dashboard/LoginCard';
+import Sidebar from './components/Dashboard/Sidebar';
+// import NavBar from "./components/Dashboard/NavBar";
+// import SearchBar from "./components/Dashboard/SearchBar";
+// import EditStatus from "./components/Dashboard/EditStatus";
+
+// import Sidebar from './components/Dashboard/Sidebar'
+// import LoginCard from './components/Dashboard/LoginCard'
+// import InputField from './components/Dashboard/InputField'
+// import PasswordField from './components/Dashboard/PasswordField'
+// import CustomButton from './components/Dashboard/CustomButton'
+// import ProfileSection from './components/Dashboard/ProfileSection'
+// import DateInput from './components/Dashboard/DateInput'
+// import NavBar from "./components/NavBar";
+// import SearchBar from "./components/Dashboard/SearchBar";
+//  import EditStatus from "./components/EditStatus";
+
 
 
 
 
 function App() {
   return (
-    <div className="container-fluid">
-      <div className="row">
+    <div>
+      <div>
         {/* Sidebar */}
-        <Sidebar />
-        
+        <LoginCard />
+        <Sidebar/>
+        {/* <SearchBar/>
+        <NavBar/>
+        <EditStatus/> */}
         {/* Main Content */}
-        <div className="col p-4">
-          <h2>Main Content</h2>
-          <p>This is the main content area.</p>
+        <div>
+
 
           
-    //       {/* LoginCard */}
-    //       <LoginCard/>
+           {/* LoginCard */}
+            {/* <LoginCard/>
 
-    //         <InputField/>
+            <InputField/>
 
-    //         <PasswordField/>
+            <PasswordField/>
 
-    //         <CustomButton/>
+            <CustomButton/>
 
-    //         <ProfileSection/>
+            <ProfileSection/>
 
             <DateInput/>
 
-    //        <Sidebar/>
-              // <NavBar/>
+            <Sidebar/>
+               <NavBar/>
 
-              // <SearchBar/>
+               <SearchBar/>
 
-              //<EditStatus/>
-
-
+                <EditStatus/> */}
 
 
-    //     </div>
-    //   </div>
-    // </div>
+
+
+        </div>
+      </div>
+    </div>
   )
 }
 

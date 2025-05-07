@@ -1,6 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
 import logo from '../../../src/assets/Images/mhstempc_logo.png';
-import './style.css';
 
 
 const LoginCard = () => {
