@@ -1,5 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import './style.css';
+import './CustomButton.css'
 
 const CustomButton = () => {
     return(

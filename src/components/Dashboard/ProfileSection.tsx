@@ -1,5 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import './style.css';
+import './ProfileSection.css'
 import ProfileIcon from '../../../src/assets/Images/ProfileIcon.png';
 // import { useState } from 'react';
 
@@ -96,8 +96,6 @@ const ProfileSection = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* <div className="gap"></div> */}
 
                     <div className="card shadow-sm mt-4 profileGenInfo" style={{backgroundColor: '#F8FAFC'}}>
                         <div className="card-body mb-1">

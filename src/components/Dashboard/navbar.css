@@ -1,0 +1,52 @@
+/* Fixed Navbar.css */
+.navbar {
+  background-color: #002d62;
+  padding: 15px 0;
+}
+
+.navbar-collapse {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Fix for the text color */
+.nav-link {
+  color: white !important;
+   /* Important to override Bootstrap defaults */
+}
+
+/* Active link styling */
+.nav-link.active {
+  color: white !important;
+  text-decoration: underline;
+}
+
+/* Fix for the login button */
+.login-link {
+  background-color: #0a58ca;
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 5px;
+  margin-right: 20px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.login-link:hover {
+  background-color: #0046ad;
+  color: white !important;
+  text-decoration: none;
+}
+
+/* Fix for login button container */
+.login-btn-container {
+  margin-left: auto; /* This pushes it to the right */
+  padding-right: 15px; /* Add some space from the edge */
+}

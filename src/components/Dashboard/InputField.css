@@ -1,0 +1,30 @@
+.subCont {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input {
+    position: relative;
+    width: 100%;
+}
+
+.TextLabel {
+    font-size: 15px;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.inputBox {
+    position: relative;
+    width: 100%;
+    height: 55px;
+    border-radius: 10px;
+    padding-left: 40px;
+}
+
+.icon {
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+}
