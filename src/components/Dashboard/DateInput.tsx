@@ -1,5 +1,5 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import './style.css';
+import './InputField.css'
 
 const DateInput = () => {
     return (
@@ -10,10 +10,7 @@ const DateInput = () => {
             <div className="boxTwo">
                 <div className="col">
                     <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Date of Membership</label>
-                        <input type='date' className='form-control ProfileinputBox' 
-                        style={{ width: '300px',
-                                margin: '0 auto',
-                                display: 'block'}}/>
+                        <input type='date' className='form-control ProfileinputBox'/>
                 </div>
             </div>
         </div>

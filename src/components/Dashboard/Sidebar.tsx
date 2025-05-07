@@ -1,34 +1,68 @@
-import dashboard from '../../../src/assets/Images/dashboard.png'
-import client from '../../../src/assets/Images/client.png'
-import notif from '../../../src/assets/Images/notification.png'
-import settings from '../../../src/assets/Images/settings.png'
-import logo from '../../../src/assets/Images/logo.png'
-
+import navlogo from '../../../src/assets/Images/mhstempc_logo.png'
+import './Sidebar.css'
 
 const Sidebar = () => {
   return (
-    <div className="col-md-5 col-lg-4 col-sm-4 bg-primary text-white vh-100 p-3">
-    <div className='mb-3 d-flex justify-content-center'>
-        <img src={logo} className="img-fluid"  alt="logo"/>
+  
+  // sidebar
+  <div className="sidebar" 
+  >
+    <div className='mb-3 d-flex justify-content-center flex-column align-items-center'>
+      <img src={navlogo} className="navlogo img-fluid "  alt="logo"/>
+      <div className="label text-center mt-2 fs-5">MHSTEMPC</div>
     </div>
-    <ul className="nav flex-column ">
-      <li className="nav-item">
-        <img src={dashboard} className="img-fluid"  alt="logo"/>
-        <a href="#" className="nav-link text-white">Dashboard</a>
-      </li>
-      <li className="nav-item">
-        <img src={client} className="img-fluid"  alt="logo"/>
-        <a href="#" className="nav-link text-white">Client</a>
-      </li>
-      <li className="nav-item">
-        <img src={notif} className="img-fluid"  alt="logo"/>
-        <a href="#" className="nav-link text-white">Notifications</a>
-      </li>
-      <li className="nav-item">
-        <img src={settings} className="img-fluid"  alt="logo"/>
-        <a href="#" className="nav-link text-white">Settings</a>
-      </li>
-    </ul>
+    <nav className="nav flex-column">
+
+      {/* Account */}
+      <a href='#' className='nav-link' >
+        <span className="Navicon">
+          <i className="bi bi-person"></i>
+        </span>
+        <span className="description">Account</span>
+      </a>
+
+      {/* Dashboard */}
+      <a href="#" className="nav-link">
+        <span className="Navicon">
+          <i className="bi bi-grid"></i>
+        </span>
+        <span className="description">Dashboard</span>
+      </a>
+
+      {/*Client*/}
+      <a href="#" className="nav-link">
+        <span className="Navicon">
+          <i className="bi bi-people"></i>
+        </span>
+        <span className="description">Client</span>
+      </a>
+
+      {/*Notification*/}
+      <a href="#" className="nav-link">
+        <span className="Navicon">
+          <i className="bi bi-bell"></i>
+        </span>
+        <span className="description">Notification</span>
+      </a>
+
+      {/*Settings*/}
+      <a href="#" className="nav-link">
+        <span className="Navicon">
+          <i className="bi bi-gear"></i>
+        </span>
+        <span className="description">Settings</span>
+      </a>
+
+      {/*Log Out*/}
+      <a href="#" className="nav-link">
+        <span className="Navicon">
+          <i className="bi bi-box-arrow-right"></i>
+        </span>
+        <span className="description">Log Out</span>
+      </a>
+      
+
+    </nav>
   </div>
   )
 }

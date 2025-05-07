@@ -30,8 +30,8 @@ const LoginCard = () => {
                     <small className='fs-5 fw-normal alegreya-sans-regular'>MARIKINA HIGH SCHOOL TEACHERS EMPLOYEE</small>
                     <p className='mb-0 fs-1 fw-bold alegreya-sans-bold'>MHSTEMPC</p>
                     <small className='d-block mb-5 fs-5 fw-normal alegreya-sans-regular'>MULTI-PURPOSE COOPERATIVE</small>
-
                 </div>
+
                     {/* Right box */}
                     <div className="col-md-6 right-box">
                         <div className='align-items-center'>
@@ -45,8 +45,6 @@ const LoginCard = () => {
                             </div>
                         </div>
                     </div>
-
-
             </div>
         </div>
     )

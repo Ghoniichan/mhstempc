@@ -1,0 +1,118 @@
+.edit-status-container {
+    width: 550px;
+    height: 370px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-status-header {
+    padding: 10px;
+    background-color: #002d62;
+    color: white;
+    border-radius: 10px;
+  }
+  
+  .edit-status-title {
+    font-size: 16px;
+  }
+  
+  .edit-status-body {
+    padding: 20px;
+  }
+  
+  .edit-status-row {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .edit-status-label {
+    width: 48%;
+    padding-right: 15px;
+    text-align: left;
+    padding-top: 8px;
+    font-size: 16px;
+  }
+  
+  .edit-status-field {
+    width: 100%;
+    position: relative;
+  }
+  
+  .edit-status-dropdown {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    height: 40px;
+    color: black;
+  }
+  
+  .edit-status-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-top: 4px;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    color: black;
+  }
+  
+  .edit-status-dropdown-item {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .edit-status-dropdown-item:hover,
+  .edit-status-dropdown-item.active {
+    background-color: #d3d3d3;
+  }
+  
+  .edit-status-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    resize: none;
+  }
+  
+  .edit-status-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    margin-top: 5px;
+  }
+  
+  .edit-status-btn-primary {
+    background-color: #002d62;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    width: 100px;
+    height: 40px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .edit-status-btn-secondary {
+    background-color: transparent;
+    border: 1px solid #002d62;
+    color: #002d62;
+    border-radius: 50px;
+    padding: 8px 20px;
+    width: 100px;
+    height: 40px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
