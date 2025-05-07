@@ -1,0 +1,33 @@
+.top-bar {
+    background-color: #002D62; 
+    height: 30px; 
+    width: 100%; 
+    border-top-left-radius: 10px; 
+    border-top-right-radius: 10px; 
+    display: flex;
+    align-items: center; 
+    color: white; 
+    font-size: 14px; 
+    padding-left: 15px;   
+}
+
+.apc-card {
+    border-top-left-radius: 0 !important; 
+    border-top-right-radius: 0 !important; 
+}
+
+/* Style for the custom dropdown icon */
+.custom-dropdown {
+    padding-right: 2.5rem; /* Add space for the icon */
+}
+
+.dropdown-icon {
+    right: 1rem; /* Position the icon inside the dropdown */
+    top: 50%; /* Center the icon vertically */
+    transform: translateY(-50%);
+    pointer-events: none; /* Prevent the icon from blocking clicks */
+    font-size: 1.2rem; /* Adjust icon size */
+    color: #6c757d; /* Optional: Match Bootstrap's default text color */
+}
+
+
