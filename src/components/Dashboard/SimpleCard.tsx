@@ -10,7 +10,7 @@ interface SimpleCardProps {
 const SimpleCard: React.FC<SimpleCardProps> = ({ title, onClick }) => {
     return (
         <div
-            className="card h-100 shadow-lg p-3 mb-5 bg-white rounded responsive-card click-effect "
+            className="card h-100 shadow p-3 mb-5 bg-white rounded responsive-card click-effect "
             onClick={onClick} 
             style={{ cursor: 'pointer', maxWidth: '300px' , maxHeight: '200px' }} 
         >

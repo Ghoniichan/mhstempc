@@ -18,13 +18,13 @@ import ProfileIcon from '../../../src/assets/Images/ProfileIcon.png';
 const ProfileSection = () => {
     return (
         <div className="sectionnn" style={{
-            justifyContent: 'center',
-            alignItems:'center',
-            width: '100vw'
+            width: '100%',
+            maxWidth: '1200px',
+            margin: '0 auto'
         }}>
            
             <div className="py-4 profileSection">
-                <div className="containerr">
+                <div className="container">
                     <div className="row g-4">
                         <div className="col-md-3">
                             <div className="card text-center h-100 shadow-sm profilePicture" style={{backgroundColor: '#F8FAFC'}}>
