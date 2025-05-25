@@ -1,22 +1,22 @@
 import '../../../src/styles/custom-bootsrap.scss';
-import './CustomButton.css'
+import './CustomButton.css';
 
-const CustomButton = () => {
-    return(
-        <div className="container"
-        style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100vw', 
-            height: '100vh' 
-          }}>
-            <div className="subCont mb-3">
-                <button type="button" className='CusButton btn-btn gothic-a1-extrabold'>Log in</button>
-            </div>
-        </div>
-    )
+type CustomButtonProps = {
+    label: string;
+    type?: "button" | "submit";
+    onClick?: () => void;
+};
 
-}
+const CustomButton = ({ label, type = "button", onClick }: CustomButtonProps) => {
+    return (
+        <button 
+            type={type} 
+            onClick={onClick}
+            className='CusButton btn-btn gothic-a1-bold'
+        >
+            {label}
+        </button>
+    );
+};
 
-export default CustomButton
+export default CustomButton;

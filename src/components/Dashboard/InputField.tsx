@@ -3,11 +3,7 @@ import './InputField.css';
 
 const InputField = () => {
     return(
-        <div className="MainContainer mb-3" 
-          style={{display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100vw'}}>
+        <div className="MainContainer mb-1">
 
           <div className='subCont'>
             <label htmlFor="email" className="TextLabel form-label text-start gothic-a1-semibold mb-0">Email</label>

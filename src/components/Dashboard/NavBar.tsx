@@ -1,44 +1,43 @@
-import logoNav from '../../../src/assets/images/mhstempc_logo.png'
-import './Navbar.css'
+import { NavLink } from 'react-router-dom';
+import logoNav from '../../../src/assets/images/mhstempc_logo.png';
+import './Navbar.css';
 
 const NavBar = () => {
   return (
     <nav className="navbar navbar-expand-lg fixed-top w-100">
-      <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          <img src={logoNav} alt="logo" className="img-fluid" style={{maxHeight: '60px', paddingLeft: '15px'}} />
-        </a>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav mx-auto">
-            <li className="nav-item">
-              <a className="nav-link active" href="#">Home</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Services</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Help</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Portfolio</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">Forms</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">About Us</a>
-            </li>
-          </ul>
-          <div className="login-btn-container">
-            <a href="#" className="login-link">Login</a>
-          </div>
+    <div className="container-fluid">
+      <img src={logoNav} alt="logo" className="img-fluid" style={{ maxHeight: '50px', paddingLeft: '15px' }} />
+      <small className='Name alegreya-sans-extrabold'>MHSTEMPC</small>
+
+      <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav mx-auto">
+          <li className="nav-item">
+            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/home">Home</NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/services">Services</NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/help">Help</NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/forms">Forms</NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/about">About Us</NavLink>
+          </li>
+        </ul>
+        <div className="login-btn-container">
+          <NavLink className={({ isActive }) => `login-link ${isActive ? 'active' : ''}`} to="/login">Login</NavLink>
         </div>
       </div>
-    </nav>
+    </div>
+  </nav>
   );
-}
+};
 
 export default NavBar;

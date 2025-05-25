@@ -2,6 +2,14 @@
 .navbar {
   background-color: #002d62;
   padding: 15px 0;
+  height: 70px;
+}
+
+.Name {
+  color: white;
+  text-decoration: none;
+  padding-left: 10px;
+  font-size: larger;
 }
 
 .navbar-collapse {
@@ -18,14 +26,17 @@
 
 /* Fix for the text color */
 .nav-link {
+  position: relative;
+  text-decoration: none;
   color: white !important;
-   /* Important to override Bootstrap defaults */
+  transition: border-bottom 0.3s ease-in-out;
 }
 
 /* Active link styling */
 .nav-link.active {
   color: white !important;
-  text-decoration: underline;
+  font-weight: bold;
+  border-bottom: 2px solid #007bff;
 }
 
 /* Fix for the login button */
@@ -47,6 +58,6 @@
 
 /* Fix for login button container */
 .login-btn-container {
-  margin-left: auto; /* This pushes it to the right */
-  padding-right: 15px; /* Add some space from the edge */
+  margin-left: auto; 
+  padding-right: 15px; 
 }
