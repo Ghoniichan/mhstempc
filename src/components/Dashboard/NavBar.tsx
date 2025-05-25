@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 // import logoNav from '../../../src/assets/images/mhstempc_logo.png';
-import './Navbar.css';
+import '../../components/Dashboard/Navbar.css'; // If it's inside src/styles/
+
 
 const NavBar = () => {
   return (
