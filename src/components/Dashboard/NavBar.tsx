@@ -1,13 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import logo from "../../assets/images/mhstempc_logo.png";
-
+// import logoNav from '../../../src/assets/images/mhstempc_logo.png';
 import './Navbar.css';
 
 const NavBar = () => {
   return (
     <nav className="navbar navbar-expand-lg fixed-top w-100">
     <div className="container-fluid">
-      <img src={logo} alt="logo" className="img-fluid" style={{ maxHeight: '50px', paddingLeft: '15px' }} />
+      {/* <img src={logoNav} alt="logo" className="img-fluid" style={{ maxHeight: '50px', paddingLeft: '15px' }} /> */}
       <small className='Name alegreya-sans-extrabold'>MHSTEMPC</small>
 
       <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
