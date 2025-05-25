@@ -1,72 +1,48 @@
-import navlogo from '../../../src/assets/Images/mhstempc_logo.png'
-import './Sidebar.css'
-import { Link } from 'react-router-dom';
-
+import { NavLink } from 'react-router-dom';
+import navlogo from '../../../src/assets/Images/mhstempc_logo.png';
+import './Sidebar.css';
 
 const Sidebar = () => {
   return (
-  
-  // sidebar
-  <div className="sidebar" 
-  >
-    <div className='mb-3 d-flex justify-content-center flex-column align-items-center'>
-      <img src={navlogo} className="navlogo img-fluid "  alt="logo"/>
-      <div className="label text-center mt-2 fs-5">MHSTEMPC</div>
-    </div>
-    <nav className="nav flex-column">
+    <div className="sidebar">
+      <div className="mb-3 d-flex justify-content-center flex-column align-items-center">
+        <img src={navlogo} className="navlogo img-fluid" alt="logo" />
+        <div className="label text-center mt-2 fs-5">MHSTEMPC</div>
+      </div>
 
-      {/* Account */}
-      <a href='#' className='nav-link' >
-        <span className="Navicon">
-          <i className="bi bi-person"></i>
-        </span>
-        <span className="description">Account</span>
-      </a>
+      <nav className="nav flex-column">
+        <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="Navicon"><i className="bi bi-person"></i></span>
+          <span className="description">Account</span>
+        </NavLink>
 
-      {/* Dashboard */}
-      <a href="#" className="nav-link">
-        <span className="Navicon">
-          <i className="bi bi-grid"></i>
-        </span>
-        <span className="description">Dashboard</span>
-      </a>
+        <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="Navicon"><i className="bi bi-grid"></i></span>
+          <span className="description">Dashboard</span>
+        </NavLink>
 
-      {/*Client*/}
-      <Link to="/client" className="nav-link">
-          <span className="Navicon">
-            <i className="bi bi-people"></i>
-          </span>
+        <NavLink to="/client" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="Navicon"><i className="bi bi-people"></i></span>
           <span className="description">Client</span>
-      </Link>
+        </NavLink>
 
-      {/*Notification*/}
-      <a href="#" className="nav-link">
-        <span className="Navicon">
-          <i className="bi bi-bell"></i>
-        </span>
-        <span className="description">Notification</span>
-      </a>
+        <NavLink to="/notifications" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="Navicon"><i className="bi bi-bell"></i></span>
+          <span className="description">Notification</span>
+        </NavLink>
 
-      {/*Settings*/}
-      <a href="#" className="nav-link">
-        <span className="Navicon">
-          <i className="bi bi-gear"></i>
-        </span>
-        <span className="description">Settings</span>
-      </a>
+        <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="Navicon"><i className="bi bi-gear"></i></span>
+          <span className="description">Settings</span>
+        </NavLink>
 
-      {/*Log Out*/}
-      <a href="#" className="nav-link">
-        <span className="Navicon">
-          <i className="bi bi-box-arrow-right"></i>
-        </span>
-        <span className="description">Log Out</span>
-      </a>
-      
+        <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
+          <span className="description">Log Out</span>
+        </NavLink>
+      </nav>
+    </div>
+  );
+};
 
-    </nav>
-  </div>
-  )
-}
-
-export default Sidebar
+export default Sidebar;

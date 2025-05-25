@@ -1,9 +1,9 @@
-import Sidebar from "../components/Dashboard/Sidebar"
+import '../screens/Account.css';
 
 const AccountScreen = () => {
     return(
         <div>
-            <Sidebar />
+            
         </div>
     )
 }
