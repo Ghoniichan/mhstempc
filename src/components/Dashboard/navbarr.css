@@ -1,0 +1,63 @@
+/* Fixed Navbar.css */
+.navbar {
+  background-color: #002d62;
+  padding: 15px 0;
+  height: 70px;
+}
+
+.Name {
+  color: white;
+  text-decoration: none;
+  padding-left: 10px;
+  font-size: 25px;
+}
+
+.navbar-collapse {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Fix for the text color */
+.nav-link {
+  position: relative;
+  text-decoration: none;
+  color: white !important;
+  transition: border-bottom 0.3s ease-in-out;
+}
+
+/* Active link styling */
+.nav-link.active {
+  color: white !important;
+  font-weight: bold;
+  border-bottom: 2px solid #007bff;
+}
+
+/* Fix for the login button */
+.login-link {
+  background-color: #0a58ca;
+  color: white !important;
+  padding: 8px 16px;
+  border-radius: 5px;
+  margin-right: 20px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.login-link:hover {
+  background-color: #0046ad;
+  color: white !important;
+  text-decoration: none;
+}
+
+/* Fix for login button container */
+.login-btn-container {
+  margin-left: auto; 
+  padding-right: 15px; 
+} 
