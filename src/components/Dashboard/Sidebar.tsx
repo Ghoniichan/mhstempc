@@ -1,5 +1,7 @@
 import navlogo from '../../../src/assets/Images/mhstempc_logo.png'
 import './Sidebar.css'
+import { Link } from 'react-router-dom';
+
 
 const Sidebar = () => {
   return (
@@ -30,12 +32,12 @@ const Sidebar = () => {
       </a>
 
       {/*Client*/}
-      <a href="#" className="nav-link">
-        <span className="Navicon">
-          <i className="bi bi-people"></i>
-        </span>
-        <span className="description">Client</span>
-      </a>
+      <Link to="/client" className="nav-link">
+          <span className="Navicon">
+            <i className="bi bi-people"></i>
+          </span>
+          <span className="description">Client</span>
+      </Link>
 
       {/*Notification*/}
       <a href="#" className="nav-link">
