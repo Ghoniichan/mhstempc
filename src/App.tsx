@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './App.css';
 
@@ -27,6 +27,7 @@ function Layout() {
     <>
       {!shouldHideBars && <NavBar />}
       <Routes>
+        <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/home" element={<HomeScreen />} />
         <Route path="/services" element={<ServicesScreen />} />
         <Route path="/help" element={<HelpScreen />} />
