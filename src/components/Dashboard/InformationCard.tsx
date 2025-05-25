@@ -1,171 +1,168 @@
-import React, { useState } from 'react';
+import React, { useState, CSSProperties } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './InformationCard.css';
 import CustomTable from './CustomTable';
 
 interface InformationCardProps {
-    title: string;
-    department: string;
-    policyNumber: string;
-    address: string;
-    contactNumber: string;
-    loanStatus: string;
-    membershipType: string;
-    membershipDate: string;
-    onSendSMS?: () => void;
+  title: string;
+  department: string;
+  policyNumber: string;
+  address: string;
+  contactNumber: string;
+  loanStatus: string;
+  membershipType: string;
+  membershipDate: string;
+  onSendSMS?: () => void;
 }
 
 const InformationCard: React.FC<InformationCardProps> = ({
-    title,
-    department,
-    policyNumber,
-    address,
-    contactNumber,
-    loanStatus,
-    membershipType,
-    membershipDate,
-    onSendSMS,
+  title,
+  department,
+  policyNumber,
+  address,
+  contactNumber,
+  loanStatus,
+  membershipType,
+  membershipDate,
+  onSendSMS,
 }) => {
-    const columnHeadings = [
-        'Date',
-        'OR',
-        'Interest',
-        'Service Fee',
-        'Fines',
-        'Due Date',
-        'Received Amount',
-    ];
+  const columnHeadings = [
+    'Date',
+    'OR',
+    'Interest',
+    'Service Fee',
+    'Fines',
+    'Due Date',
+    'Received Amount',
+  ];
 
-    const rows = [
-        ['John Doe', '123', 'LN001', '$10,000', '2023-01-01', 'Manager A', '2023-12-31'],
-        ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
-        ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
-    ];
+  const rows = [
+    ['John Doe', '123', 'LN001', '$10,000', '2023-01-01', 'Manager A', '2023-12-31'],
+    ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
+    ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
+  ];
 
-    // For button hover and active states
-    const [hovered, setHovered] = useState<string | null>(null);
-    const [active, setActive] = useState<string | null>(null);
+  //button hover and active states yan pare
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [active, setActive] = useState<string | null>(null);
 
-    const buttons = ['Loan', 'Capital Share', 'Savings'];
+  const buttons = ['Loan', 'Capital Share', 'Savings'];
 
-    const baseButtonStyle = {
-        width: '100%',
-        backgroundColor: 'white',
-        color: '#002D62',
-        border: '2px solid #002D62',
-        padding: '10px 0',
-        fontWeight: 600,
-        cursor: 'pointer',
-        transition: 'all 0.3s ease',
-        borderRadius: '4px',
-        userSelect: 'none',
-    };
+  //di ko mapagana sa css kaya dito nalang basta css lang yan ya
+  const baseButtonStyle: CSSProperties = {
+    width: '100%',
+    backgroundColor: 'white',
+    color: '#002D62',
+    border: '2px solid #002D62',
+    padding: '10px 0',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    borderRadius: '4px',
+    userSelect: 'none',
+  };
 
-    const hoverActiveStyle = {
-        backgroundColor: '#002D62',
-        color: 'white',
-    };
+  const hoverActiveStyle: CSSProperties = {
+    backgroundColor: '#002D62',
+    color: 'white',
+  };
 
-    return (
-        <div className="information-card-fullwidth">
-            <Row className="main-card-row">
-                <Col xs={12}>
-                    <div className="card shadow-lg p-0 mb-4 mt-3 bg-white rounded w-100 overflow-hidden">
-                        <div className="top-bar">
-                            <span className="top-bar-text">{title}</span>
-                        </div>
-                        <div className="card-body p-4 rounded">
-                            <Row className="mb-3 align-items-center">
-                                <Col xs={3} md={2} className="align-self-start">
-                                    <img
-                                        src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                        alt="Profile Placeholder"
-                                        className="profile-image"
-                                        style={{ width: '120px', height: '120px', objectFit: 'cover' }}
-                                    />
-                                </Col>
-                                <Col xs={9} md={10}>
-                                    <Row>
-                                        <Col xs={12} md={6}>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                Department: <span className="fw-normal">{department}</span>
-                                            </h5>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                MHSTEMPC Policy Number: <span className="fw-normal">{policyNumber}</span>
-                                            </h5>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                Address: <span className="fw-normal">{address}</span>
-                                            </h5>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                Contact Number: <span className="fw-normal">{contactNumber}</span>
-                                            </h5>
-                                        </Col>
-
-                                        <Col xs={12} md={6}>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                Loan Status: <span className="fw-normal">{loanStatus}</span>
-                                            </h5>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                Type of Membership: <span className="fw-normal">{membershipType}</span>
-                                            </h5>
-                                            <h5 className="form-label fw-semibold mb-3">
-                                                Date of Membership: <span className="fw-normal">{membershipDate}</span>
-                                            </h5>
-                                            <button className="btn btn-danger w-100 mt-2" onClick={onSendSMS}>
-                                                Send SMS
-                                            </button>
-                                        </Col>
-                                    </Row>
-                                </Col>
-                            </Row>
-                        </div>
-                    </div>
+  return (
+    <div className="information-card-fullwidth">
+      <Row className="main-card-row">
+        <Col xs={12}>
+          <div className="card shadow-lg p-0 mb-4 mt-3 bg-white rounded w-100 overflow-hidden">
+            <div className="top-bar">
+              <span className="top-bar-text">{title}</span>
+            </div>
+            <div className="card-body p-4 rounded">
+              <Row className="mb-3 align-items-center">
+                <Col xs={3} md={2} className="align-self-start">
+                  <img
+                    src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Profile Placeholder"
+                    className="profile-image"
+                    style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                  />
                 </Col>
-            </Row>
+                <Col xs={9} md={10}>
+                  <Row>
+                    <Col xs={12} md={6}>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Department: <span className="fw-normal">{department}</span>
+                      </h5>
+                      <h5 className="form-label fw-semibold mb-3">
+                        MHSTEMPC Policy Number: <span className="fw-normal">{policyNumber}</span>
+                      </h5>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Address: <span className="fw-normal">{address}</span>
+                      </h5>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Contact Number: <span className="fw-normal">{contactNumber}</span>
+                      </h5>
+                    </Col>
 
-            {/* Buttons row */}
-            <Row className="mb-4 mt-5 text-center">
-                {buttons.map((btn) => {
-                    const isHovered = hovered === btn;
-                    const isActive = active === btn;
-                    return (
-                        <Col xs={12} md={4} className="mb-2" key={btn}>
-                            <button
-                                style={{
-                                    ...baseButtonStyle,
-                                    ...(isHovered || isActive ? hoverActiveStyle : {}),
-                                }}
-                                onMouseEnter={() => setHovered(btn)}
-                                onMouseLeave={() => setHovered(null)}
-                                onMouseDown={() => setActive(btn)}
-                                onMouseUp={() => setActive(null)}
-                                onBlur={() => setActive(null)}
-                            >
-                                {btn}
-                            </button>
-                        </Col>
-                    );
-                })}
-            </Row>
-
-            <Row className="table-row flex-grow-1 w-100">
-                <Col xs={12} className="h-100">
-                    <div className="card shadow-lg p-4 mb-4 bg-white rounded w-100">
-                        <div className="card-body d-flex flex-column">
-                            <div className="table-responsive flex-grow-1">
-                                <CustomTable
-                                    columnHeadings={columnHeadings}
-                                    rows={rows}
-                                    className="w-100"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <Col xs={12} md={6}>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Loan Status: <span className="fw-normal">{loanStatus}</span>
+                      </h5>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Type of Membership: <span className="fw-normal">{membershipType}</span>
+                      </h5>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Date of Membership: <span className="fw-normal">{membershipDate}</span>
+                      </h5>
+                      <button className="btn btn-danger w-100 mt-2" onClick={onSendSMS}>
+                        Send SMS
+                      </button>
+                    </Col>
+                  </Row>
                 </Col>
-            </Row>
-        </div>
-    );
+              </Row>
+            </div>
+          </div>
+        </Col>
+      </Row>
+
+      {/* Buttons row */}
+      <Row className="mb-4 mt-5 text-center">
+        {buttons.map((btn) => {
+          const isHovered = hovered === btn;
+          const isActive = active === btn;
+          return (
+            <Col xs={12} md={4} className="mb-2" key={btn}>
+              <button
+                style={{
+                  ...baseButtonStyle,
+                  ...(isHovered || isActive ? hoverActiveStyle : {}),
+                }}
+                onMouseEnter={() => setHovered(btn)}
+                onMouseLeave={() => setHovered(null)}
+                onMouseDown={() => setActive(btn)}
+                onMouseUp={() => setActive(null)}
+                onBlur={() => setActive(null)}
+              >
+                {btn}
+              </button>
+            </Col>
+          );
+        })}
+      </Row>
+
+      <Row className="table-row flex-grow-1 w-100">
+        <Col xs={12} className="h-100">
+          <div className="card shadow-lg p-4 mb-4 bg-white rounded w-100">
+            <div className="card-body d-flex flex-column">
+              <div className="table-responsive flex-grow-1">
+                <CustomTable columnHeadings={columnHeadings} rows={rows} className="w-100" />
+              </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
 };
 
 export default InformationCard;
