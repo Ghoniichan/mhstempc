@@ -6,6 +6,15 @@
   
 .responsive-card {
     width: 90%;
-    max-width: 500px;
-    min-width: 300px;
+    max-width: 400px;
+    min-width: 280px
+}
+
+.card-text {
+  margin-bottom: 1px;
+}
+
+
+.card-body {
+  padding-top: 8px;
 }

@@ -1,67 +1,55 @@
-import './App.css'
-import LoginCard from './components/Dashboard/LoginCard';
-import Sidebar from './components/Dashboard/Sidebar';
-// import NavBar from "./components/Dashboard/NavBar";
-// import SearchBar from "./components/Dashboard/SearchBar";
-// import EditStatus from "./components/Dashboard/EditStatus";
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import './App.css';
 
-// import Sidebar from './components/Dashboard/Sidebar'
-// import LoginCard from './components/Dashboard/LoginCard'
-// import InputField from './components/Dashboard/InputField'
-// import PasswordField from './components/Dashboard/PasswordField'
-// import CustomButton from './components/Dashboard/CustomButton'
-// import ProfileSection from './components/Dashboard/ProfileSection'
-// import DateInput from './components/Dashboard/DateInput'
-// import NavBar from "./components/NavBar";
-// import SearchBar from "./components/Dashboard/SearchBar";
-//  import EditStatus from "./components/EditStatus";
+import HomeScreen from './screens/HomeScreen';
+import ServicesScreen from './screens/ServicesScreen';
+import HelpScreen from './screens/HelpScreen';
+import FormsScreen from './screens/FormsScreen';
+import AboutUsScreen from './screens/AboutUsScreen';
+import LogInScreen from './screens/LogInScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
+import NavBar from './components/Dashboard/NavBar';
+import BottomBar from './components/Dashboard/BottomBar';
+import CreateNewPass from './screens/CreateNewPass';
+import PasswordReset from './screens/PasswordReset';
+import EmailVerif from './screens/EmailVerif';
+import AccountScreen from './screens/AccountScreen';
 
+function Layout() {
+  const location = useLocation();
 
+  const hideBarsOnRoutes = ['/account'];
 
+  const shouldHideBars = hideBarsOnRoutes.includes(location.pathname);
 
+  return (
+    <>
+      {!shouldHideBars && <NavBar />}
+      <Routes>
+        <Route path="/home" element={<HomeScreen />} />
+        <Route path="/services" element={<ServicesScreen />} />
+        <Route path="/help" element={<HelpScreen />} />
+        <Route path="/forms" element={<FormsScreen />} />
+        <Route path="/aboutUs" element={<AboutUsScreen />} />
+        <Route path="/login" element={<LogInScreen />} />
+        <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
+        <Route path="/emailVerif" element={<EmailVerif />} />
+        <Route path="/newpass" element={<CreateNewPass />} />
+        <Route path="/password-reset" element={<PasswordReset />} />
+        <Route path="/account" element={<AccountScreen />} />
+      </Routes>
+      {!shouldHideBars && <BottomBar />}
+    </>
+  );
+}
 
 function App() {
   return (
-    <div>
-      <div>
-        {/* Sidebar */}
-        <LoginCard />
-        <Sidebar/>
-        {/* <SearchBar/>
-        <NavBar/>
-        <EditStatus/> */}
-        {/* Main Content */}
-        <div>
-
-
-          
-           {/* LoginCard */}
-            {/* <LoginCard/>
-
-            <InputField/>
-
-            <PasswordField/>
-
-            <CustomButton/>
-
-            <ProfileSection/>
-
-            <DateInput/>
-
-            <Sidebar/>
-               <NavBar/>
-
-               <SearchBar/>
-
-                <EditStatus/> */}
-
-
-
-
-        </div>
-      </div>
-    </div>
-  )
+    <Router>
+      <Layout />
+    </Router>
+  );
 }
 
-export default App
+export default App;

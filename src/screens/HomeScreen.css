@@ -1,0 +1,13 @@
+
+.row {
+  width: 100%;
+}
+
+.nameOne {
+    white-space: nowrap;
+    font-size: 35px;
+}
+
+.nameTwo {
+    font-size: 65px;
+}

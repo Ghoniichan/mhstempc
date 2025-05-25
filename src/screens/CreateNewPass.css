@@ -1,0 +1,23 @@
+.input {
+    position: relative;
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+.inputBox {
+    position: relative;
+    width: 100%;
+    height: 55px;
+    border-radius: 10px;
+    padding-left: 40px;
+}
+
+.icon {
+    top: 40%;
+    left: 15px;
+    transform: translateY(-50%);
+}
+
+.subCont {
+    margin-top: 5px;
+}
