@@ -1,0 +1,25 @@
+.custom-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-table {
+  min-width: 900px; /* Forces horizontal scroll for smaller screens */
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  word-break: break-word;
+  white-space: nowrap; /* Prevents vertical text stacking */
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.custom-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
