@@ -15,11 +15,13 @@ import CreateNewPass from './screens/CreateNewPass';
 import PasswordReset from './screens/PasswordReset';
 import EmailVerif from './screens/EmailVerif';
 import AccountScreen from './screens/AccountScreen';
+import ClientScreen from './screens/ClientScreen';
+import ClientProfileLoanScreen from './screens/ClientProfileLoanScreen';
 
 function Layout() {
   const location = useLocation();
 
-  const hideBarsOnRoutes = ['/account'];
+  const hideBarsOnRoutes = ['/account', '/client', '/clientLoan'];
 
   const shouldHideBars = hideBarsOnRoutes.includes(location.pathname);
 
@@ -39,8 +41,13 @@ function Layout() {
         <Route path="/newpass" element={<CreateNewPass />} />
         <Route path="/password-reset" element={<PasswordReset />} />
         <Route path="/account" element={<AccountScreen />} />
+        <Route path='/client' element={<ClientScreen />} />
+        <Route path='/clientLoan' element={<ClientProfileLoanScreen />} />
       </Routes>
       {!shouldHideBars && <BottomBar />}
+      <Routes>
+        
+      </Routes>
     </>
   );
 }
