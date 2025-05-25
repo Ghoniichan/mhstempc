@@ -9,7 +9,7 @@
   color: white;
   text-decoration: none;
   padding-left: 10px;
-  font-size: larger;
+  font-size: 25px;
 }
 
 .navbar-collapse {
@@ -60,4 +60,4 @@
 .login-btn-container {
   margin-left: auto; 
   padding-right: 15px; 
-}
+} 
