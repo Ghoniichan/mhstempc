@@ -16,13 +16,7 @@ const LoginCard = () => {
 
     return(
         // Main container
-        <div className='MainContainer'
-        style={{display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100vw',
-                height: '100vh',
-                overflow: 'auto'}}>
+        <div className='MainContainer'>
 
             {/* Login Container */}
             <div className='row border rounded-3 p-3 bg-white shadow box-area' 
@@ -32,12 +26,18 @@ const LoginCard = () => {
 
                 {/* Left box */}
                 <div className='col-md-6 rounded-3 d-flex justify-content-center align-items-center flex-column left-box' 
-                    style={{background: '#f7f7f7', height: '570px'
+                    style={{background: '#f7f7f7', 
+                            height: '100%',
+                            padding: '25px 10px'
                     }}>
                     <div>
-                        <img src={logo} alt='mhstempcLogo' className='img-fluid' width="260px" 
+                        <img src={logo} alt='mhstempcLogo' className='img-fluid' 
+                        width="400px" 
                         style={{marginBottom:'30px',
-                                paddingTop: '25px'
+                                paddingTop: '25px',
+                                maxWidth: '80%',
+                                alignItems: 'center',
+                                paddingLeft: '60px'
                         }} />
                     </div>
                     <small className='fs-5 fw-normal alegreya-sans-regular'>MARIKINA HIGH SCHOOL TEACHERS EMPLOYEE</small>

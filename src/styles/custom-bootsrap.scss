@@ -68,4 +68,12 @@ body {
       font-weight: 700;
       font-style: normal;
   }
+
+  html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* disables all scrollbars */
+}
+
 }

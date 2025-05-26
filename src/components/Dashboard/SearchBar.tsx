@@ -24,8 +24,14 @@ const SearchBar = () => {
   return (
     <div className="container ">
       <div className="searchbox shadow-sm">
-        <input type="text" placeholder={searchTerm ? "" : "Search Name, Loan#"} value={searchTerm} onChange={handleSearch} onKeyDown={handleKeyDown}
-          className="textPlaceholder w-full py-2 px-4 focus:outline-none" aria-label="Search"/>
+        <input type="text" 
+              placeholder={searchTerm ? "" : "Search Name, Loan#"} 
+              value={searchTerm} 
+              onChange={handleSearch} 
+              onKeyDown={handleKeyDown}
+              className="textPlaceholder w-full py-2 px-4 focus:outline-none" 
+              aria-label="Search"/>
+              
         <div onClick={handleSubmit} className="icon p-2">
           <Search size={20} />
         </div>
