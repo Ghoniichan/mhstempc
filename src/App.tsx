@@ -24,6 +24,7 @@ import ClientScreen from './screens/ClientScreen';
 import ClientProfileLoanScreen from './screens/ClientProfileLoanScreen';
 import Dashboard from './screens/Dashboard'; 
 import Application from './screens/Application';
+import RegisterApplicationFormScreen from './screens/RegisterApplicationFormScreen';
 
 // Components
 import NavBar from './components/Dashboard/NavBar';
@@ -69,6 +70,7 @@ function App() {
           <Route path="/application" element={<Application />} />
           <Route path="/client" element={<ClientScreen />} />
           <Route path="/clientLoan" element={<ClientProfileLoanScreen />} />
+          <Route path="/registerApplicationForm" element={<RegisterApplicationFormScreen />} />
         </Route>
 
         {/* Main layout for general public pages */}
