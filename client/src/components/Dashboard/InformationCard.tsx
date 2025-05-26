@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import './InformationCard.css';
 import CustomTable from './CustomTable';
 
+
 interface InformationCardProps {
   title: string;
   department: string;
@@ -43,13 +44,9 @@ const InformationCard: React.FC<InformationCardProps> = ({
     ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
   ];
 
-  //button hover and active states yan pare
-  const [hovered, setHovered] = useState<string | null>(null);
-  const [active, setActive] = useState<string | null>(null);
-
+  const [active, setActive] = useState<string>('Loan'); // default active is "Loan"
   const buttons = ['Loan', 'Capital Share', 'Savings'];
 
-  //di ko mapagana sa css kaya dito nalang basta css lang yan ya
   const baseButtonStyle: CSSProperties = {
     width: '100%',
     backgroundColor: 'white',
@@ -63,7 +60,7 @@ const InformationCard: React.FC<InformationCardProps> = ({
     userSelect: 'none',
   };
 
-  const hoverActiveStyle: CSSProperties = {
+  const activeStyle: CSSProperties = {
     backgroundColor: '#002D62',
     color: 'white',
   };
@@ -128,20 +125,15 @@ const InformationCard: React.FC<InformationCardProps> = ({
       {/* Buttons row */}
       <Row className="mb-4 mt-5 text-center">
         {buttons.map((btn) => {
-          const isHovered = hovered === btn;
           const isActive = active === btn;
           return (
             <Col xs={12} md={4} className="mb-2" key={btn}>
               <button
                 style={{
                   ...baseButtonStyle,
-                  ...(isHovered || isActive ? hoverActiveStyle : {}),
+                  ...(isActive ? activeStyle : {}),
                 }}
-                onMouseEnter={() => setHovered(btn)}
-                onMouseLeave={() => setHovered(null)}
-                onMouseDown={() => setActive(btn)}
-                onMouseUp={() => setActive(null)}
-                onBlur={() => setActive(null)}
+                onClick={() => setActive(btn)}
               >
                 {btn}
               </button>

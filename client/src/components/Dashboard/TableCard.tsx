@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import { Button, Dropdown } from 'react-bootstrap';
 import CustomTable from './CustomTable';
 import './TableCard.css';
+import SearchBar from './SearchBar';
 
 interface TableCardProps {}
 
@@ -35,26 +36,25 @@ const TableCard: React.FC<TableCardProps> = () => {
     navigate('/clientLoan');
   };
 
+  const handleRegisterClick = () => {
+    navigate('/registerApplicationForm'); 
+  };
+
   return (
     <Card className="mb-4 mt-3 shadow-sm rounded" style={{ width: '100%' }}>
       <Card.Body>
         <Row className="justify-content-center">
           <Col xs={12}>
             <Row className="mb-3">
-              <Col xs={12} md={5}>
-                <input
-                  type="text"
-                  className="form-control mb-2"
-                  placeholder="Search"
-                  required
-                />
+              <Col xs={12} md={6}>
+                <SearchBar />
               </Col>
               <Col xs={6} md={2}>
                 <Button
                   variant="light"
                   style={{ border: '1px solid lightgray', width: '100%' }}
                   className="mb-2"
-                  onClick={() => alert('Button 1 clicked')}
+                  onClick={handleRegisterClick}
                 >
                   Register Member
                 </Button>
@@ -74,7 +74,7 @@ const TableCard: React.FC<TableCardProps> = () => {
                   </Dropdown.Menu>
                 </Dropdown>
               </Col>
-              <Col xs={12} md={3}>
+              <Col xs={12} md={2}>
                 <Button
                   variant="danger"
                   style={{ border: '1px solid red', width: '100%' }}

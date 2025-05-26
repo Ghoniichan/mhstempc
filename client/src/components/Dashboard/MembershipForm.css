@@ -1,17 +1,31 @@
 .top-bar {
-    background-color: #002D62; 
-    height: 30px; 
-    width: 100%; 
-    border-top-left-radius: 10px; 
-    border-top-right-radius: 10px; 
+    background-color: #002D62;
+    height: 30px;
+    width: 100%;
+    margin-left: 0;
+    max-width: 100vw;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     display: flex;
-    align-items: center; 
-    color: white; 
-    font-size: 14px; 
-    padding-left: 15px; 
+    align-items: center;
+    color: white;
+    font-size: 14px;
+    padding-left: 15px;
 }
 
 .mf-card {
-    border-top-left-radius: 0 !important; 
-    border-top-right-radius: 0 !important; 
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    width: calc(100vw - 300px);
+    margin-left: 0;
+    max-width: none;
+    flex-grow: 1;
+}
+
+@media (min-width: 768px) {
+    .top-bar,
+    .mf-card {
+        width: calc(100vw - 300px);
+        max-width: 100%;
+    }
 }
