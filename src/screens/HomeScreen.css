@@ -1,13 +1,21 @@
+.logo-text-container {
+  gap: 10px; /* This controls space between logo and text */
+}
 
-.row {
-  width: 100%;
+.logo-image {
+  width: 80px;
+  height: auto;
 }
 
 .nameOne {
-    white-space: nowrap;
-    font-size: 35px;
+  white-space: nowrap;
+  font-size: 40px;
+  margin-bottom: 4px;
 }
 
 .nameTwo {
-    font-size: 65px;
+  font-size: 70px;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
+
