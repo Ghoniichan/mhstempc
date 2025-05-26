@@ -1,0 +1,10 @@
+.table-container {
+  overflow-x: auto;   /* Horizontal scroll */
+  overflow-y: auto;   /* Vertical scroll if needed */
+  max-height: 60vh;   /* Limit height, adjust as needed */
+  -webkit-overflow-scrolling: touch;  /* smooth scrolling on iOS */
+}
+.dropdown-menu {
+  width: 100% !important; /* make dropdown menu full width of its container */
+  min-width: 0 !important; /* override bootstrap's default min-width */
+}
