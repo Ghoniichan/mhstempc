@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import cors from "cors";
 import express, { Request, Response } from "express";
 import getAccounts from "./routes/accountsRoutes";
 
@@ -8,6 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
