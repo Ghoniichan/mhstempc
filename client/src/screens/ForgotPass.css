@@ -6,9 +6,10 @@
 }
 
 .input {
-    position: relative;
-    width: 100%;
-    display: flex;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center; /* Center icon vertically */
 }
 
 .TextLabel {
@@ -18,18 +19,30 @@
 }
 
 .inputBox {
-    position: relative;
-    width: 100%;
-    height: 55px;
-    border-radius: 10px;
-    padding-left: 40px;
-    flex: 1;
+  position: relative;
+  width: 100%;
+  height: 55px;
+  border-radius: 10px;
+  padding-left: 40px;
+  flex: 1;
 }
 
 .icon {
-    top: 40%;
-    left: 15px;
-    transform: translateY(-50%);
+  position: absolute;
+  top: 50%; /* More accurate vertical centering */
+  left: 15px;
+  transform: translateY(-50%);
+  pointer-events: none; /* Makes icon not block input clicks */
 }
+
+
+
+
+
+
+
+
+
+
 
 
