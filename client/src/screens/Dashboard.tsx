@@ -11,12 +11,12 @@ const Dashboard = () => {
         flexDirection: "column",
         width: "100%",
         marginLeft: "200px", 
-        padding: "20px 20px 450px 25px",
+        padding: "45px 20px 450px 25px",
         boxSizing: "border-box",
       }}
     >
       {/* Page Title */}
-      <h4 style={{ marginBottom: "20px" }}>Dashboard</h4>
+      <h3 style={{ marginBottom: "20px" }}>Dashboard</h3>
 
       {/* Cards */}
       <div
@@ -27,9 +27,9 @@ const Dashboard = () => {
         }}
       >
         <SimpleCard title="Applications" onClick={() => navigate('/application')}/>
-        <SimpleCard title="Loans" />
-        <SimpleCard title="Payment" />
-        <SimpleCard title="Missed Payment" />
+        <SimpleCard title="Loans" onClick={() => navigate('/loans')}/>
+        <SimpleCard title="Payment" onClick={() => navigate('/payment')}/>
+        <SimpleCard title="Missed Payment" onClick={() => navigate('/missedPayment')}/>
       </div>
     </div>
     )
