@@ -9,7 +9,7 @@ interface JwtPayload {
     }
 }
 
-export function jwtGenerator(user_id: number): string {
+export default function jwtGenerator(user_id: number): string {
     const payload: JwtPayload = {
         user: {
             id: user_id
