@@ -1,5 +1,37 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Remove scrollbars */
+}
+
+/* Hide scrollbars visually */
+body::-webkit-scrollbar {
+  display: none;
+}
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.home-content {
+  flex: 1;
+  overflow: hidden;
+  padding-left: 70px;
+  padding-top: 40px;
+}
+
+/* Your existing styles */
 .logo-text-container {
-  gap: 10px; /* This controls space between logo and text */
+  gap: 10px;
 }
 
 .logo-image {
@@ -18,4 +50,3 @@
   font-weight: bold;
   margin-bottom: 4px;
 }
-
