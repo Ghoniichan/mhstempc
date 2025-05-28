@@ -15,9 +15,12 @@ const PasswordReset = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '100vw',
-            height: '35vh',
-            padding: '30px 0'
+            maxHeight: "100%",
+            width: "100vw",
+            height: "35vh",
+            padding: "30px 0",
+            boxSizing: "border-box",
+            marginTop: "200px"
         }}>
                 <ColumnLayoutCard 
                     title="Password Reset!"

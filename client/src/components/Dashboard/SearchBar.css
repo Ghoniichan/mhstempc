@@ -4,9 +4,9 @@
 
 .searchbar-box {
   position: relative;
-  width: 100%;
+  width: 840px;
   max-width: 900px;
-  border: 2px solid #d1d5db;
+  border: 2px solid #d9d9d9;
   border-radius: 10px;
   background-color: white;
   display: flex;

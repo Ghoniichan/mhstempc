@@ -30,6 +30,9 @@ import RegisterApplicationFormScreen from './screens/RegisterApplicationFormScre
 import NavBar from './components/Dashboard/NavBar';
 import BottomBar from './components/Dashboard/BottomBar';
 import Sidebar from './components/Dashboard/Sidebar'; 
+import Loans from './screens/Loans';
+import PaymentScreen from './screens/PaymentScreen';
+import MissedPayment from './screens/MissedPayment';
 
 // Layout with Top & Bottom Bars
 function MainLayout() {
@@ -68,6 +71,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account" element={<AccountScreen />} />
           <Route path="/application" element={<Application />} />
+          <Route path="/loans" element={<Loans />}/>
+          <Route path="/payment" element={<PaymentScreen />}/>
+          <Route path="/missedPayment" element={<MissedPayment />}/>
           <Route path="/client" element={<ClientScreen />} />
           <Route path="/clientLoan" element={<ClientProfileLoanScreen />} />
           <Route path="/registerApplicationForm" element={<RegisterApplicationFormScreen />} />

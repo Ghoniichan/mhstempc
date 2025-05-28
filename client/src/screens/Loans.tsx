@@ -3,9 +3,9 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
-const Application = () => {
-  return (
-    <div className="d-flex" style={{ minHeight: '100vh' }}>
+const Loans = () => {
+    return(
+        <div className="d-flex" style={{ minHeight: '100vh' }}>
       <div style={{ width: '200px', flexShrink: 0 }}>
         {/* Sidebar or nav placeholder */}
       </div>
@@ -15,7 +15,7 @@ const Application = () => {
       >
         <div className="d-flex align-items-center mb-3" style={{ gap: '12px' }}>
           <Backbutton />
-          <h3 className="mb-0">Applications</h3>
+          <h3 className="mb-0">Loans</h3>
         </div>
 
 
@@ -26,14 +26,18 @@ const Application = () => {
           </div>
 
           <ButtonCustom
-            text="Application"
-            icon="bi bi-file-earmark-text"
+            text="Active Loans"
             backgroundColor="#ffffff"
             textColor="#000"
             borderColor="#d9d9d9"
             iconSize="20px"
-            fontSize="15px"
+            fontSize="14px"
             height="45px"
+            isDropdown={true}
+            dropdownItems={[
+                { label: "Active Loans ", onClick: () => console.log("Download clicked") },
+                { label: "Schedule of Loan Release", onClick: () => console.log("Print clicked") },
+            ]}
           />
 
           <ButtonCustom
@@ -54,17 +58,17 @@ const Application = () => {
             'ID',
             'Loan No.',
             'Loan Amount',
-            'Date Release',
-            'Approve by',
+            'Terms of Payment',
+            'Capital Share',
+            'Savings',
             'Due Date',
-            'Approval Status',
-            'Update Status',
+            'Balance',
           ]}
           rows={[]}
         />
       </div>
     </div>
-  );
-};
+    )
+}
 
-export default Application;
+export default Loans

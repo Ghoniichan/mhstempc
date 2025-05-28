@@ -3,9 +3,9 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
-const Application = () => {
-  return (
-    <div className="d-flex" style={{ minHeight: '100vh' }}>
+const MissedPayment = () => {
+    return (
+        <div className="d-flex" style={{ minHeight: '100vh' }}>
       <div style={{ width: '200px', flexShrink: 0 }}>
         {/* Sidebar or nav placeholder */}
       </div>
@@ -15,7 +15,7 @@ const Application = () => {
       >
         <div className="d-flex align-items-center mb-3" style={{ gap: '12px' }}>
           <Backbutton />
-          <h3 className="mb-0">Applications</h3>
+          <h3 className="mb-0">Missed Payments</h3>
         </div>
 
 
@@ -24,17 +24,6 @@ const Application = () => {
           <div style={{ flex: 1 }}>
             <SearchBar />
           </div>
-
-          <ButtonCustom
-            text="Application"
-            icon="bi bi-file-earmark-text"
-            backgroundColor="#ffffff"
-            textColor="#000"
-            borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="15px"
-            height="45px"
-          />
 
           <ButtonCustom
             text="Export Excel"
@@ -54,17 +43,17 @@ const Application = () => {
             'ID',
             'Loan No.',
             'Loan Amount',
-            'Date Release',
-            'Approve by',
             'Due Date',
-            'Approval Status',
-            'Update Status',
+            'Penalty',
+            'Total Amount',
+            'Contact No.',
+            
           ]}
           rows={[]}
         />
       </div>
     </div>
-  );
-};
+    )
+}
 
-export default Application;
+export default MissedPayment
