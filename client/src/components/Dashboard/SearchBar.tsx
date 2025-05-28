@@ -22,7 +22,7 @@ const SearchBar = () => {
 
   return (
     <div className="searchbar-container">
-      <div className="searchbar-box">
+      <div className="searchbar-box shadow-sm">
         <Search size={20} className="searchbar-icon" onClick={handleSubmit} />
         <input
           type="text"
@@ -30,7 +30,7 @@ const SearchBar = () => {
           value={searchTerm}
           onChange={handleSearch}
           onKeyDown={handleKeyDown}
-          className="searchbar-input"
+          className="searchbar-input gothic-a1-normal shadow-sm"
           aria-label="Search"
         />
       </div>
