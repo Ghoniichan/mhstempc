@@ -12,21 +12,20 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const user = await pool.query("SELECT * FROM account_credentials WHERE email = $1", [email]);
     
     if (user.rows.length === 0) {
-      res.status(401).json("Invalid Credential");
+      res.status(401).json("Invalid Credentials");
       return;
     }
     
     // Validate password
-    const validPassword = (password == user.rows[0].user_password)//await bcrypt.compare(password, user.rows[0].user_password);
-    
+    const validPassword = (password == user.rows[0].password_hash)//await bcrypt.compare(password, user.rows[0].user_password);
+  
     if (!validPassword) {
-      res.status(401).json("Invalid Credential");
+      res.status(401).json("Invalid wrong pass");
       return;
     }
     
     // Generate JWT token
     const jwtToken = jwtGenerator(user.rows[0].user_id);
-    
     res.json({ jwtToken });
     
   } catch (err: any) {
