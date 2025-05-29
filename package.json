@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/Ghoniichan/mhstempc#readme",
   "description": "",
-  "dependencies": {
+  "devDependencies": {
     "concurrently": "^9.1.2"
   }
 }
