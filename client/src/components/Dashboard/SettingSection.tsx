@@ -1,45 +1,75 @@
-
+import React, { useState } from 'react';
+import SettingChangePass from './SettingChangePass';
 import './SettingSection.css';
 
 
 const SettingSection = () => {
+
+    const [showSettingsChangePass, setShowSettingsChangePass] = useState(false);
+      // const location = useLocation();
+    
+      const handleSettingsClick = (e: React.MouseEvent) => {
+        e.preventDefault(); // prevent default navigation
+        setShowSettingsChangePass((prev) => !prev); // toggle panel
+      };
+    
+      const handleClosePanel = () => {
+        setShowSettingsChangePass(false);
+      };
+
     return (
-        <div>
-            <h3>Settings</h3>
-            <hr></hr>
-                <h5  className="custom-header"> Account </h5>
-                    <div className="card h-100 shadow-lg p-3 mb-5 bg-white rounded rounded">
-                        <button type="button" className="btn text-nowrap text-start">
-                            <h5>Update Profile</h5>
-                            <p className="mb-0">Update your personal information</p>
-                        </button>
+        <>
+        <div className='small-setting-section'>
+            {/* <h5 className="custom-header">Settings</h5> */}
+            {/* <hr /> */}
+            
+            <h6 className="custom-header">Account</h6>
+            <div className="card shadow-sm mb-4 custom-card-setting">
+                <button type="button" className="btn text-nowrap text-start">
+                    <h6>Update Profile</h6>
+                    <p className="mb-0">Update your personal info</p>
+                </button>
 
-                        <button type="button" className="btn text-nowrap text-start">
-                            <h5>Update Mobile Number</h5>
-                            <p className="mb-0">Update the mobile number used to receive your OTP </p>
-                        </button>
+                <button type="button" className="btn text-nowrap text-start">
+                    <h6>Update Mobile Number</h6>
+                    <p className="mb-0">Used for OTP</p>
+                </button>
 
-                        <button type="button" className="btn text-nowrap text-start">
-                            <h5>Change Password</h5>
-                            <p className="mb-0">Change your password regularly for your security</p>
-                        </button>
-                    </div>
+                <button onClick={handleSettingsClick} type="button" className="btn text-nowrap text-start">
+                    <h6>Change Password</h6>
+                    <p className="mb-0">Secure your account</p>
+                </button>
+            </div>
 
-                <h5  className="custom-header"> Security </h5>
-                    <div className="card h-100 shadow-lg p-3 mb-5 bg-white rounded rounded ">
-                        <button type="button" className="btn text-nowrap text-start">
-                            <h5>Audit Logs</h5>
-                            <p className="mb-0">Check your security</p>
-                        </button>
-                    </div>
+            <h6 className="custom-header">Security</h6>
+            <div className="card shadow-sm mb-4 custom-card-setting">
+                <button type="button" className="btn text-nowrap text-start">
+                    <h6>Audit Logs</h6>
+                    <p className="mb-0">Check your security</p>
+                </button>
+            </div>
 
-                <h5  className="custom-header"> About </h5>
-                    <div className="card h-100 shadow-lg p-3 mb-5 bg-white rounded rounded ">
-                        <button type="button" className="btn text-nowrap text-start">
-                            <h5 className="mb-0">About MHSTEMPC</h5>
-                        </button>
-                    </div>
+            <h6 className="custom-header">About</h6>
+            <div className="card shadow-sm custom-card-setting">
+                <button type="button" className="btn text-nowrap text-start">
+                    <h6 className="mb-0">About MHSTEMPC</h6>
+                </button>
+            </div>
         </div>
+
+        {showSettingsChangePass && (
+            <div className="settings-panel">
+                <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
+                    <h5 className="ms-3 mt-3 h5-setting">Change Password</h5>
+                    <button className="btn-close" onClick={handleClosePanel}></button>
+                </div>
+                <div className="p-3">
+                    <SettingChangePass />
+                </div>
+            </div>)}
+        </>
+
+        
     );
 };
 

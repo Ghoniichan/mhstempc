@@ -16,7 +16,7 @@
 }
 
 /* Top bar now inside the card */
-.top-bar {
+.ic-top-bar {
     width: 100%;
     background-color: #002D62;
     height: 30px;
