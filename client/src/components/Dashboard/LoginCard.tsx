@@ -5,18 +5,21 @@ import PasswordField from './PasswordField';
 import CustomButton from './CustomButton';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import axios, { AxiosError } from 'axios';
+axios.defaults.baseURL = 'http://localhost:9000'
 
 const LoginCard = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+    const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const newErrors: typeof errors = {};
 
     if (!email) {
@@ -31,8 +34,46 @@ const LoginCard = () => {
 
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    setErrors({});
+    setIsLoading(true);
+    
+    console.log(`Email is ${email} and pass is ${password}`);
+    try {
+      const response = await axios.post('/auth/login', {
+        email: email,
+        password: password
+      });
+      
+      const { jwtToken } = response.data;
+      
+      // Store the token (localStorage, sessionStorage, or state)
+      localStorage.setItem('token', jwtToken);
+      
+      // Redirect or update UI
+      console.log('Login successful!');
       navigate('/account');
+      
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        console.error('Login error:', err.response?.data || err.message);
+        
+        // Show user-friendly error messages
+        if (err.response?.status === 401) {
+          setErrors({ general: 'Invalid email or password' });
+        } else if (err.response?.status === 500) {
+          setErrors({ general: 'Server error. Please try again later.' });
+        } else {
+          setErrors({ general: 'An error occurred. Please try again.' });
+        }
+      } else {
+        setErrors({ general: 'Network error. Please check your connection.' });
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,6 +108,12 @@ const LoginCard = () => {
             </div>
           </div>
           <div className="px-3">
+            {errors.general && (
+              <div className="alert alert-danger" style={{ marginLeft: '13px', marginBottom: '16px' }}>
+                {errors.general}
+              </div>
+            )}
+
             <div style={{ paddingLeft: '13px', marginBottom: '4px' }}>
               <InputField value={email} onChange={setEmail} error={errors.email} />
             </div>
@@ -74,7 +121,12 @@ const LoginCard = () => {
               <PasswordField value={password} onChange={setPassword} error={errors.password} />
             </div>
             <div className="mb-2" style={{ paddingLeft: '13px' }}>
-              <CustomButton label='Log in' type='button' onClick={handleLogin} />
+              <CustomButton 
+                label={isLoading ? 'Logging in...' : 'Log in'} 
+                type='button' 
+                onClick={handleLogin}
+                disabled={isLoading}
+              />
             </div>
           </div>
         </div>
