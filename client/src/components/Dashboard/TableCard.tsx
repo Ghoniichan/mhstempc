@@ -49,7 +49,7 @@ const TableCard: React.FC<TableCardProps> = () => {
               <Col xs={12} md={6}>
                 <SearchBar />
               </Col>
-              <Col xs={6} md={2}>
+              <Col xs={12} md={2}>
                 <Button
                   variant="light"
                   style={{ border: '1px solid lightgray', width: '100%' }}
@@ -59,7 +59,7 @@ const TableCard: React.FC<TableCardProps> = () => {
                   Register Member
                 </Button>
               </Col>
-              <Col xs={6} md={2}>
+              <Col xs={12} md={2}>
                 <Dropdown style={{ width: '100%' }} className="mb-2">
                   <Dropdown.Toggle
                     variant="light"
