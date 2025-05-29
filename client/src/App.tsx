@@ -25,6 +25,7 @@ import ClientProfileLoanScreen from './screens/ClientProfileLoanScreen';
 import Dashboard from './screens/Dashboard'; 
 import Application from './screens/Application';
 import RegisterApplicationFormScreen from './screens/RegisterApplicationFormScreen';
+import ClientSendSmsScreen from './screens/ClientSendSmsScreen';
 
 // Components
 import NavBar from './components/Dashboard/NavBar';
@@ -50,9 +51,15 @@ function MainLayout() {
 // Layout with Sidebar only
 function SidebarLayout() {
   return (
-    <div className="d-flex">
+    <div className="d-flex" style={{ height: '100vh', overflow: 'hidden' }}>
       <Sidebar />
-      <div className="flex-grow-1 p-3">
+      <div
+        className="flex-grow-1 p-3"
+        style={{
+          overflowY: 'auto',
+          height: '100vh',
+        }}
+      >
         <Outlet />
       </div>
     </div>
@@ -77,6 +84,7 @@ function App() {
           <Route path="/client" element={<ClientScreen />} />
           <Route path="/clientLoan" element={<ClientProfileLoanScreen />} />
           <Route path="/registerApplicationForm" element={<RegisterApplicationFormScreen />} />
+          <Route path="/clientSendSms" element={<ClientSendSmsScreen />} />
         </Route>
 
         {/* Main layout for general public pages */}

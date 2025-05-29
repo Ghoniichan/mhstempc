@@ -5,6 +5,7 @@ type CustomButtonProps = {
     label: string;
     type?: "button" | "submit";
     onClick?: () => void;
+    className?: string;
 };
 
 const CustomButton = ({ label, type = "button", onClick }: CustomButtonProps) => {
