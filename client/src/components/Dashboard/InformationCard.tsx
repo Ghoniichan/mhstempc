@@ -1,8 +1,9 @@
 import React, { useState, CSSProperties } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import './InformationCard.css';
 import CustomTable from './CustomTable';
+import './InformationCard.css';
 
 
 interface InformationCardProps {
@@ -26,7 +27,6 @@ const InformationCard: React.FC<InformationCardProps> = ({
   loanStatus,
   membershipType,
   membershipDate,
-  onSendSMS,
 }) => {
   const columnHeadings = [
     'Date',
@@ -65,12 +65,15 @@ const InformationCard: React.FC<InformationCardProps> = ({
     color: 'white',
   };
 
+  const navigate = useNavigate();
+
+
   return (
     <div className="information-card-fullwidth">
       <Row className="main-card-row">
-        <Col xs={12}>
-          <div className="card shadow-lg p-0 mb-4 mt-3 bg-white rounded w-100 overflow-hidden">
-            <div className="top-bar">
+        <Col xs={12} s={12} md={12} lg={12} className="mx-auto">
+          <div className="card shadow-lg p-0 mb-4 mt-3 bg-white rounded w-100 overflow-auto">
+            <div className="ic-top-bar">
               <span className="top-bar-text">{title}</span>
             </div>
             <div className="card-body p-4 rounded">
@@ -110,7 +113,8 @@ const InformationCard: React.FC<InformationCardProps> = ({
                       <h5 className="form-label fw-semibold mb-3">
                         Date of Membership: <span className="fw-normal">{membershipDate}</span>
                       </h5>
-                      <button className="btn btn-danger w-100 mt-2" onClick={onSendSMS}>
+                      <button className="btn btn-danger w-100 mt-2" 
+                        onClick={() => navigate('/clientSendSms')}> 
                         Send SMS
                       </button>
                     </Col>
@@ -142,17 +146,18 @@ const InformationCard: React.FC<InformationCardProps> = ({
         })}
       </Row>
 
-      <Row className="table-row flex-grow-1 w-100">
+      <Row className="table-row">
         <Col xs={12} className="h-100">
           <div className="card shadow-lg p-4 mb-4 bg-white rounded w-100">
-            <div className="card-body d-flex flex-column">
-              <div className="table-responsive flex-grow-1">
+            <div className="card-body d-flex flex-column h-100">
+              <div className="table-responsive">
                 <CustomTable columnHeadings={columnHeadings} rows={rows} className="w-100" />
               </div>
             </div>
           </div>
         </Col>
       </Row>
+
     </div>
   );
 };
