@@ -4,7 +4,7 @@
 }
 
 .custom-table {
-  min-width: 900px; /* Forces horizontal scroll for smaller screens */
+  min-width: 100%; /* Forces horizontal scroll for smaller screens */
   table-layout: fixed;
   border-collapse: collapse;
 }

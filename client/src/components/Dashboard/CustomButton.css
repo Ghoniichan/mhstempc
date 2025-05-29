@@ -7,9 +7,9 @@
 .CusButton {
     background-color: #002d62;
     border-radius: 50px;
-    width: 340px;
+    width: 100%;
+    max-width: 340px;
     height: 50px;
     color: white;
     font-size: 19px;
-    
 }
