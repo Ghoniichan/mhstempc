@@ -1,10 +1,13 @@
 .cont {
     background-color: white;
+    width: 100%;
+    overflow-y: auto;
 }
 
 .help {
-    margin-bottom: 40px;
-    margin-top: 109px;
+    margin-bottom: 30px;
+    margin-top: 100px;
+    text-align: center;
 }
 
 .column {
@@ -18,27 +21,28 @@
 }
 
 .card-title {
-    font-size: 22px;
-    padding-top: 15px;
+  font-size: 22px;
+  padding-top: 15px;
 }
 
 .card {
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.2s ease-in-out;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    border-color: #d9d9d9;
-    border-width: 2px;
-    width: 200px;
-    overflow: hidden;
-
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-color: #d9d9d9;
+  border-width: 2px;
+  max-width: 100%;
+  width: 100%;
+  min-width: 250px;
 }
 
-.phoneImg, .emailImg, .faqImg {
-    height: 900px;  /* Adjust as needed */
-    width: 90px;    /* Adjust as needed */
-    object-fit: contain; /* Maintains aspect ratio */
-    justify-content: center;
+.phoneImg,
+.emailImg,
+.faqImg {
+  max-width: 100px;
+  height: auto;
+  object-fit: contain;
 }
 
 

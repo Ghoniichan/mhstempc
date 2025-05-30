@@ -63,8 +63,9 @@ const CreateNewPass = () => {
         }}
       >
         <div className='subCont'>
-          <div className="input position-relative">
+          <div className=" position-relative">
             <input
+            
               type={showPassword ? "text" : "password"}
               id="password"
               className="inputBox form-control ps-5 pe-5"
@@ -73,9 +74,21 @@ const CreateNewPass = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <i className="iconLock bi bi-lock-fill position-absolute"></i>
-            <i className={`iconToggle bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}
-              onClick={() => setShowPassword(!showPassword)}></i>
+            <i
+              className="iconLock bi bi-lock-fill"
+              style={{
+                left: '15px',
+                top: '40%',
+                transform: 'translateY(-50%)',
+                fontSize: '1rem',
+                color: '#000',
+              }}
+            />
+            <i
+              className={`iconToggle bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}
+              onClick={() => setShowPassword(!showPassword)}
+            />
+
           </div>
 
           <div className="input position-relative mt-2">
@@ -88,10 +101,18 @@ const CreateNewPass = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <i className="iconLock bi bi-lock-fill position-absolute"></i>
+            <i className="iconLock bi bi-lock-fill position-absolute"
+              style={{
+                left: '15px',
+                top: '40%',
+                transform: 'translateY(-50%)',
+                fontSize: '1rem',
+                color: '#000',
+              }}></i>
             <i className={`iconToggle bi ${showConfirmPassword ? 'bi-eye' : 'bi-eye-slash'}`}
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}></i>
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}></i>
           </div>
+
         </div>
 
         {error && (
