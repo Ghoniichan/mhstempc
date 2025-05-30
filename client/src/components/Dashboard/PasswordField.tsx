@@ -1,3 +1,6 @@
+import { useState } from "react";
+import './PasswordField.css'
+
 type PasswordFieldProps = {
   value: string;
   onChange: (val: string) => void;
@@ -5,6 +8,8 @@ type PasswordFieldProps = {
 };
 
 const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="MainContainer mb-1">
       <div className="subCont">
@@ -13,15 +18,25 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error })
         </label>
         <div className="input position-relative">
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             id="password"
-            className={`inputBox form-control ps-5 ${error ? 'is-invalid' : ''}`}
+            className={`inputBox form-control ps-5 pe-5 ${error ? 'is-invalid' : ''}`}
             placeholder="Password"
             style={{ border: '1px solid #002d62' }}
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />
-          <i className="icon bi bi-lock-fill position-absolute"></i>
+
+          {/* Lock Icon - Left */}
+          <i className="icon bi bi-lock-fill position-absolute"
+            style={{
+              left: '15px',
+              top: '40%',
+              transform: 'translateY(-50%)',
+              fontSize: '1rem',
+              color: '#000000'}}></i>
+          <i className={`iconToggle bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}
+            onClick={() => setShowPassword(!showPassword)}></i>
         </div>
 
         <div className="d-flex justify-content-between align-items-center mt-1">
@@ -32,8 +47,11 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error })
           ) : (
             <div></div>
           )}
-          <a href="/forgot-password" className="password gothic-a1-bold" 
-            style={{fontSize: '13px', color: '#002d62'}}>
+          <a
+            href="/forgot-password"
+            className="password gothic-a1-bold"
+            style={{ fontSize: '13px', color: '#002d62' }}
+          >
             Forgot Password?
           </a>
         </div>
