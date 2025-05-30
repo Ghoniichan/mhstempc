@@ -8,9 +8,12 @@ import '../screens/Help.css';
 const HelpScreen = () => {
     return (
         <div style={{display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100vw'}}>
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        width: '100vw',
+        height: '100vh',
+        overflowY: 'auto'}}>
             <NavBar/>
 
             <div className="cont min-vh-100">
