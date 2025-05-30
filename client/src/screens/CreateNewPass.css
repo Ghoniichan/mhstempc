@@ -10,14 +10,26 @@
     height: 55px;
     border-radius: 10px;
     padding-left: 40px;
+    padding-right: 40px;
 }
 
-.icon {
+.iconLock {
     top: 40%;
     left: 15px;
     transform: translateY(-50%);
+    position: absolute;
 }
 
 .subCont {
     margin-top: 5px;
+}
+
+.iconToggle {
+  position: absolute;
+  top: 40%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #000000;
+  font-size: 1rem;
 }
