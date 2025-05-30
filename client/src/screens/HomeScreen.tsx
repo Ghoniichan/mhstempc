@@ -8,23 +8,16 @@ const HomeScreen = () => {
     <div className="home-wrapper">
       <NavBar />
       <div className="home-content container d-flex justify-content-center align-items-center text-center">
-        <div className="row">
-          <div className="col-6 d-flex justify-content-center align-items-center flex-column">
+        <div className="row flex-nowrap align-items-center justify-content-center home-banner">
+          <div className="col-auto">
             <img 
               src={logo} 
               alt="MHSTEMPC Logo" 
-              className="img-fluid" 
-              width="350px"
-              style={{ 
-                marginBottom: '0.25rem', 
-                justifyContent: 'center',
-                maxWidth: '80%',
-                height: 'auto' 
-              }}
+              className=" logo-image mb-3" 
             />
           </div>
 
-          <div className="col-6 d-flex justify-content-center align-items-center flex-column">
+          <div className="text-block col text-start">
             <small className="nameOne mt-0 alegreya-sans-regular">
               MARIKINA HIGH SCHOOL TEACHERS EMPLOYEES
             </small>

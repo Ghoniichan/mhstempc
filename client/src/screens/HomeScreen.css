@@ -16,17 +16,22 @@ body {
 }
 
 .home-wrapper {
+  padding: 1rem 1rem;
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
   height: 100vh;
+  flex: 1;
   overflow: hidden;
 }
 
 .home-content {
   flex: 1;
-  overflow: hidden;
-  padding-left: 70px;
-  padding-top: 40px;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Your existing styles */
@@ -35,18 +40,55 @@ body {
 }
 
 .logo-image {
-  width: 80px;
+  width: 300px;
+  max-width: 90%;
   height: auto;
+  margin-bottom: 0.25rem;
 }
 
 .nameOne {
   white-space: nowrap;
-  font-size: 40px;
+  font-size: 2.5rem;
   margin-bottom: 4px;
 }
 
 .nameTwo {
-  font-size: 70px;
+  font-size: 4.5rem;
   font-weight: bold;
   margin-bottom: 4px;
+}
+
+.home-banner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;  
+  gap: 0.25rem; 
+}
+
+.text-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: normal;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .logo-image {
+    width: 150px;
+  }
+
+  .text-block {
+    text-align: left;
+  }
+
+  .nameOne {
+    font-size: 1.2rem;
+  }
+
+  .nameTwo {
+    font-size: 1.8rem;
+  }
 }
