@@ -1,30 +1,5 @@
 // src/styles/custom.scss
 
-@use "sass:color";
-@use "sass:math";
-
-// 1. Override Bootstrap variables FIRST
-$primary: #002D62;   // Custom Primary Color
-$secondary: #6c757d; // Bootstrap default secondary color
-$success: #28a745;
-$danger: #dc3545;
-$warning: #ffc107;
-$info: #17a2b8;
-$light: #f8f9fa;
-$dark: #343a40;
-
-// 2. Import Bootstrap (AFTER variables)
-@use "bootstrap/scss/bootstrap" with (
-  $primary: $primary,
-  $secondary: $secondary,
-  $success: $success,
-  $danger: $danger,
-  $warning: $warning,
-  $info: $info,
-  $light: $light,
-  $dark: $dark,
-);
-
 // 3. Your custom fonts
 body {
   .alegreya-sans-regular {
@@ -69,11 +44,5 @@ body {
       font-style: normal;
   }
 
-//   html, body, #root {
-//   margin: 0;
-//   padding: 0;
-//   height: 100%;
-//   overflow: hidden; /* disables all scrollbars */
-// }
 
 }
