@@ -34,6 +34,10 @@ import Sidebar from './components/Dashboard/Sidebar';
 import Loans from './screens/Loans';
 import PaymentScreen from './screens/PaymentScreen';
 import MissedPayment from './screens/MissedPayment';
+import AddPayment from './screens/AddPayment';
+import LoanApplicationFormScreen from './screens/LoanApplicationFormScreen';
+import LoanAppFormTwo from './screens/LoanAppFormTwo';
+import SchedofLoanRelease from './screens/ScheduleofLoanRelease';
 
 // Layout with Top & Bottom Bars
 function MainLayout() {
@@ -77,10 +81,17 @@ function App() {
         <Route element={<SidebarLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account" element={<AccountScreen />} />
+
           <Route path="/application" element={<Application />} />
+          <Route path='/applicationForm' element={<LoanApplicationFormScreen />} />
+          <Route path='/applicationFormTwo' element={<LoanAppFormTwo/>}/>
+
           <Route path="/loans" element={<Loans />}/>
+          <Route path="/loanRelease" element={<SchedofLoanRelease />} />
           <Route path="/payment" element={<PaymentScreen />}/>
           <Route path="/missedPayment" element={<MissedPayment />}/>
+          <Route path='/addPayment' element={<AddPayment />} />
+          
           <Route path="/client" element={<ClientScreen />} />
           <Route path="/clientLoan" element={<ClientProfileLoanScreen />} />
           <Route path="/registerApplicationForm" element={<RegisterApplicationFormScreen />} />
