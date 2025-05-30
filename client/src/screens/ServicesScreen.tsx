@@ -29,23 +29,13 @@ const ServicesScreen = () => {
                             <div className="row gx-1 gy-0 justify-content-center">
                                 {/* First Card - Loan */}
                                 <div className="col-md-6 col-lg-4 mb-2 d-flex justify-content-center" >
-                                    <div className="card h-100 shadow"
-                                        style={{borderRadius: '10px', 
-                                                cursor: 'pointer', 
-                                                transition: 'transform 0.2s, box-shadow 0.2s', 
-                                                borderColor: '#d9d9d9', 
-                                                borderWidth: 2,
-                                                width: 270,
-                                                overflow: 'hidden',
-                                                 }}>
+                                    <div className="card h-100 shadow" style={{ maxWidth: '270px', width: '100%' }}>
 
                                         <div className="card-body text-center p-4">
                                             <div className="mb-4">
                                                 <div className="d-inline-flex align-items-center justify-content-center">
                                                     <img src={loan} alt='loanPic' className='loanImg img-fluid' 
-                                                                style={{height: '150px', 
-                                                                width: '150px',
-                                                                justifyContent: 'center'}}  />
+                                                                style={{maxWidth: '100%', height: 'auto', width: '150px'}}  />
                                                 </div>
                                                 <h4 className="card-title mb-2 gothic-a1-bold">Loan</h4>
                                                 <div className="d-flex align-items-center justify-content-center">
@@ -59,22 +49,13 @@ const ServicesScreen = () => {
 
                                 {/* Second Card - Capital Share */}
                                 <div className="col-md-6 col-lg-4 mb-2" >
-                                    <div className="card h-100 shadow"
-                                        style={{borderRadius: '10px', 
-                                                cursor: 'pointer', 
-                                                transition: 'transform 0.2s, box-shadow 0.2s', 
-                                                borderColor: '#d9d9d9', 
-                                                borderWidth: 2,
-                                                width: 270,
-                                                overflow: "hidden" }}>
+                                    <div className="card h-100 shadow" style={{ maxWidth: '270px', width: '100%' }}>
 
                                         <div className="card-body text-center p-4">
                                             <div className="mb-4">
                                                 <div className="d-inline-flex align-items-center justify-content-center">
                                                     <img src={capitalShare} alt='capitalShareImg' className='capshareImg img-fluid' 
-                                                        style={{height: '150px', 
-                                                                width: '150px',
-                                                                justifyContent: 'center'}} />
+                                                        style={{maxWidth: '100%', height: 'auto', width: '150px'}} />
                                                 </div>
                                                 <h4 className="card-title mb-2 gothic-a1-bold">Capital Share</h4>
                                                 <div className="d-flex align-items-center justify-content-center">
