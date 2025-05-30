@@ -5,9 +5,9 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
-const Loans = () => {
+const SchedofLoanRelease = () => {
   const navigate = useNavigate();
-  const [selectedDropdown, setSelectedDropdown] = useState("Active Loans");
+  const [selectedDropdown, setSelectedDropdown] = useState("Schedule of Loan Release");
 
   const handleDropdownClick = (label: string, path: string) => {
     setSelectedDropdown(label);
@@ -25,7 +25,7 @@ const Loans = () => {
       >
         <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
-          <h3 className="mb-0">Loans</h3>
+          <h3 className="mb-0">Schedule of Loan Release</h3>
         </div>
 
         {/* row for search + buttons */}
@@ -70,14 +70,17 @@ const Loans = () => {
         <CustomTable
           columnHeadings={[
             "Name",
-            "ID",
-            "Loan No.",
-            "Loan Amount",
-            "Terms of Payment",
-            "Capital Share",
-            "Savings",
+            "Date Granted",
             "Due Date",
-            "Balance",
+            "Voucher No.",
+            "Cash Received",
+            "Loan Amount",
+            "Interest",
+            "Service Fee",
+            "Fine",
+            "Savings",
+            "Capital Build Up",
+            "Loan Balance",
           ]}
           rows={[]}
         />
@@ -86,4 +89,4 @@ const Loans = () => {
   );
 };
 
-export default Loans;
+export default SchedofLoanRelease;
