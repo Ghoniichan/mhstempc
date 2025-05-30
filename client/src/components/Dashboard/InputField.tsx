@@ -1,3 +1,5 @@
+import './InputField.css'
+
 type InputFieldProps = {
   value: string;
   onChange: (val: string) => void;
@@ -19,7 +21,7 @@ const InputField: React.FC<InputFieldProps> = ({ value, onChange, error }) => {
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />
-          <i className="icon bi bi-envelope position-absolute"></i>
+          <i className="icon bi bi-envelope position-absolute" style={{top: '40%'}}></i>
         </div>
         {error && <div className="text-danger mt-1" style={{ fontSize: '14px', paddingTop: '0px' }}>{error}</div>}
       </div>

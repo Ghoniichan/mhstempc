@@ -3,11 +3,15 @@ import CustomButton from "../components/Dashboard/CustomButton";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
 import '../screens/CreateNewPass.css';
 import { useNavigate } from 'react-router-dom';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 const CreateNewPass = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
 
   const validatePasswords = () => {
@@ -23,7 +27,6 @@ const CreateNewPass = () => {
       setError("Password must be at least 8 characters long.");
       return false;
     }
-    // Add more validation rules here if needed
     setError("");
     return true;
   };
@@ -60,31 +63,56 @@ const CreateNewPass = () => {
         }}
       >
         <div className='subCont'>
-          <div className="input">
+          <div className=" position-relative">
             <input
-              type="password"
+            
+              type={showPassword ? "text" : "password"}
               id="password"
-              className="inputBox form-control ps-5"
+              className="inputBox form-control ps-5 pe-5"
               placeholder="Enter New Password"
               style={{ border: '1px solid #002d62' }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <i className="icon bi bi-lock-fill position-absolute"></i>
+            <i
+              className="iconLock bi bi-lock-fill"
+              style={{
+                left: '15px',
+                top: '40%',
+                transform: 'translateY(-50%)',
+                fontSize: '1rem',
+                color: '#000',
+              }}
+            />
+            <i
+              className={`iconToggle bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}
+              onClick={() => setShowPassword(!showPassword)}
+            />
+
           </div>
 
-          <div className="input">
+          <div className="input position-relative mt-2">
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
-              className="inputBox form-control ps-5"
+              className="inputBox form-control ps-5 pe-5"
               placeholder="Re-enter Password"
               style={{ border: '1px solid #002d62' }}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <i className="icon bi bi-lock-fill position-absolute"></i>
+            <i className="iconLock bi bi-lock-fill position-absolute"
+              style={{
+                left: '15px',
+                top: '40%',
+                transform: 'translateY(-50%)',
+                fontSize: '1rem',
+                color: '#000',
+              }}></i>
+            <i className={`iconToggle bi ${showConfirmPassword ? 'bi-eye' : 'bi-eye-slash'}`}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}></i>
           </div>
+
         </div>
 
         {error && (
