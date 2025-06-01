@@ -22,7 +22,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error })
             id="password"
             className={`inputBox form-control ps-5 pe-5 ${error ? 'is-invalid' : ''}`}
             placeholder="Password"
-            style={{ border: '1px solid #002d62' }}
+            style={{ border: '1px solid #002d62', height: '55px', maxWidth: '100%' }}
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />

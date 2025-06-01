@@ -55,7 +55,7 @@ const LoginCard = () => {
       
       // Redirect or update UI
       console.log('Login successful!');
-      navigate('/account');
+      navigate('/dashboard');
       
     } catch (err) {
       if (err instanceof AxiosError) {
