@@ -2,8 +2,10 @@ import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
+import { useNavigate } from "react-router-dom";
 
 const Application = () => {
+  const navigate = useNavigate();
   return (
     <div className="d-flex" style={{ minHeight: '100vh' }}>
       <div style={{ width: '200px', flexShrink: 0 }}>
@@ -34,6 +36,7 @@ const Application = () => {
             iconSize="20px"
             fontSize="15px"
             height="45px"
+            onClick={() => navigate('/applicationForm')}
           />
 
           <ButtonCustom
