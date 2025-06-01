@@ -17,7 +17,7 @@ const InputField: React.FC<InputFieldProps> = ({ value, onChange, error }) => {
             id="email"
             className={`inputBox form-control ps-5 ${error ? 'is-invalid' : ''}`}
             placeholder="Email"
-            style={{ border: '1px solid #002d62' }}
+            style={{ border: '1px solid #002d62', height: '55px', maxWidth: '100%'}}
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />

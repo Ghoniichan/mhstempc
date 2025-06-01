@@ -1,19 +1,33 @@
+.add-payment-container {
+    margin-left: 0px;
+    padding-top: 4rem;
+    padding-right: 20rem;
+    padding-left: 1rem;
+}
+
 .top-bar {
-    background-color: #002D62; 
-    height: 30px; 
-    width: 100%; 
-    border-top-left-radius: 10px; 
-    border-top-right-radius: 10px; 
+    background-color: #002D62;
+    height: 50px;
+    width: 100%;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     display: flex;
-    align-items: center; 
-    color: white; 
-    font-size: 14px; 
-    padding-left: 15px;   
+    align-items: center;
+    padding-left: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;  
 }
 
 .apc-card {
-    border-top-left-radius: 0 !important; 
-    border-top-right-radius: 0 !important; 
+    background-color: white;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0;
 }
 
 /* Style for the custom dropdown icon */
@@ -28,6 +42,48 @@
     pointer-events: none; /* Prevent the icon from blocking clicks */
     font-size: 1.2rem; /* Adjust icon size */
     color: #6c757d; /* Optional: Match Bootstrap's default text color */
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* Dropdowns row for Date Issued */
+.date-select {
+    display: flex;
+    gap: 8px;
+}
+
+.date-select .form-select {
+    min-width: 70px;
+    text-align: center;
+    font-size: 15px;
+    height: 40px;
+}
+
+/* Input styling */
+.form-control {
+    width: 100%;
+    max-width: 300px;
+    height: 40px;
+}
+
+.form-select {
+    font-size: 15px;
+    height: 40px;
+}
+
+/* Wrapper to center the form and limit its width */
+.form-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+/* Background for the whole page */
+body {
+    background-color: #f5f5f5;
 }
 
 
