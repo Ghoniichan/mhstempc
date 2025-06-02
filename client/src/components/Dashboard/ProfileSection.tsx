@@ -1,139 +1,253 @@
-import '../../../src/styles/custom-bootsrap.scss';
-import './ProfileSection.css'
+import { useState, useRef, ChangeEvent } from 'react';
+import './ProfileSection.css';
 import ProfileIcon from '../../../src/assets/Images/ProfileIcon.png';
-// import { useState } from 'react';
-
-
-// const EditButton = () => {
-//     const [isEditing, setIsEditing] = useState(false);
-//     const [isHovered, setIsHovered] = useState(false);
-
-//     const handleClick = () => {
-//         setIsEditing(!isEditing);
-//         //functionality
-
-//     };
-// }
 
 const ProfileSection = () => {
-    return (
-        <div className="sectionnn" style={{
-            width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto'
-        }}>
-           
-            <div className="py-4 profileSection">
-                <div className="container">
-                    <div className="row g-4">
-                        <div className="col-md-3">
-                            <div className="card text-center h-100 shadow-sm profilePicture" style={{backgroundColor: '#F8FAFC'}}>
-                                <div className="card-body d-flex flex-column align-items-center mb-3">
-                                   <div className="position-relative w-100">
-                                        <button className='btn position-absolute top-0 end-0' 
-                                        style={{backgroundColor: 'transparent',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            top: '10px',
-                                            right: '10px',
-                                            zIndex: 10,
-                                            padding: '1px',
+  const [isEditing, setIsEditing] = useState(false);
+  const [profilePic, setProfilePic] = useState(ProfileIcon);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-                                        }}
-                                        // onClick={handleClick}
-                                        // onMouseEnter={() => setIsHovered(true)}
-                                        // onMouseLeave={() => setIsHovered(false)}
-                                            // title={isEditing ? 'Save changes' : 'Edit'}
-                                            // <EditIcon
-                                            //     color={isEditing ? 'white' : '#002D62'}
+  const [formData, setFormData] = useState({
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    address: '',
+    zip: '',
+    email: '',
+    department: '',
+    policyNumber: '',
+    contact: '',
+    membershipType: 'Regular',
+    dateOfMembership: '',
+  });
 
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" 
-                                                width="20" 
-                                                height="20" 
-                                                fill="currentColor" 
-                                                className="bi bi-pencil-square" 
-                                                viewBox="0 0 15 15">
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                                <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                            </svg>
-                                        </button>
+  const handleEditToggle = () => setIsEditing(!isEditing);
 
-                                    </div> 
-                                    <img src ={ProfileIcon} alt='profileLogo' className='mb-4' width='110px'/>
-                                    <h5 className='mb-1 fs-extrabold gothic-a1-extrabold'>Bandasan, Michaela Joy</h5>
-                                    <small className='text-muted fs-normal gothic-a1-normal'>ID No.:</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-9 ">
-                            <div className="card h-100 shadow-sm profileNameLoc" style={{backgroundColor: '#F8FAFC'}}>
-                                <div className="card-body">
-                                    <div className="row g-3">
-                                        <div className="col-md-4">
-                                            <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>First Name</label>
-                                            <input type='text' className='form-control ProfileinputBox' placeholder='First Name'/>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Middle Name</label>
-                                            <input type='text' className='form-control ProfileinputBox' placeholder='Middle Name'/>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Last Name</label>
-                                            <input type='text' className='form-control ProfileinputBox' placeholder='Last Name'/>
-                                        </div>
-                                        <div className="col-md-8">
-                                            <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Address</label>
-                                            <input type='text' className='form-control ProfileinputBox' placeholder='Address'/>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>ZIP Code</label>
-                                            <input type='text' className='form-control ProfileinputBox' placeholder='ZIP Code'/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [name]: '' }));
+  };
 
-                    <div className="card shadow-sm mt-4 profileGenInfo" style={{backgroundColor: '#F8FAFC'}}>
-                        <div className="card-body mb-1">
-                            <div className="row g-3">
-                                <div className="col-md-4">
-                                    <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Email Address</label>
-                                    <input type='text' className='form-control ProfileinputBox' placeholder='Email Address'/>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Department</label>
-                                    <input type='text' className='form-control ProfileinputBox' placeholder='Department'/>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>MHSTEMPC Policy Number</label>
-                                    <input type='text' className='form-control ProfileinputBox' placeholder='MHSTEMPC Policy Number'/>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Contact No.</label>
-                                    <input type='text' className='form-control ProfileinputBox' placeholder='Contact No.'/>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Type of Membership</label>
-                                    <select className='form-select ProfileinputBox'>
-                                        <option value='Regular' selected>Regular</option>
-                                        <option value='Non-member'>Non-member</option>
-                                    </select>
-                                </div>
-                                <div className="col-md-4">
-                                    <label className='form-label fs-semibold gothic-a1-semibold mb-0 textTitle'>Date of Membership</label>
-                                    <input type='date' className='form-control ProfileinputBox'/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  const handleProfilePicClick = () => {
+    if (isEditing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleProfilePicChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setProfilePic(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    Object.entries(formData).forEach(([key, value]) => {
+      if (!value) newErrors[key] = 'This field is required';
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSave = () => {
+    if (validateForm()) {
+      alert('Your personal information has been successfully updated.');
+      setIsEditing(false);
+    }
+  };
+
+  return (
+    <div className="sectionnn">
+      <div className="profileSection">
+        <div className="container">
+          <div className="row g-4 align-items-stretch">
+            {/* Profile Image Section */}
+            <div className="col-md-3 col-12 d-flex">
+              <div className="card text-center shadow-sm profilePicture flex-fill" style={{ backgroundColor: '#F8FAFC' }}>
+                <div className="card-body mb-3">
+                  <div className="position-relative w-100 text-end">
+                    <button
+                      className="btn position-absolute"
+                      onClick={handleEditToggle}
+                      style={{
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        top: '10px',
+                        right: '10px',
+                      }}
+                    >
+                      <i className="bi bi-pencil-square" style={{ fontSize: '25px' }}></i>
+                    </button>
+                  </div>
+                  <div className="profileImageWrapper">
+                  <img
+                    src={profilePic}
+                    alt="Profile"
+                    className="mb-3"
+                    onClick={handleProfilePicClick}
+                    style={{ borderRadius: '50%', cursor: isEditing ? 'pointer' : 'default' }}
+                  />
                 </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleProfilePicChange}
+                  />
+                  <h5 className="mb-1 name">
+                    {formData.lastName && formData.firstName
+                        ? `${formData.lastName}, ${formData.firstName} ${formData.middleName}`
+                        : 'Your Name'}
+                    </h5>
+                    <small className="text-muted">
+                    ID No.: {formData.policyNumber || '—'}
+                    </small>
+                </div>
+              </div>
             </div>
-        </div>
-    )
-}
 
-export default ProfileSection
+            {/* Name & Address Section */}
+            <div className="col-md-9 col-12 d-flex">
+              <div className="card shadow-sm profileNameLoc flex-fill" style={{ backgroundColor: '#F8FAFC' }}>
+                <div className="card-body">
+                  <div className="row g-3">
+                    {[
+                        { label: 'First Name', name: 'firstName' },
+                        { label: 'Middle Name', name: 'middleName' },
+                        { label: 'Last Name', name: 'lastName' },
+                        ].map(({ label, name }) => (
+                        <div key={name} className="col-md-4 col-12">
+                            <label className="form-label textTitle">{label}</label>
+                            <input
+                            name={name}
+                            value={formData[name as keyof typeof formData]}
+                            onChange={handleInputChange}
+                            className={`form-control ProfileinputBox ${errors[name] ? 'is-invalid' : ''}`}
+                            type="text"
+                            placeholder={label}
+                            disabled={!isEditing}
+                            />
+                            {errors[name] && <div className="invalid-feedback">{errors[name]}</div>}
+                        </div>
+                        ))}
+
+                        {/* Custom row for Address and ZIP Code */}
+                        <div className="col-md-9 col-12">
+                        <label className="form-label textTitle">Address</label>
+                        <input
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            className={`form-control ProfileinputBox ${errors.address ? 'is-invalid' : ''}`}
+                            type="text"
+                            placeholder="Address"
+                            disabled={!isEditing}
+                        />
+                        {errors.address && <div className="invalid-feedback">{errors.address}</div>}
+                        </div>
+
+                        <div className="col-md-3 col-12">
+                        <label className="form-label textTitle">ZIP Code</label>
+                        <input
+                            name="zip"
+                            value={formData.zip}
+                            onChange={handleInputChange}
+                            className={`form-control ProfileinputBox ${errors.zip ? 'is-invalid' : ''}`}
+                            type="text"
+                            placeholder="ZIP Code"
+                            disabled={!isEditing}
+                        />
+                        {errors.zip && <div className="invalid-feedback">{errors.zip}</div>}
+                        </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* General Info Section */}
+            <div className="col-12">
+              <div className="card shadow-sm profileGenInfo" style={{ backgroundColor: '#F8FAFC' }}>
+                <div className="card-body">
+                  <div className="row g-3">
+                    {[
+                      { label: 'Email Address', name: 'email' },
+                      { label: 'Department', name: 'department' },
+                      { label: 'MHSTEMPC Policy Number', name: 'policyNumber' },
+                      { label: 'Contact No.', name: 'contact' },
+                    ].map(({ label, name }) => (
+                      <div key={name} className="col-md-4 col-12">
+                        <label className="form-label textTitle">{label}</label>
+                        <input
+                          name={name}
+                          type="text"
+                          className={`form-control ProfileinputBox ${errors[name] ? 'is-invalid' : ''}`}
+                          placeholder={label}
+                          value={formData[name as keyof typeof formData]}
+                          onChange={handleInputChange}
+                          disabled={!isEditing}
+                        />
+                        {errors[name] && <div className="invalid-feedback">{errors[name]}</div>}
+                      </div>
+                    ))}
+
+                    <div className="col-md-4 col-12">
+                      <label className="form-label textTitle">Type of Membership</label>
+                      <select
+                        name="membershipType"
+                        value={formData.membershipType}
+                        onChange={handleInputChange}
+                        className="form-select ProfileinputBox"
+                        disabled={!isEditing}
+                      >
+                        <option value="Regular">Regular</option>
+                        <option value="Non-member">Non-member</option>
+                      </select>
+                    </div>
+
+                    <div className="col-md-4 col-12">
+                      <label className="form-label textTitle">Date of Membership</label>
+                      <input
+                        type="date"
+                        name="dateOfMembership"
+                        value={formData.dateOfMembership}
+                        onChange={handleInputChange}
+                        className={`form-control ProfileinputBox ${errors.dateOfMembership ? 'is-invalid' : ''}`}
+                        disabled={!isEditing}
+                      />
+                      {errors.dateOfMembership && (
+                        <div className="invalid-feedback">{errors.dateOfMembership}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Save Button */}
+            {isEditing && (
+              <div className="col-12 text-end mt-3">
+                <button className="btn btn-primary gothic-a1-bold" onClick={handleSave} style={{backgroundColor: '#002d62', width: '100px', borderRadius: '20px'}}>
+                  Save
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProfileSection;

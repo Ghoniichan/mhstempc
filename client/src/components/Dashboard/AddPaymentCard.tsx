@@ -61,19 +61,19 @@ const AddPaymentCard: React.FC = () => {
                                     <Row className="mb-3">
                                         <Col xs={12} md={6}>
                                             <label htmlFor="accountID" className="form-label gothic-a1-bold">Account ID</label>
-                                            <input type="text" className="form-control" id="accountID" required />
+                                            <input type="text" className="form-control" id="accountID" placeholder='Account ID' required  />
                                         </Col>
                                         <Col xs={12} md={6}>
                                             <label htmlFor="collectedBy" className="form-label gothic-a1-bold">Collected By</label>
-                                            <input type="text" className="form-control" id="collectedBy" required />
+                                            <input type="text" className="form-control" id="collectedBy" placeholder='Collected By' required />
                                         </Col>
                                     </Row>
 
                                     {/* Row 3: Loan ID */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="loanId" className="form-label gothic-a1-bold">Loan ID</label>
-                                            <input type="text" className="form-control" id="loanId" required />
+                                            <label htmlFor="loanId" className="form-label gothic-a1-bold">Loan No.</label>
+                                            <input type="text" className="form-control" id="loanId" placeholder='Loan No.' required />
                                         </Col>
                                     </Row>
 
@@ -81,7 +81,7 @@ const AddPaymentCard: React.FC = () => {
                                     <Row className="mb-3">
                                         <Col xs={12}>
                                             <label htmlFor="loanAmount" className="form-label gothic-a1-bold">Loan Amount</label>
-                                            <input type="text" className="form-control" id="loanAmount" required />
+                                            <input type="text" className="form-control" id="loanAmount" placeholder='Loan Amount'required />
                                         </Col>
                                     </Row>
 
