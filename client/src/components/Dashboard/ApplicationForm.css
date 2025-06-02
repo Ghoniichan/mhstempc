@@ -2,14 +2,14 @@
     background-color: #002D62;
     height: 50px;
     width: 1200px;
-    max-width: 1200px;
+    max-width: 970px !important;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     display: flex;
     align-items: center;
     color: white;
     font-size: 14px;
-    padding-left: 15px;
+    padding-left: 15px ;
 }
 
 .top-bar-text {
