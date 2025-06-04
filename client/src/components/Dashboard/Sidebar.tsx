@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
-import { NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import navlogo from '../../../src/assets/Images/mhstempc_logo.png';
 import SettingSection from './SettingSection';
+import NotificationSection from './NotificationSection';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
-  // const location = useLocation();
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const handleSettingsClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // prevent default navigation
-    setShowSettings((prev) => !prev); // toggle panel
+    e.preventDefault();
+    setShowSettings((prev) => !prev);
+    setShowNotifications(false); // Close notification panel if open
+  };
+
+  const handleNotificationsClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowNotifications((prev) => !prev);
+    setShowSettings(false); // Close settings panel if open
   };
 
   const handleClosePanel = () => {
     setShowSettings(false);
+    setShowNotifications(false);
   };
 
   return (
@@ -41,10 +50,10 @@ const Sidebar = () => {
             <span className="description">Client</span>
           </NavLink>
 
-          <NavLink to="/notifications" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
             <span className="Navicon"><i className="bi bi-bell"></i></span>
             <span className="description">Notification</span>
-          </NavLink>
+          </a>
 
           <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
             <span className="Navicon"><i className="bi bi-gear"></i></span>
@@ -55,18 +64,31 @@ const Sidebar = () => {
             <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
             <span className="description">Log Out</span>
           </NavLink>
-          
         </nav>
       </div>
 
+      {/* Settings Panel */}
       {showSettings && (
-        <div className="settings-panel">
+        <div className="sidebar-settings-panel">
           <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
             <h5 className="ms-3 mt-3 h5-setting">Settings</h5>
             <button className="btn-close" onClick={handleClosePanel}></button>
           </div>
           <div className="p-3">
             <SettingSection />
+          </div>
+        </div>
+      )}
+
+      {/* Notification Panel */}
+      {showNotifications && (
+        <div className="sidebar-settings-panel">
+          <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
+            <h5 className="ms-3 mt-3 h5-setting">Notifications</h5>
+            <button className="btn-close" onClick={handleClosePanel}></button>
+          </div>
+          <div className="p-3">
+            <NotificationSection />
           </div>
         </div>
       )}
