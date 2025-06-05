@@ -3,6 +3,7 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import getAccounts from "./routes/accountsRoutes";
 import authRoutes from "./routes/jwtAuth"
+import sendEmail from "./routes/notificationRoutes";
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/", getAccounts);
 
 app.use("/auth", authRoutes);
+
+app.use("/notification", sendEmail);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
