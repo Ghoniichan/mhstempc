@@ -13,6 +13,10 @@ const PORT = process.env.PORT || 9000;
 app.use(express.json());
 app.use(cors());
 
+app.use("/", (req: Request, res: Response) => {
+  res.send("Welcome to the API");
+});
+
 app.use("/api/accounts", getAccounts);
 
 app.use("/api/auth", authRoutes);
