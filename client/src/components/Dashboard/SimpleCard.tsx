@@ -12,7 +12,8 @@ const SimpleCard: React.FC<SimpleCardProps> = ({ title, onClick }) => {
         <div
             className="card h-100 shadow p-3 mb-5 bg-white rounded responsive-card click-effect "
             onClick={onClick} 
-            style={{ cursor: 'pointer', maxWidth: '300px' , maxHeight: '200px' }} 
+            style={{ cursor: 'pointer', width: '100vw', height: '100vh' }}
+ 
         >
             <div className="card-body">
                 <div className="d-flex align-items-center justify-content-between mt-5">

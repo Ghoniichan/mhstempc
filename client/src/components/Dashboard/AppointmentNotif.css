@@ -9,7 +9,7 @@
   word-wrap: break-word;
 
   
-  height: 240px; 
+  height: 140px; 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -31,7 +31,6 @@
   font-size: 0.85rem;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 
@@ -40,14 +39,15 @@
   margin-top: 0.5rem;
   color: #333;
 
- 
+  
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 3; 
+  
   -webkit-box-orient: vertical;
   min-height: 3.6em; 
 }
+
 
 .card-link {
   font-size: 0.9rem;
@@ -80,7 +80,7 @@
 
   .card-text {
     font-size: 0.9rem;
-    -webkit-line-clamp: 2;
+    
     min-height: 2.4em;
   }
 
