@@ -1,4 +1,4 @@
-.top-bar {
+.mfs-top-bar {
     background-color: #002D62;
     height: 30px;
     width: 100%;
@@ -11,18 +11,17 @@
     color: white;
     font-size: 14px;
     padding-left: 15px;
-    
 }
+
 
 .mfs-card {
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
-    width: 100%;
+    width: calc(100vw - 300px);
     margin-left: 0;
     max-width: none;
     flex-grow: 1;
-    
-}
+  }
 
 .underlined-spaced {
   text-decoration: underline;

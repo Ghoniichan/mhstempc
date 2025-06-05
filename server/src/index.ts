@@ -3,6 +3,7 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import getAccounts from "./routes/accountsRoutes";
 import authRoutes from "./routes/jwtAuth"
+import sendEmail from "./routes/notificationRoutes";
 
 dotenv.config();
 
@@ -12,13 +13,11 @@ const PORT = process.env.PORT || 9000;
 app.use(express.json());
 app.use(cors());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
-});
+app.use("/api/accounts", getAccounts);
 
-app.use("/", getAccounts);
+app.use("/api/auth", authRoutes);
 
-app.use("/auth", authRoutes);
+app.use("/api/notification", sendEmail);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

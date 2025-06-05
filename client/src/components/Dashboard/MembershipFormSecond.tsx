@@ -13,7 +13,7 @@ const MembershipFormSecond: React.FC<MembershipFormSecondProps> = ({ onCancel })
     <Container fluid className="py-5">
       <Row className="justify-content-center">
         <Col xs={12} s={12} md={12} lg={10} xl={8}>
-          <div className="top-bar">
+          <div className="mfs-top-bar">
             <span className="top-bar-text">MEMBERSHIP APPLICATION FORM</span>
           </div>
         </Col>
