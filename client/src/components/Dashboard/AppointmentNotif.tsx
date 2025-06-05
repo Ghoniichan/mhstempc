@@ -1,8 +1,9 @@
 import { Card } from 'react-bootstrap';
+import './AppointmentNotif.css';
 import { useNavigate } from 'react-router-dom';
-import './Notifcard.css';
 
-const NotifCard = () => {
+const AppointmentNotifCard = () => {
+
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -10,11 +11,11 @@ const NotifCard = () => {
   };
 
   return (
-    <Card className='container notif-card' onClick={handleCardClick}>
+    <Card className='container' onClick={handleCardClick}>
       <Card.Body>
         {/* Title */}
-        <Card.Title className='header gothic-a1-bold'>
-          <i className="bi bi-bell"></i> Account Changes
+        <Card.Title className='header gothic-a1-bold' >
+          <i className="bi bi-bell"></i> Appointment Request
         </Card.Title>
 
         {/* Date below title */}
@@ -24,7 +25,7 @@ const NotifCard = () => {
 
         {/* Message */}
         <Card.Text>
-          Carlos changed his phone number
+          Carlos requrests an appointment for consultation.
         </Card.Text>
 
         {/* Action Link */}
@@ -34,4 +35,4 @@ const NotifCard = () => {
   );
 };
 
-export default NotifCard;
+export default AppointmentNotifCard;
