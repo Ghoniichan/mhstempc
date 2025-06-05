@@ -15,11 +15,11 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
     };
 
     return (
-        <div className="form-wrapper">
+        <div className="main-layout">
             <Container fluid className="py-5">
                 <Row className="justify-content-center">
                     <Col xs={12 } md={10} lg={10} xl={8}>
-                        <div className="mf-top-bar">
+                        <div className="mf-top-bar ">
                             <span className="top-bar-text">MEMBERSHIP APPLICATION FORM</span>
                         </div>
                     </Col>
