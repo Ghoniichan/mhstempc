@@ -13,7 +13,7 @@ export const getProducts = (req: Request, res: Response): void => {
 };
 
 export const getTestUsers = (req: Request, res: Response): void => {
-  pool.query("SELECT * FROM users", (error, result) => {
+  pool.query("SELECT * FROM account_credentials", (error, result) => {
     if (error) {
       console.error("Error fetching products:", error);
       res.status(500).json({ error: "Internal Server Error" });

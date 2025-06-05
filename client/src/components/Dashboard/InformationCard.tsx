@@ -1,10 +1,9 @@
-import React, { useState, CSSProperties } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { CSSProperties } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import CustomTable from './CustomTable';
 import './InformationCard.css';
-
 
 interface InformationCardProps {
   title: string;
@@ -15,6 +14,8 @@ interface InformationCardProps {
   loanStatus: string;
   membershipType: string;
   membershipDate: string;
+  columnHeadings: string[];
+  rows: string[][];
   onSendSMS?: () => void;
 }
 
@@ -27,24 +28,10 @@ const InformationCard: React.FC<InformationCardProps> = ({
   loanStatus,
   membershipType,
   membershipDate,
+  columnHeadings,
+  rows,
 }) => {
-  const columnHeadings = [
-    'Date',
-    'OR',
-    'Interest',
-    'Service Fee',
-    'Fines',
-    'Due Date',
-    'Received Amount',
-  ];
-
-  const rows = [
-    ['John Doe', '123', 'LN001', '$10,000', '2023-01-01', 'Manager A', '2023-12-31'],
-    ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
-    ['Jane Smith', '124', 'LN002', '$15,000', '2023-02-01', 'Manager B', '2024-01-31'],
-  ];
-
-  const [active, setActive] = useState<string>('Loan'); // default active is "Loan"
+  // const [active, setActive] = useState<string>('Loan');
   const buttons = ['Loan', 'Capital Share', 'Savings'];
 
   const baseButtonStyle: CSSProperties = {
@@ -66,6 +53,14 @@ const InformationCard: React.FC<InformationCardProps> = ({
   };
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const activeTab = (() => {
+    if (location.pathname.includes('clientLoan')) return 'Loan';
+    if (location.pathname.includes('clientCapitalShare')) return 'Capital Share';
+    if (location.pathname.includes('clientSavings')) return 'Savings';
+    return '';
+  })();
 
 
   return (
@@ -113,8 +108,10 @@ const InformationCard: React.FC<InformationCardProps> = ({
                       <h5 className="form-label fw-semibold mb-3">
                         Date of Membership: <span className="fw-normal">{membershipDate}</span>
                       </h5>
-                      <button className="btn btn-danger w-100 mt-2" 
-                        onClick={() => navigate('/clientSendSms')}> 
+                      <button
+                        className="btn btn-danger w-100 mt-2"
+                        onClick={() => navigate('/clientSendSms')}
+                      >
                         Send SMS
                       </button>
                     </Col>
@@ -129,7 +126,7 @@ const InformationCard: React.FC<InformationCardProps> = ({
       {/* Buttons row */}
       <Row className="mb-4 mt-5 text-center">
         {buttons.map((btn) => {
-          const isActive = active === btn;
+          const isActive = activeTab === btn;
           return (
             <Col xs={12} md={4} className="mb-2" key={btn}>
               <button
@@ -137,7 +134,21 @@ const InformationCard: React.FC<InformationCardProps> = ({
                   ...baseButtonStyle,
                   ...(isActive ? activeStyle : {}),
                 }}
-                onClick={() => setActive(btn)}
+                onClick={() => {
+                  switch (btn) {
+                    case 'Loan':
+                      navigate('/clientLoan');
+                      break;
+                    case 'Capital Share':
+                      navigate('/clientCapitalShare');
+                      break;
+                    case 'Savings':
+                      navigate('/clientSavings');
+                      break;
+                    default:
+                      break;
+                  }
+                }}
               >
                 {btn}
               </button>
@@ -145,6 +156,8 @@ const InformationCard: React.FC<InformationCardProps> = ({
           );
         })}
       </Row>
+
+
 
       <Row className="table-row">
         <Col xs={12} className="h-100">
@@ -157,7 +170,6 @@ const InformationCard: React.FC<InformationCardProps> = ({
           </div>
         </Col>
       </Row>
-
     </div>
   );
 };

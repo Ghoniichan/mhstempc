@@ -22,10 +22,17 @@ import EmailVerif from './screens/EmailVerif';
 import AccountScreen from './screens/AccountScreen';
 import ClientScreen from './screens/ClientScreen';
 import ClientProfileLoanScreen from './screens/ClientProfileLoanScreen';
+import ClientProfileCapitalShareScreen from './screens/ClientProfileCapitalShareScreen';
+import ClientProfileSavingsScreen from './screens/ClientProfileSavingsScreen';
 import Dashboard from './screens/Dashboard'; 
 import Application from './screens/Application';
 import RegisterApplicationFormScreen from './screens/RegisterApplicationFormScreen';
 import ClientSendSmsScreen from './screens/ClientSendSmsScreen';
+import AuditLogScreen from './screens/AuditLogScreen';
+import AboutSettingScreen from './screens/AboutSettingScreen';
+import AppointmentRequestScreen from './screens/AppointmentRequestScreen'; 
+
+
 
 // Components
 import NavBar from './components/Dashboard/NavBar';
@@ -94,8 +101,13 @@ function App() {
           
           <Route path="/client" element={<ClientScreen />} />
           <Route path="/clientLoan" element={<ClientProfileLoanScreen />} />
+          <Route path="/clientCapitalShare" element={<ClientProfileCapitalShareScreen />} />
+          <Route path="/clientSavings" element={<ClientProfileSavingsScreen />} />
           <Route path="/registerApplicationForm" element={<RegisterApplicationFormScreen />} />
           <Route path="/clientSendSms" element={<ClientSendSmsScreen />} />
+          <Route path="/auditLog" element={<AuditLogScreen/>} />
+          <Route path="/aboutSetting" element={<AboutSettingScreen />} />
+          <Route path="/appointmentRequest" element={<AppointmentRequestScreen />} />
         </Route>
 
         {/* Main layout for general public pages */}

@@ -15,13 +15,13 @@ const SendSms: React.FC = () => {
   };
 
   return (
-    <div className="container py-4">
+    <div className="d-flex justify-content-center align-items-center w-100" >
       <div
         className="card shadow-sm mx-auto"
         style={{
           maxWidth: '600px',
           width: '100%',
-          minHeight: '450px', // allows responsiveness while reserving visual space
+          minHeight: '450px', 
         }}
       >
         <div className="card-body">
@@ -54,6 +54,7 @@ const SendSms: React.FC = () => {
             </label>
             <textarea
               className="form-control"
+              style={{ maxWidth: '600px'}}
               id="smsMessage"
               rows={3}
               readOnly

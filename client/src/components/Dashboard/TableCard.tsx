@@ -8,31 +8,23 @@ import CustomTable from './CustomTable';
 import './TableCard.css';
 import SearchBar from './SearchBar';
 
-interface TableCardProps {}
+type TableCardProps = object;
 
 const TableCard: React.FC<TableCardProps> = () => {
   const navigate = useNavigate();
 
   const columnHeadings = [
-    'Date',
-    'OR',
-    'Interest',
-    'Service Fee',
-    'Fines',
-    'Due Date',
-    'Received Amount',
-    'Received Amount2',
-    'Received Amount3',
-    'Received Amount4',
+    'Name', 'MHSTEMPC Policy Number', 'Email', 'Contact Number'
   ];
 
   const rows = [
-    ['2023-01-01', '123', '$100', '$10', '$5', '2023-12-31', '$1000', '$200', '$300', '$400'],
-    ['2023-02-01', '124', '$150', '$15', '$7', '2024-01-31', '$1500', '$250', '$350', '$450'],
-    ['2023-03-01', '125', '$200', '$20', '$10', '2024-02-28', '$2000', '$300', '$400', '$500'],
+    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
+    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
+    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
+    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
   ];
 
-  const handleRowClick = (row: Array<string>) => {
+  const handleRowClick = (_row: Array<string>) => {
     navigate('/clientLoan');
   };
 
