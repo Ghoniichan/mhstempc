@@ -8,7 +8,7 @@ import CustomTable from './CustomTable';
 import './TableCard.css';
 import SearchBar from './SearchBar';
 
-interface TableCardProps {}
+type TableCardProps = object;
 
 const TableCard: React.FC<TableCardProps> = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const TableCard: React.FC<TableCardProps> = () => {
     ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
   ];
 
-  const handleRowClick = (row: Array<string>) => {
+  const handleRowClick = (_row: Array<string>) => {
     navigate('/clientLoan');
   };
 
