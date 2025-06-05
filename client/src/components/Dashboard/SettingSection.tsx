@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingChangePass from './SettingChangePass';
 import SettingChangeNumber from './SettingChangeNumber';
-import NotifCard from './NotifCard';
 import './SettingSection.css';
 
 
