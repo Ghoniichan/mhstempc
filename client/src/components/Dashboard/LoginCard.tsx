@@ -5,8 +5,9 @@ import PasswordField from './PasswordField';
 import CustomButton from './CustomButton';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import axios, { AxiosError } from 'axios';
-axios.defaults.baseURL = 'http://localhost:9000'
+import axios from '../../api/axiosInstance.ts';
+import { AxiosError } from 'axios';
+
 
 const LoginCard = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const LoginCard = () => {
     
     console.log(`Email is ${email} and pass is ${password}`);
     try {
-      const response = await axios.post('/auth/login', {
+      const response = await axios.post('/api/auth/login', {
         email: email,
         password: password
       });
