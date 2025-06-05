@@ -9,6 +9,8 @@
     "baseUrl": "src",
     "paths": { "@assets/*": ["assets/*"] },
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "types": ["node"],
+    "target": "es5",
   }
 }
