@@ -48,7 +48,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error })
             <div></div>
           )}
           <a
-            href="/forgot-password"
+            href="/dashboard"
             className="password gothic-a1-bold"
             style={{ fontSize: '13px', color: '#002d62' }}
           >
