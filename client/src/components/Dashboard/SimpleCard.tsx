@@ -12,7 +12,7 @@ const SimpleCard: React.FC<SimpleCardProps> = ({ title, onClick }) => {
         <div
             className="card h-100 shadow p-3 mb-5 bg-white rounded responsive-card click-effect "
             onClick={onClick} 
-            style={{ cursor: 'pointer', width: '100vw', height: '100vh' }}
+            style={{ cursor: 'pointer', width: '100vw', height: '100vh', maxWidth: '300px' }}
  
         >
             <div className="card-body">

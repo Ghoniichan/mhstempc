@@ -1,14 +1,103 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './ApplicationFormSecond.css';
+import { useNavigate } from 'react-router-dom';
 
 interface ApplicationFormSecondProps {
   onCancel: () => void;
 }
 
+interface FormData {
+  termsAccepted: boolean;
+  signedDate: string; // Fixed: was "signedData"
+  computations: {
+    loanAmount: string;
+    interest: string;
+    paidUpCapital: string;
+    serviceFee: string;
+    savings: string;
+    netLoanProceeds: string; // Fixed: was "netLoansProceeds"
+  };
+  submissionTimestamp: string;
+}
+
 const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel }) => {
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState<FormData>({
+    termsAccepted: false,
+    signedDate: '',
+    computations: {
+      loanAmount: '',
+      interest: '',
+      paidUpCapital: '',
+      serviceFee: '',
+      savings: '',
+      netLoanProceeds: '',
+    },
+    submissionTimestamp: ''
+  });
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      termsAccepted: e.target.checked
+    }));
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      signedDate: e.target.value
+    }));
+  };
+
+  const handleComputationChange = (field: keyof FormData['computations']) => 
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData(prev => ({
+        ...prev,
+        computations: {
+          ...prev.computations,
+          [field]: e.target.value
+        }
+      }));
+    };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate required fields
+    if (!formData.termsAccepted) {
+      alert('Please accept the terms and conditions before submitting.');
+      return;
+    }
+    
+    if (!formData.signedDate) {
+      alert('Please select a signing date.');
+      return;
+    }
+
+    // Add submission timestamp
+    const finalFormData: FormData = {
+      ...formData,
+      submissionTimestamp: new Date().toISOString()
+    };
+
+    // Generate JSON output
+    const jsonOutput = JSON.stringify(finalFormData, null, 2);
+    
+    // Log JSON to console (for development)
+    console.log('Form Data JSON:', jsonOutput);
+    
+    // Show JSON in alert (you can remove this in production)
+    alert(`Form submitted successfully!\n\nJSON Output:\n${jsonOutput}`);
+    
+    // Navigate to next page
+    navigate('/application');
+  };
+
   return (
     <Container fluid className="py-3 main-content">
       <Row className="justify-content-center">
@@ -18,10 +107,10 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
               MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
             </span>
           </div>
-
-          <div className="card shadow-lg p-4 mb-5 bg-white rounded afs-card">
+ 
+          <div className="card shadow-lg p-4 mb-5 bg-white rounded afs-card" style={{width: '1200px', maxWidth: '970px'}}>
             <div className="scrollable-form">
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Row className="mb-4">
                   <Col>
                     <h5 className="text-center gothic-a1-bold" style={{ fontSize: '20px' }}>
@@ -59,18 +148,20 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
 
                 <Row className="mb-4">
                   <Col xs={12}>
-                    <div className="d-flex align-items-start flex-wrap gap-2">
+                    <div className="d-flex align-items-start gap-3">
                       <input
                         type="checkbox"
                         id="termsAndConditionsCheckbox"
                         name="paymentTerms"
-                        className="form-check-input mt-1"
+                        className="form-check-input"
+                        checked={formData.termsAccepted}
+                        onChange={handleCheckboxChange}
                         required
                       />
                       <label
                         htmlFor="termsAndConditionsCheckbox"
-                        className="form-check-label gothic-a1-bold"
-                        style={{ fontSize: '16px' }}
+                        className="form-check-label gothic-a1-bold mb-0"
+                        style={{ fontSize: '16px', lineHeight: '1.4' }}
                       >
                         I hereby declare that I have read and understood the foregoing and have executed this document willingly and voluntarily.
                       </label>
@@ -85,7 +176,10 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                       <input
                         type="date"
                         className="form-control"
-                        style={{ maxWidth: '150px', flexGrow: 1 }}
+                        style={{ maxWidth: '250px', flexGrow: 1 }}
+                        value={formData.signedDate}
+                        onChange={handleDateChange}
+                        required
                       />
                       <span className="gothic-a1-bold">
                         at Marikina High School, Concepcion, Marikina City.
@@ -100,18 +194,25 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                       <h6 className="box-title gothic-a1-bold" style={{ fontSize: '15px' }}>Computations:</h6>
 
                       {[
-                        { label: "Amount of Loan", id: "loanAmountBox" },
-                        { label: "Interest", id: "interestBox" },
-                        { label: "Paid-Up Capital", id: "paidUpCapitalBox" },
-                        { label: "Service Fee", id: "serviceFeeBox" },
-                        { label: "Savings", id: "savingsBox" },
-                        { label: "Net Loan Fee Proceeds", id: "netLoanProceedsBox" }
-                      ].map(({ label, id }) => (
+                        { label: "Amount of Loan", id: "loanAmountBox", field: "loanAmount" as keyof FormData['computations'] },
+                        { label: "Interest", id: "interestBox", field: "interest" as keyof FormData['computations'] },
+                        { label: "Paid-Up Capital", id: "paidUpCapitalBox", field: "paidUpCapital" as keyof FormData['computations'] },
+                        { label: "Service Fee", id: "serviceFeeBox", field: "serviceFee" as keyof FormData['computations'] },
+                        { label: "Savings", id: "savingsBox", field: "savings" as keyof FormData['computations'] },
+                        { label: "Net Loan Fee Proceeds", id: "netLoanProceedsBox", field: "netLoanProceeds" as keyof FormData['computations'] }
+                      ].map(({ label, id, field }) => (
                         <div className="mb-3" key={id}>
                           <label htmlFor={id} className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
                             {label}:
                           </label>
-                          <input type="text" id={id} className="form-control" placeholder={`Enter ${label.toLowerCase()}`} />
+                          <input 
+                            type="text" 
+                            id={id} 
+                            className="form-control" 
+                            placeholder={`Enter ${label.toLowerCase()}`} 
+                            value={formData.computations[field]}
+                            onChange={handleComputationChange(field)}
+                          />
                         </div>
                       ))}
                     </div>
