@@ -8,19 +8,23 @@ import './Sidebar.css';
 const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     // Get user role from localStorage, sessionStorage, or API call
     const getUserRole = () => {
-      // Option 1: From localStorage/sessionStorage
-      const storedRole = localStorage.getItem('userRole');
-      
-      // Option 2: From user data in localStorage
-      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-      const role = storedRole || userData.role || 'user'; 
-      
-      setUserRole(role);
+      const jwtToken = localStorage.getItem('token');
+
+      if (!jwtToken) {
+        setUserRole('user'); // Default to user if no token exists
+        return;
+      }
+      const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+
+      //get isAdmin in payload
+      const isAdmin = decodedToken.user.isAdmin;
+
+      setUserRole(isAdmin ? 'admin' : 'user');
     };
 
     getUserRole();
