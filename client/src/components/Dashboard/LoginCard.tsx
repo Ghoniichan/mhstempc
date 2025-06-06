@@ -8,19 +8,6 @@ import { useState } from 'react';
 import axios from '../../api/axiosInstance.ts';
 import { AxiosError } from 'axios';
 
-// Define user roles
-type UserRole = 'admin' | 'user';
-
-interface LoginResponse {
-  jwtToken: string;
-  user: {
-    id: string;
-    email: string;
-    role: UserRole;
-    name?: string;
-  };
-}
-
 const LoginCard = () => {
   const navigate = useNavigate();
 
@@ -31,29 +18,6 @@ const LoginCard = () => {
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  // Function to handle role-based navigation
-  const handleRoleBasedNavigation = (userRole: UserRole) => {
-    switch (userRole) {
-      case 'admin':
-        navigate('/dashboard');
-        break;
-      case 'user':
-        navigate('/user/dashboard');
-        break;
-      default:
-        // Fallback to general dashboard
-        navigate('/dashboard');
-        break;
-    }
-  };
-
-  // Function to store user data in localStorage
-  const storeUserData = (token: string, userData: LoginResponse['user']) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('userRole', userData.role);
-  };
 
   const handleLogin = async () => {
     const newErrors: typeof errors = {};
@@ -86,17 +50,21 @@ const LoginCard = () => {
       const response = await axios.post('/api/auth/login', data);
       
       console.log('Login response:', response.data);
-      const { jwtToken, user } = response.data;
+      const { jwtToken} = response.data;
       
-      // Store token and user data
-      storeUserData(jwtToken, user);
-      
-      console.log('Login successful!');
-      console.log(`User role: ${user.role}`);
-      
-      // Navigate based on user role
-      handleRoleBasedNavigation(user.role);
-      
+      localStorage.setItem('token', jwtToken);
+
+      //check token body
+      const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+
+      //get isAdmin in payload
+      const isAdmin = decodedToken.user.isAdmin;
+
+      if (isAdmin) {
+        navigate('/dashboard');
+      } else {
+        navigate('/user/dashboard');
+      }
     } catch (err) {
       if (err instanceof AxiosError) {
         console.error('Login error:', err.response?.data || err.message);
