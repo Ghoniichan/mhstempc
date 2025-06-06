@@ -20,12 +20,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const validPassword = await bcrypt.compare(password, user.rows[0].password_hash);
   
     if (!validPassword) {
-      res.status(401).json("Invalid wrong pass");
+      res.status(401).json("Invalid Credentials");
       return;
     }
     
     // Generate JWT token
-    const jwtToken = jwtGenerator(user.rows[0].user_id);
+    const jwtToken = jwtGenerator(user.rows[0].account_id);
     res.json({ jwtToken });
     
   } catch (err: any) {
