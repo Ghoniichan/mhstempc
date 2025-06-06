@@ -25,12 +25,8 @@
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
-<<<<<<< HEAD
     "@types/node": "^22.15.29",
-=======
-    "@types/node": "^22.15.21",
     "@types/nodemailer": "^6.4.17",
->>>>>>> a60f98a8ab223279d458bfb5fa6e7c305a0216b4
     "@types/pg": "^8.15.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
