@@ -85,6 +85,7 @@ const LoginCard = () => {
       }
       const response = await axios.post('/api/auth/login', data);
       
+      console.log('Login response:', response.data);
       const { jwtToken, user } = response.data;
       
       // Store token and user data
