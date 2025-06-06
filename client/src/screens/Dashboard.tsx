@@ -4,21 +4,23 @@ import { useEffect, useState } from "react";
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [userRole, setUserRole] = useState(null);
+    const [userRole, setUserRole] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Get user role from localStorage, sessionStorage, or API call
         const getUserRole = () => {
             // Option 1: From localStorage/sessionStorage
-            const storedRole = localStorage.getItem('userRole');
-            
-            // Option 2: From user data in localStorage
-            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-            const role = storedRole || userData.role || 'user'; // default to 'user'
-            
-            setUserRole(role);
-            setIsLoading(false);
+            const storedRole = localStorage.getItem('token');
+            // If token exists, decode it to get user role
+            if (storedRole) {
+                const decodedToken = JSON.parse(atob(storedRole.split('.')[1]));
+                const isAdmin = decodedToken.user.isAdmin;
+                const role = isAdmin ? 'admin' : 'user';
+                setUserRole(role);
+                setIsLoading(false);
+                return;
+            }
         };
 
         getUserRole();
