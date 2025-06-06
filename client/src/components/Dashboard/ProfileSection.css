@@ -79,7 +79,8 @@
     width: 100%;
     min-width: 0;
     background-color: white !important;
-    pointer-events: auto;   
+    pointer-events: auto;  
+    border-color: #002d62; 
 }
 
 .card {
