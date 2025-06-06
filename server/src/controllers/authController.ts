@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
     
     // Generate JWT token
-    const jwtToken = jwtGenerator(user.rows[0].account_id);
+    const jwtToken = jwtGenerator(user.rows[0].account_id, user.rows[0].is_admin);
     res.json({ jwtToken });
     
   } catch (err: any) {
@@ -55,7 +55,7 @@ export const register: RequestHandler = async(req: Request, res: Response) => {
       [email, bcryptPassword]
     );
 
-    const jwtToken = jwtGenerator(newUser.rows[0].user_id);
+    const jwtToken = jwtGenerator(newUser.rows[0].account_id, newUser.rows[0].is_admin);
 
     res.json({ jwtToken });
   } catch (err: any) {
