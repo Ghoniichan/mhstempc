@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import cors from "cors";
-import express, { Request, Response } from "express";
+import express from "express";
 import getAccounts from "./routes/accountsRoutes";
 import authRoutes from "./routes/jwtAuth"
 import sendEmail from "./routes/notificationRoutes";
