@@ -6,13 +6,15 @@ dotenv.config();
 interface JwtPayload {
     user: {
         id: number;
+        isAdmin: boolean;
     }
 }
 
-export default function jwtGenerator(user_id: number): string {
+export default function jwtGenerator(user_id: number, isAdmin: boolean): string {
     const payload: JwtPayload = {
         user: {
-            id: user_id
+            id: user_id,
+            isAdmin: isAdmin
         }
     }
 
