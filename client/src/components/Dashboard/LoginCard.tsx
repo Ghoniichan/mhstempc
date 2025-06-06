@@ -8,6 +8,18 @@ import { useState } from 'react';
 import axios from '../../api/axiosInstance.ts';
 import { AxiosError } from 'axios';
 
+// Define user roles
+type UserRole = 'admin' | 'user';
+
+interface LoginResponse {
+  jwtToken: string;
+  user: {
+    id: string;
+    email: string;
+    role: UserRole;
+    name?: string;
+  };
+}
 
 const LoginCard = () => {
   const navigate = useNavigate();
@@ -15,10 +27,33 @@ const LoginCard = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // Function to handle role-based navigation
+  const handleRoleBasedNavigation = (userRole: UserRole) => {
+    switch (userRole) {
+      case 'admin':
+        navigate('/dashboard');
+        break;
+      case 'user':
+        navigate('/user/dashboard');
+        break;
+      default:
+        // Fallback to general dashboard
+        navigate('/dashboard');
+        break;
+    }
+  };
+
+  // Function to store user data in localStorage
+  const storeUserData = (token: string, userData: LoginResponse['user']) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userRole', userData.role);
+  };
 
   const handleLogin = async () => {
     const newErrors: typeof errors = {};
@@ -43,20 +78,23 @@ const LoginCard = () => {
     setIsLoading(true);
     
     console.log(`Email is ${email} and pass is ${password}`);
+    
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await axios.post<LoginResponse>('/api/auth/login', {
         email: email,
         password: password
       });
       
-      const { jwtToken } = response.data;
+      const { jwtToken, user } = response.data;
       
-      // Store the token (localStorage, sessionStorage, or state)
-      localStorage.setItem('token', jwtToken);
+      // Store token and user data
+      storeUserData(jwtToken, user);
       
-      // Redirect or update UI
       console.log('Login successful!');
-      navigate('/dashboard');
+      console.log(`User role: ${user.role}`);
+      
+      // Navigate based on user role
+      handleRoleBasedNavigation(user.role);
       
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -65,6 +103,8 @@ const LoginCard = () => {
         // Show user-friendly error messages
         if (err.response?.status === 401) {
           setErrors({ general: 'Invalid email or password' });
+        } else if (err.response?.status === 403) {
+          setErrors({ general: 'Access denied. Please contact administrator.' });
         } else if (err.response?.status === 500) {
           setErrors({ general: 'Server error. Please try again later.' });
         } else {
@@ -102,10 +142,10 @@ const LoginCard = () => {
 
         {/* Right box */}
         <div className="col-md-6 right-box" style={{ paddingBottom: '50px' }}>
-          <div className='align-items-center'>
+          <div>
             <div className="header">
               <p className="mb-0 fw-bold gothic-a1-bold" style={{ fontSize: '25px', paddingLeft: '10px' }}>Log In to your Account</p>
-              <small className="d-block mb-5 fs-normal gothic-a1-regular" style={{ paddingLeft: '10px' }}>Welcome back!</small>
+              <small className="mb-3 gothic-a1-regular" style={{ paddingLeft: '10px', display: 'block' }}>Welcome back!</small>
             </div>
           </div>
           <div className="px-3">
