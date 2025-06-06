@@ -63,3 +63,12 @@ export const register: RequestHandler = async(req: Request, res: Response) => {
     res.status(500).send("Server error");
   }
 }
+
+export const verify = async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.json(true);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
