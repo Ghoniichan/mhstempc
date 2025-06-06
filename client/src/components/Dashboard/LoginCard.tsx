@@ -77,13 +77,13 @@ const LoginCard = () => {
     setErrors({});
     setIsLoading(true);
     
-    console.log(`Email is ${email} and pass is ${password}`);
-    
     try {
-      const response = await axios.post<LoginResponse>('/api/auth/login', {
+
+      const data = {
         email: email,
         password: password
-      });
+      }
+      const response = await axios.post('/api/auth/login', data);
       
       const { jwtToken, user } = response.data;
       
