@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import navlogo from '../../../src/assets/Images/mhstempc_logo.png';
 import SettingSection from './SettingSection';
@@ -8,6 +8,27 @@ import './Sidebar.css';
 const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    // Get user role from localStorage, sessionStorage, or API call
+    const getUserRole = () => {
+      const jwtToken = localStorage.getItem('token');
+
+      if (!jwtToken) {
+        setUserRole('user'); // Default to user if no token exists
+        return;
+      }
+      const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+
+      //get isAdmin in payload
+      const isAdmin = decodedToken.user.isAdmin;
+
+      setUserRole(isAdmin ? 'admin' : 'user');
+    };
+
+    getUserRole();
+  }, []);
 
   const handleSettingsClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -26,28 +47,95 @@ const Sidebar = () => {
     setShowNotifications(false);
   };
 
+  const renderAdminNavigation = () => (
+    <>
+      <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-person"></i></span>
+        <span className="description">Account</span>
+      </NavLink>
+
+      <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-grid"></i></span>
+        <span className="description">Dashboard</span>
+      </NavLink>
+
+      <NavLink to="/client" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-people"></i></span>
+        <span className="description">Client</span>
+      </NavLink>
+
+      <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
+        <span className="Navicon"><i className="bi bi-bell"></i></span>
+        <span className="description">Notification</span>
+      </a>
+
+      <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
+        <span className="Navicon"><i className="bi bi-gear"></i></span>
+        <span className="description">Settings</span>
+      </a>
+
+      <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
+        <span className="description">Log Out</span>
+      </NavLink>
+    </>
+  );
+
+  const renderUserNavigation = () => (
+    <>
+      <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-person"></i></span>
+        <span className="description">Account</span>
+      </NavLink>
+
+      <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-grid"></i></span>
+        <span className="description">Dashboard</span>
+      </NavLink>
+
+      <NavLink to="" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-people"></i></span>
+        <span className="description">Appointment</span>
+      </NavLink>
+
+      <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
+        <span className="Navicon"><i className="bi bi-bell"></i></span>
+        <span className="description">Notification</span>
+      </a>
+
+      <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
+        <span className="Navicon"><i className="bi bi-gear"></i></span>
+        <span className="description">Settings</span>
+      </a>
+
+      <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
+        <span className="description">Log Out</span>
+      </NavLink>
+    </>
+  );
+
   return (
     <>
       <div className="sidebar">
         <div className="mb-3 d-flex justify-content-center flex-column align-items-center">
           <img src={navlogo} className="navlogo img-fluid" alt="logo" />
           <div className="label text-center mt-2 fs-5">MHSTEMPC</div>
+          {userRole && (
+            <div className="role-indicator text-center mt-1 small text-muted">
+              ({userRole === 'admin' ? 'Administrator' : 'User'})
+            </div>
+          )}
         </div>
-
+        
         <nav className="nav flex-column">
-          <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          {/* Conditional Navigation based on user role */}
+          {userRole === 'admin' ? renderAdminNavigation() : renderUserNavigation()}
+
+          {/* Common Navigation Items */}
+          {/* <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             <span className="Navicon"><i className="bi bi-person"></i></span>
             <span className="description">Account</span>
-          </NavLink>
-
-          <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            <span className="Navicon"><i className="bi bi-grid"></i></span>
-            <span className="description">Dashboard</span>
-          </NavLink>
-
-          <NavLink to="/client" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            <span className="Navicon"><i className="bi bi-people"></i></span>
-            <span className="description">Client</span>
           </NavLink>
 
           <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
@@ -63,8 +151,9 @@ const Sidebar = () => {
           <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
             <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
             <span className="description">Log Out</span>
-          </NavLink>
+          </NavLink> */}
         </nav>
+        
       </div>
 
       {/* Settings Panel */}
