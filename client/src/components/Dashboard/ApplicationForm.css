@@ -18,8 +18,8 @@
 }
 
 .card {
-    border-top-left-radius: 0 !important; 
-    border-top-right-radius: 0 !important;     
+    /* border-top-left-radius: 0 !important; 
+    border-top-right-radius: 0 !important;      */
     margin-left: 0;    
     flex-grow: 1;
     background-color: #000;
