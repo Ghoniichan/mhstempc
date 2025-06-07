@@ -1,0 +1,41 @@
+body .alegreya-sans-regular {
+  font-family: "Alegreya Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+body .alegreya-sans-bold {
+  font-family: "Alegreya Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+body .alegreya-sans-extrabold {
+  font-family: "Alegreya Sans", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+body .gothic-a1-regular {
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+body .gothic-a1-semibold {
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+body .gothic-a1-bold {
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+body .gothic-a1-extrabold {
+  font-family: "Gothic A1", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+body .inter-unique {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}/*# sourceMappingURL=custom-bootsrap.css.map */

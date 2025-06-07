@@ -20,12 +20,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const validPassword = await bcrypt.compare(password, user.rows[0].password_hash);
   
     if (!validPassword) {
-      res.status(401).json("Invalid wrong pass");
+      res.status(401).json("Invalid Credentials");
       return;
     }
     
     // Generate JWT token
-    const jwtToken = jwtGenerator(user.rows[0].user_id);
+    const jwtToken = jwtGenerator(user.rows[0].account_id, user.rows[0].is_admin);
     res.json({ jwtToken });
     
   } catch (err: any) {
@@ -55,9 +55,18 @@ export const register: RequestHandler = async(req: Request, res: Response) => {
       [email, bcryptPassword]
     );
 
-    const jwtToken = jwtGenerator(newUser.rows[0].user_id);
+    const jwtToken = jwtGenerator(newUser.rows[0].account_id, newUser.rows[0].is_admin);
 
     res.json({ jwtToken });
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
+
+export const verify = async (req: Request, res: Response): Promise<void> => {
+  try {
+    res.json(true);
   } catch (err: any) {
     console.error(err.message);
     res.status(500).send("Server error");
