@@ -8,14 +8,13 @@ import { useState } from 'react';
 import axios from '../../api/axiosInstance.ts';
 import { AxiosError } from 'axios';
 
-
 const LoginCard = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -42,22 +41,30 @@ const LoginCard = () => {
     setErrors({});
     setIsLoading(true);
     
-    console.log(`Email is ${email} and pass is ${password}`);
     try {
-      const response = await axios.post('/api/auth/login', {
+
+      const data = {
         email: email,
         password: password
-      });
+      }
+      const response = await axios.post('/api/auth/login', data);
       
-      const { jwtToken } = response.data;
+      console.log('Login response:', response.data);
+      const { jwtToken} = response.data;
       
-      // Store the token (localStorage, sessionStorage, or state)
       localStorage.setItem('token', jwtToken);
-      
-      // Redirect or update UI
-      console.log('Login successful!');
-      navigate('/dashboard');
-      
+
+      //check token body
+      const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+
+      //get isAdmin in payload
+      const isAdmin = decodedToken.user.isAdmin;
+
+      if (isAdmin) {
+        navigate('/dashboard');
+      } else {
+        navigate('/user/dashboard');
+      }
     } catch (err) {
       if (err instanceof AxiosError) {
         console.error('Login error:', err.response?.data || err.message);
@@ -65,6 +72,8 @@ const LoginCard = () => {
         // Show user-friendly error messages
         if (err.response?.status === 401) {
           setErrors({ general: 'Invalid email or password' });
+        } else if (err.response?.status === 403) {
+          setErrors({ general: 'Access denied. Please contact administrator.' });
         } else if (err.response?.status === 500) {
           setErrors({ general: 'Server error. Please try again later.' });
         } else {
@@ -102,10 +111,10 @@ const LoginCard = () => {
 
         {/* Right box */}
         <div className="col-md-6 right-box" style={{ paddingBottom: '50px' }}>
-          <div className='align-items-center'>
+          <div>
             <div className="header">
               <p className="mb-0 fw-bold gothic-a1-bold" style={{ fontSize: '25px', paddingLeft: '10px' }}>Log In to your Account</p>
-              <small className="d-block mb-5 fs-normal gothic-a1-regular" style={{ paddingLeft: '10px' }}>Welcome back!</small>
+              <small className="mb-3 gothic-a1-regular" style={{ paddingLeft: '10px', display: 'block' }}>Welcome back!</small>
             </div>
           </div>
           <div className="px-3">
