@@ -4,6 +4,7 @@ import express from "express";
 import getAccounts from "./routes/accountsRoutes";
 import authRoutes from "./routes/jwtAuth"
 import sendEmail from "./routes/notificationRoutes";
+import infoRoutes from "./routes/infoRoutes";
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ app.use(cors());
 app.use("/api/accounts", getAccounts);
 
 app.use("/api/auth", authRoutes);
+
+app.use("/api/user", infoRoutes);
 
 app.use("/api/notification", sendEmail);
 
