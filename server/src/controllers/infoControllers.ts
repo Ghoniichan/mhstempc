@@ -1,6 +1,5 @@
 import { Request, Response, RequestHandler } from 'express';
 import pool from '../config/db.config'; // Adjust path to your database connection
-import {register} from './authController'; // Adjust path to your auth controller
 
 export const getInfo: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
