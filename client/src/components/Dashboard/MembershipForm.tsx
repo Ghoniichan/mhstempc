@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './MembershipForm.css';
+import axios from '../../api/axiosInstance.ts';
 
 interface MembershipFormProps {
     onNext: () => void;
@@ -76,16 +77,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
         }
     };
 
-    const downloadJson = (data: any) => {
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'membership_data.json';
-        link.click();
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         const finalData = {
@@ -101,7 +93,15 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
         };
 
         console.log('FINAL JSON:', finalData);
-        downloadJson(finalData); // or send to server via fetch()
+        
+        try {
+            const response = await axios.post('/api/user/add-member', finalData);
+            console.log('Form submitted successfully:', response.data);
+            alert('Membership application submitted successfully!');
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Failed to submit membership application. Please try again.');
+        }
 
         onNext();
     };
