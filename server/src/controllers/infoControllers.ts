@@ -1,5 +1,7 @@
 import { Request, Response, RequestHandler } from 'express';
 import pool from '../config/db.config'; // Adjust path to your database connection
+import bcrypt from 'bcrypt';
+import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
 
 export const getInfo: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -12,59 +14,75 @@ export const getInfo: RequestHandler = async (req: Request, res: Response): Prom
 };
 
 export const addMember: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const { account, member, beneficiaries, employer } = req.body;
+  const { userInfo, beneficiaries, employer } = req.body;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
+    const user = await pool.query("SELECT * FROM account_credentials WHERE email = $1", [
+      userInfo.email
+    ]);
+
+    if (user.rows.length > 0) {
+      res.status(401).json("User already exist!");
+      return;
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const pass = getRandomPassword(5);
+    const bcryptPassword = await bcrypt.hash(pass, salt);
+    
     // 1) Insert into accounts_credential
     const accountInsert = await client.query(
-      `INSERT INTO account_credentials (email)
-       VALUES ($1)
+      `INSERT INTO account_credentials (email, password_hash)
+       VALUES ($1, $2)
        RETURNING account_id`,
-      [account.email]
+      [userInfo.fbAccEmailAddress, bcryptPassword]
     );
     const accountId = accountInsert.rows[0].account_id;
+
+    const safeSpouseAge = parseInt(userInfo.spouseAge) || 0;
+
 
     // 2) Insert into member_info
     const appInsert = await client.query(
       `INSERT INTO membership_applications(
-         account_id, membership_date, policy_number, first_name, middle_name,
-         last_name, present_address, provincial_address, house_type, birth_date,
-         tel_cel_no, civil_status, sex, citizenship, religion,
-         tin_number, spouse_name, spouse_age, spouse_occupation,
-         fb_acc_email_address, application_status, created_at, updated_at
+       account_id, membership_date, policy_number, first_name, middle_name,
+       last_name, present_address, provincial_address, house_type, birth_date,
+       tel_cel_no, civil_status, sex, citizenship, religion,
+       tin_number, spouse_name, spouse_age, spouse_occupation,
+       fb_acc_email_address, application_status, created_at, updated_at
        ) VALUES (
-         $1, $2, $3, $4, $5,
-         $6, $7, $8, $9, $10,
-         $11, $12, $13, $14, $15,
-         $16, $17, $18, $19, $20,
-         $21, $22, $23
+       $1, $2, $3, $4, $5,
+       $6, $7, $8, $9, $10,
+       $11, $12, $13, $14, $15,
+       $16, $17, $18, $19, $20,
+       $21, $22, $23
        ) RETURNING id`,
       [
-        accountId,
-        member.membership_date,
-        member.policy_number,
-        member.first_name,
-        member.middle_name,
-        member.last_name,
-        member.present_address,
-        member.provincial_address,
-        member.house_type,
-        member.birth_date,
-        member.tel_cel_no,
-        member.civil_status,
-        member.sex,
-        member.citizenship,
-        member.religion,
-        member.tin_number,
-        member.spouse_name,
-        member.spouse_age,
-        member.spouse_occupation,
-        member.fb_acc_email_address,
-        member.application_status,
-        new Date(), // created_at
-        new Date()  // updated_at
+      accountId,
+      userInfo.date,
+      userInfo.policyNumber,
+      userInfo.firstName,
+      userInfo.middleName,
+      userInfo.lastName,
+      userInfo.presentAddress,
+      userInfo.provincialAddress,
+      userInfo.houseType,
+      userInfo.birthDate,
+      userInfo.telCelNo,
+      userInfo.civilStatus,
+      userInfo.sex,
+      userInfo.citizenship,
+      userInfo.religion,
+      userInfo.tinNumber,
+      userInfo.spouseName,
+      safeSpouseAge,
+      userInfo.spouseOccupation,
+      userInfo.fbAccEmailAddress,
+      userInfo.applicationStatus,
+      new Date(), // createdAt
+      new Date()  // updatedAt
       ]
     );
     const applicationId = appInsert.rows[0].id;
@@ -78,8 +96,8 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
            ) VALUES ($1,$2,$3,$4)`,
           [
             applicationId,
-            b.beneficiary_name,
-            b.allowed_percentage,
+            b.name,
+            b.percentage,
             b.order_sequence
           ]
         );
@@ -95,9 +113,9 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
         empParams.push(`($${base+1}, $${base+2}, $${base+3}, $${base+4}, $${base+5})`);
         empValues.push(
           applicationId,
-          e.employer_name,
-          e.employment_date,
-          e.employer_tel_cel_no,
+          e.employerName,
+          e.employmentDate,
+          e.telCelNo,
           e.order_sequence,
         );
       });
@@ -108,7 +126,7 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
     }
 
     await client.query('COMMIT');
-    res.status(201).json({ member_id: member, account_id: accountId });
+    res.status(201).json({ member_id: userInfo, account_id: accountId });
   } catch (err: any) {
     await client.query('ROLLBACK');
     console.error(err.message);
