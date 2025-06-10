@@ -56,9 +56,9 @@ const Dashboard = () => {
       <>
         <h3 style={{ marginBottom: "20px" }}>My Dashboard</h3>
         <div style={{display: "flex", gap: "10px", flexWrap: "wrap" }}>
-          <SimpleCard title="Loan"/>
-          <SimpleCard title="Capital Share"/>
-          <SimpleCard title="Savings"/>
+          <SimpleCard title="Loan" onClick={() => navigate('/userLoan')}/>
+          <SimpleCard title="Capital Share" onClick={() => navigate('/userCapitalShare')}/>
+          <SimpleCard title="Savings" onClick={() => navigate('/userSavings')}/>
         </div>
       </>
     );

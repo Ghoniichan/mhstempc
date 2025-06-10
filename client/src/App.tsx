@@ -32,7 +32,11 @@ import AuditLogScreen from './screens/AuditLogScreen';
 import AboutSettingScreen from './screens/AboutSettingScreen';
 import AppointmentRequestScreen from './screens/AppointmentRequestScreen'; 
 
-
+// User
+import UserLoanScreen from './screens/UserLoanScreen';
+import UserCapitalShare from './screens/UserCapitalShare';
+import UserSavings from './screens/UserSavings';
+import UserProfile from './screens/UserProfile';
 
 // Components
 import NavBar from './components/Dashboard/NavBar';
@@ -45,6 +49,8 @@ import AddPayment from './screens/AddPayment';
 import LoanApplicationFormScreen from './screens/LoanApplicationFormScreen';
 import LoanAppFormTwo from './screens/LoanAppFormTwo';
 import SchedofLoanRelease from './screens/ScheduleofLoanRelease';
+
+
 
 // Layout with Top & Bottom Bars
 function MainLayout() {
@@ -86,6 +92,8 @@ function App() {
 
         {/* Sidebar layout for dashboard and account-related pages */}
         <Route element={<SidebarLayout />}>
+
+          //client
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/account" element={<AccountScreen />} />
 
@@ -108,6 +116,12 @@ function App() {
           <Route path="/auditLog" element={<AuditLogScreen/>} />
           <Route path="/aboutSetting" element={<AboutSettingScreen />} />
           <Route path="/appointmentRequest" element={<AppointmentRequestScreen />} />
+
+          //user
+          <Route path="/userLoan" element={<UserLoanScreen />} />
+          <Route path="/userCapitalShare" element={<UserCapitalShare />} />
+          <Route path="/userSavings" element={<UserSavings/>} />
+          <Route path="/userProfile" element={<UserProfile/>}/>
         </Route>
 
         {/* Main layout for general public pages */}

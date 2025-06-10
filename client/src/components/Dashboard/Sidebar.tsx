@@ -8,23 +8,25 @@ import './Sidebar.css';
 const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [userRole, setUserRole] = useState("");
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    // Get user role from localStorage, sessionStorage, or API call
     const getUserRole = () => {
-      const jwtToken = localStorage.getItem('token');
+      try {
+        const jwtToken = localStorage.getItem('token');
+        if (!jwtToken) {
+          setUserRole('user'); // default fallback role
+          return;
+        }
 
-      if (!jwtToken) {
-        setUserRole('user'); // Default to user if no token exists
-        return;
+        const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+        const isAdmin = decodedToken?.user?.isAdmin;
+
+        setUserRole(isAdmin ? 'admin' : 'user');
+      } catch (error) {
+        console.error("Invalid token or decoding failed", error);
+        setUserRole('user'); // fallback in case of error
       }
-      const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
-
-      //get isAdmin in payload
-      const isAdmin = decodedToken.user.isAdmin;
-
-      setUserRole(isAdmin ? 'admin' : 'user');
     };
 
     getUserRole();
@@ -32,14 +34,14 @@ const Sidebar = () => {
 
   const handleSettingsClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowSettings((prev) => !prev);
-    setShowNotifications(false); // Close notification panel if open
+    setShowSettings(prev => !prev);
+    setShowNotifications(false);
   };
 
   const handleNotificationsClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowNotifications((prev) => !prev);
-    setShowSettings(false); // Close settings panel if open
+    setShowNotifications(prev => !prev);
+    setShowSettings(false);
   };
 
   const handleClosePanel = () => {
@@ -53,28 +55,23 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-person"></i></span>
         <span className="description">Account</span>
       </NavLink>
-
       <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-grid"></i></span>
         <span className="description">Dashboard</span>
       </NavLink>
-
       <NavLink to="/client" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-people"></i></span>
         <span className="description">Client</span>
       </NavLink>
-
       <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
         <span className="Navicon"><i className="bi bi-bell"></i></span>
         <span className="description">Notification</span>
       </a>
-
       <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-
-      <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
         <span className="description">Log Out</span>
       </NavLink>
@@ -87,33 +84,31 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-person"></i></span>
         <span className="description">Account</span>
       </NavLink>
-
       <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-grid"></i></span>
         <span className="description">Dashboard</span>
       </NavLink>
-
-      <NavLink to="" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-        <span className="Navicon"><i className="bi bi-people"></i></span>
+      <NavLink to="/appointment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-calendar-event"></i></span>
         <span className="description">Appointment</span>
       </NavLink>
-
       <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
         <span className="Navicon"><i className="bi bi-bell"></i></span>
         <span className="description">Notification</span>
       </a>
-
       <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-
-      <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
         <span className="description">Log Out</span>
       </NavLink>
     </>
   );
+
+  // Don't show anything until userRole is set
+  if (!userRole) return null;
 
   return (
     <>
@@ -121,39 +116,14 @@ const Sidebar = () => {
         <div className="mb-3 d-flex justify-content-center flex-column align-items-center">
           <img src={navlogo} className="navlogo img-fluid" alt="logo" />
           <div className="label text-center mt-2 fs-5">MHSTEMPC</div>
-          {userRole && (
-            <div className="role-indicator text-center mt-1 small text-muted">
-              ({userRole === 'admin' ? 'Administrator' : 'User'})
-            </div>
-          )}
+          <div className="role-indicator text-center mt-1 small text-muted">
+            ({userRole === 'admin' ? 'Administrator' : 'User'})
+          </div>
         </div>
-        
+
         <nav className="nav flex-column">
-          {/* Conditional Navigation based on user role */}
           {userRole === 'admin' ? renderAdminNavigation() : renderUserNavigation()}
-
-          {/* Common Navigation Items */}
-          {/* <NavLink to="/account" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            <span className="Navicon"><i className="bi bi-person"></i></span>
-            <span className="description">Account</span>
-          </NavLink>
-
-          <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
-            <span className="Navicon"><i className="bi bi-bell"></i></span>
-            <span className="description">Notification</span>
-          </a>
-
-          <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
-            <span className="Navicon"><i className="bi bi-gear"></i></span>
-            <span className="description">Settings</span>
-          </a>
-
-          <NavLink to="/logout" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-            <span className="description">Log Out</span>
-          </NavLink> */}
         </nav>
-        
       </div>
 
       {/* Settings Panel */}
