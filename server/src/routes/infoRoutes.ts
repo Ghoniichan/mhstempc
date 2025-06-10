@@ -1,9 +1,9 @@
 import express from "express";
-import { getInfo, addMember } from "../controllers/infoControllers";
+import { clients, addMember } from "../controllers/infoControllers";
 
 const router = express.Router();
 
 router.post("/add-member", addMember);
-router.get("/getInfo", getInfo);
+router.get("/clients", clients);
 
 export default router;
