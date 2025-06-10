@@ -7,7 +7,6 @@
 .help {
     margin-bottom: 30px;
     margin-top: 100px;
-    text-align: center;
 }
 
 .column {
@@ -45,4 +44,96 @@
   object-fit: contain;
 }
 
+@media (max-width: 992px) {
+    .help {
+        margin-top: 80px;
+        font-size: 2.2rem;
+    }
+    
+    .card {
+        max-width: 220px;
+    }
+    
+    .card-title {
+        font-size: 20px;
+    }
+    
+    .phoneImg,
+    .emailImg,
+    .faqImg {
+        max-width: 70px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .help {
+        margin-top: 60px;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+    }
+    
+    .column {
+        margin-bottom: 30px;
+    }
+    
+    .card {
+        max-width: 280px;
+        margin-bottom: 20px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+        padding-top: 10px;
+    }
+    
+    .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .phoneImg,
+    .emailImg,
+    .faqImg {
+        max-width: 60px;
+    }
+    
+    .contact-info {
+        font-size: 14px;
+    }
+}
+
+/* Small mobile styles */
+@media (max-width: 576px) {
+    .help {
+        margin-top: 50px;
+        margin-bottom: 20px;
+        font-size: 1.6rem;
+    }
+    
+    .column {
+        margin-bottom: 25px;
+    }
+    
+    .card {
+        min-height: 300px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+    }
+    
+    .card-body {
+        padding: 1.25rem !important;
+    }
+    
+    .phoneImg,
+    .emailImg,
+    .faqImg {
+        max-width: 50px;
+    }
+    
+    .contact-info {
+        font-size: 13px;
+    }
+}
 
