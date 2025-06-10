@@ -77,8 +77,31 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
         }
     };
 
+    const cleanFormArrays = (data: typeof formData) => {
+        const cleanedBeneficiaries = data.beneficiaries.map(b =>
+            Object.fromEntries(
+            Object.entries(b).filter(([_, value]) => value !== "")
+            )
+        );
+
+        const cleanedEmploymentHistory = data.employmentHistory.map(emp =>
+            Object.fromEntries(
+            Object.entries(emp).filter(([_, value]) => value !== "")
+            )
+        );
+
+        return {
+            ...data,
+            beneficiaries: cleanedBeneficiaries,
+            employmentHistory: cleanedEmploymentHistory
+        };
+    };
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const cleanedData = cleanFormArrays(formData);
+        console.log("Submitting:", JSON.stringify(cleanedData, null, 2));
 
         const finalData = {
             userInfo: {
@@ -319,13 +342,20 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                         </Col>
                                         <Col xs={12} md={4}>
                                             <label htmlFor="sex" className="form-label fw-semibold">Sex</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
+                                            <select
+                                                className="form-select"
+                                                style={{ border: '1px solid #002d62' }}
                                                 id="sex"
                                                 value={formData.userInfo.sex}
                                                 onChange={e => handleInputChange('userInfo', 'sex', e.target.value)}
-                                            />
+                                                >
+                                                <option value="" style={{ color: 'gray' }}>Select Sex</option>
+                                                <option value="M">M</option>
+                                                <option value="F">F</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+
+
                                         </Col>
                                         <Col xs={12} md={4}>
                                             <label htmlFor="citizenship" className="form-label fw-semibold">Citizenship</label>
