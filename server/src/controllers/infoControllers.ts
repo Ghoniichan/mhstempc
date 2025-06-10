@@ -3,9 +3,9 @@ import pool from '../config/db.config'; // Adjust path to your database connecti
 import bcrypt from 'bcrypt';
 import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
 
-export const getInfo: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const clients: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await pool.query("SELECT * FROM info");
+    const result = await pool.query("SELECT CONCAT(last_name, ', ', first_name) AS name, policy_number, fb_acc_email_address, tel_cel_no FROM membership_applications");
     res.status(200).json(result.rows);
   } catch (err: any) {
     console.error(err.message);
