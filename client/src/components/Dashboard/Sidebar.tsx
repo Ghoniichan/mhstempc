@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import navlogo from '../../../src/assets/Images/mhstempc_logo.png';
 import SettingSection from './SettingSection';
 import NotificationSection from './NotificationSection';
@@ -9,6 +9,7 @@ const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const getUserRole = () => {
@@ -19,8 +20,9 @@ const Sidebar = () => {
           return;
         }
 
-        const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
-        const isAdmin = decodedToken?.user?.isAdmin;
+        const payload = jwtToken.split('.')[1];
+        const decoded = JSON.parse(atob(payload));
+        const isAdmin = decoded?.user?.isAdmin;
 
         setUserRole(isAdmin ? 'admin' : 'user');
       } catch (error) {
@@ -30,7 +32,7 @@ const Sidebar = () => {
     };
 
     getUserRole();
-  }, []);
+  }, [location.pathname]);
 
   const handleSettingsClick = (e: React.MouseEvent) => {
     e.preventDefault();

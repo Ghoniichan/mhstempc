@@ -59,6 +59,7 @@ const Dashboard = () => {
           <SimpleCard title="Loan" onClick={() => navigate('/userLoan')}/>
           <SimpleCard title="Capital Share" onClick={() => navigate('/userCapitalShare')}/>
           <SimpleCard title="Savings" onClick={() => navigate('/userSavings')}/>
+
         </div>
       </>
     );
