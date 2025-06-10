@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -7,41 +7,58 @@ import { Button, Dropdown } from 'react-bootstrap';
 import CustomTable from './CustomTable';
 import './TableCard.css';
 import SearchBar from './SearchBar';
+import axios from '../../api/axiosInstance'
 
 type TableCardProps = object;
 
+type PolicyRecord = {
+  name: string;
+  policy_number: string;
+  fb_acc_email_address: string;
+  tel_cel_no: string;
+};
+
+function formatRows(data: PolicyRecord[]): string[][] {
+  const seen = new Set();
+  const rows = [];
+
+  for (const item of data) {
+    const key = `${item.policy_number}-${item.tel_cel_no}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      rows.push([
+        `${item.name}`, 
+        item.policy_number,
+        item.fb_acc_email_address,
+        item.tel_cel_no
+      ]);
+    }
+  }
+
+  return rows;
+}
+
 const TableCard: React.FC<TableCardProps> = () => {
   const navigate = useNavigate();
+  const [clients, setClients] = useState<Array<Array<string>>>([]);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get('/api/user/clients');
+        const clientsArray = formatRows(response.data);
+        setClients(clientsArray);
+        console.log('Fetched clients:', clientsArray);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
+      }
+    };
+
+    fetchClients();
+  }, []);
 
   const columnHeadings = [
     'Name', 'MHSTEMPC Policy Number', 'Email', 'Contact Number'
-  ];
-
-  const rows = [
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
-    ['Nanoy, John Carlos', 'MHSTEMPC-123456', 'jc@gmail.com', '09123456789'],
   ];
 
   const handleRowClick = (_row: Array<string>) => {
@@ -100,7 +117,7 @@ const TableCard: React.FC<TableCardProps> = () => {
             <div className="w-100">
               <CustomTable
                 columnHeadings={columnHeadings}
-                rows={rows}
+                rows={clients}
                 onRowClick={handleRowClick}
               />
             </div>
