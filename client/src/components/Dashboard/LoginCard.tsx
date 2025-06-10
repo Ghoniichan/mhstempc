@@ -66,7 +66,7 @@ const LoginCard = () => {
       if (isAdmin) {
         navigate('/dashboard');
       } else {
-        navigate('/userProfile');
+        navigate('/dashboard');
       }
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -126,7 +126,12 @@ const LoginCard = () => {
                 {errors.general}
               </div>
             )}
-
+         <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleLogin();
+            }}
+          >
             <div style={{ paddingLeft: '13px', marginBottom: '4px' }}>
               <InputField value={email} onChange={setEmail} error={errors.email} />
             </div>
@@ -136,11 +141,12 @@ const LoginCard = () => {
             <div className="mb-2" style={{ paddingLeft: '13px' }}>
               <CustomButton 
                 label={isLoading ? 'Logging in...' : 'Log in'} 
-                type='button' 
-                onClick={handleLogin}
+                type="submit" 
                 disabled={isLoading}
               />
             </div>
+          </form>
+
           </div>
         </div>
       </div>

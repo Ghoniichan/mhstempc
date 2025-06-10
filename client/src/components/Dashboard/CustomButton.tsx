@@ -7,15 +7,15 @@ type CustomButtonProps = {
     onClick?: () => void;
     className?: string;
     disabled?: boolean;
-
 };
 
-const CustomButton = ({ label, type = "button", onClick }: CustomButtonProps) => {
+const CustomButton = ({ label, type = "button", onClick, className, disabled }: CustomButtonProps) => {
     return (
         <button 
             type={type} 
             onClick={onClick}
-            className='CusButton btn-btn gothic-a1-bold'
+            className={`CusButton btn-btn gothic-a1-bold ${className || ''}`}
+            disabled={disabled}
         >
             {label}
         </button>
