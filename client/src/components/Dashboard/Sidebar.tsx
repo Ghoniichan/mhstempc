@@ -10,6 +10,10 @@ const Sidebar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const location = useLocation();
+  
+  const logout = () => {
+    localStorage.removeItem('token');
+  }
 
   useEffect(() => {
     const getUserRole = () => {
