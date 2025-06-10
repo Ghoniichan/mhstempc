@@ -13,6 +13,21 @@ export const clients: RequestHandler = async (req: Request, res: Response): Prom
   }
 };
 
+export const user: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+  const { policy_no } = req.params;
+  try {
+    const result = await pool.query("SELECT * FROM membership_applications WHERE policy_number = $1;", [policy_no]);
+    if (result.rows.length === 0) {
+      res.status(404).json("User not found");
+      return;
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
+
 export const addMember: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { userInfo, beneficiaries, employer } = req.body;
   const client = await pool.connect();
