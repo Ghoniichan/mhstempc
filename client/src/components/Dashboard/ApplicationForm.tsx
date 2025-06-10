@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ApplicationForm.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
+import axios from '../../api/axiosInstance';
 
 
 interface FormData {
@@ -118,6 +119,35 @@ const ApplicationForm: React.FC = () => {
     navigate('/applicationFormTwo');
   };
 
+useEffect(() => {
+  const handler = setTimeout(() => {
+    const fetchPolicyNumber = async () => {
+      if (!formData.membershipInfo.policyNumber) return;
+
+      try {
+        const response = await axios.get(`/api/user/${formData.membershipInfo.policyNumber}`);
+        if (response.data && response.data.policyNumber) {
+          setFormData(prev => ({
+            ...prev,
+            membershipInfo: {
+              ...prev.membershipInfo,
+              policyNumber: response.data.policyNumber
+            }
+          }));
+        }
+        console.log('Fetched policy number:', response.data.first_name);
+      } catch (error) {
+        console.error('Error fetching policy number:', error);
+      }
+    };
+
+    fetchPolicyNumber();
+  }, 3000); // Wait 800ms after user stops typing
+
+  return () => {
+    clearTimeout(handler); // Cancel timeout if policyNumber changes before 800ms
+  };
+}, [formData.membershipInfo.policyNumber]);
 
   return (
     <Container fluid className="py-3 main-content">
