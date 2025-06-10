@@ -7,22 +7,11 @@ import '../screens/Help.css';
 
 const HelpScreen = () => {
     return (
-        <div style={{display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        width: '100vw',
-        height: '100vh',
-        overflowY: 'auto'}}>
+        <div>
             <NavBar/>
 
             <div className="cont min-vh-100">
-                <div className="container py-5"
-                    style={{display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                    flexDirection: 'column',
-                    width: '65vw'}}>
+                <div className="container py-5">
                     
                     <div className="row justify-content-center w-100">
                         <div className="column col-12">
@@ -30,21 +19,13 @@ const HelpScreen = () => {
                         </div>
 
                         <div className="columnOne col-12 ">
-                            <div className="row  gx-1 gy-0 justify-content-center">
+                            <div className="row gy-0 justify-content-center">
                                 {/* First Cardd - Phone */}
-                                <div className="col-lg-4 col-md-6 d-flex justify-content-center">
-                                    <div className="card h-100 shadow"
-                                        style={{borderRadius: '10px', 
-                                                cursor: 'pointer', 
-                                                transition: 'transform 0.2s, box-shadow 0.2s', 
-                                                borderColor: '#d9d9d9', 
-                                                borderWidth: 2,
-                                                width: 270,
-                                                overflow: 'hidden',
-                                                 }}>
-                                        <div className="card-body text-center p-5">
-                                            <div className="mb-0">
-                                                <div className="d-inline-flex align-items-center justify-content-center">
+                                <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                                    <div className="card h-100 shadow" style={{ maxWidth: '250px', width: '100%' }}>
+                                        <div className="card-body text-center p-4">
+                                            <div className="mb-3">
+                                                <div className="d-inline-flex align-items-center justify-content-center mb-3">
                                                     <img src={phone} className="phoneImg img-fluid"/>
                                                 </div>
                                                 <h4 className="card-title mb-2 gothic-a1-bold">Phone</h4>
@@ -57,19 +38,11 @@ const HelpScreen = () => {
                                 </div>
 
                                 {/* Second Card - Email */}
-                                <div className="col-lg-4 col-md-6 d-flex justify-content-center">
-                                    <div className="card h-100 shadow"
-                                        style={{borderRadius: '10px', 
-                                                cursor: 'pointer', 
-                                                transition: 'transform 0.2s, box-shadow 0.2s', 
-                                                borderColor: '#d9d9d9', 
-                                                borderWidth: 2,
-                                                width: 270,
-                                                overflow: "hidden" }}>
-                                        
-                                        <div className="card-body text-center p-5">
-                                            <div className="mb-0">
-                                                <div className="d-inline-flex align-items-center justify-content-center">
+                                <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                                    <div className="card h-100 shadow" style={{ maxWidth: '250px', width: '100%' }}>
+                                        <div className="card-body text-center p-4">
+                                            <div className="mb-3">
+                                                <div className="d-inline-flex align-items-center justify-content-center mb-3">
                                                     <img src={email} className="emailImg img-fluid"
                                                         />
                                                 </div>
@@ -83,19 +56,12 @@ const HelpScreen = () => {
                                 </div>
 
                                 {/* Third Card - FAQ */}
-                                <div className="col-lg-4 col-md-6 d-flex justify-content-center">
-                                    <div className="card h-100 shadow"
-                                        style={{borderRadius: '10px', 
-                                                cursor: 'pointer', 
-                                                transition: 'transform 0.2s, box-shadow 0.2s', 
-                                                borderColor: '#d9d9d9', 
-                                                borderWidth: 2,
-                                                width: 270,
-                                                overflow: "hidden" }}>
+                                <div className="col-12 col-sm-6 col-lg-4 d-flex justify-content-center">
+                                    <div className="card h-100 shadow" style={{ maxWidth: '250px', width: '100%' }}>
                                         
-                                        <div className="card-body text-center p-5">
+                                        <div className="card-body text-center p-4">
                                             <div className="mb-0">
-                                                <div className="d-inline-flex align-items-center justify-content-center">
+                                                <div className="d-inline-flex align-items-center justify-content-center mb-3">
                                                     <img src={faq} className="faqImg img-fluid"
                                                         />
                                                 </div>

@@ -20,11 +20,13 @@
   "homepage": "https://github.com/Ghoniichan/mhstempc#readme",
   "description": "",
   "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
     "concurrently": "^9.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "bootstrap-icons": "^1.13.1"
+    "bootstrap-icons": "^1.13.1",
+    "nodemailer": "^7.0.3"
   }
 }

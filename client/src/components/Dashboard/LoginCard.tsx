@@ -59,11 +59,14 @@ const LoginCard = () => {
 
       //get isAdmin in payload
       const isAdmin = decodedToken.user.isAdmin;
+      const role = isAdmin ? 'admin' : 'user';
+      localStorage.setItem('token', jwtToken);
+      localStorage.setItem('role', role);
 
       if (isAdmin) {
         navigate('/dashboard');
       } else {
-        navigate('/dashboard');
+        navigate('/userProfile');
       }
     } catch (err) {
       if (err instanceof AxiosError) {
@@ -113,7 +116,7 @@ const LoginCard = () => {
         <div className="col-md-6 right-box" style={{ paddingBottom: '50px' }}>
           <div>
             <div className="header">
-              <p className="mb-0 fw-bold gothic-a1-bold" style={{ fontSize: '25px', paddingLeft: '10px' }}>Log In to your Account</p>
+              <p className="mb-0 fw-bold gothic-a1-bold" style={{ fontSize: '25px', paddingLeft: '10px', paddingBottom: '30px' }}>Log In to your Account</p>
               {/* <small className="mb-3 gothic-a1-regular" style={{ paddingLeft: '10px', display: 'block' }}>Welcome back!</small> */}
             </div>
           </div>
