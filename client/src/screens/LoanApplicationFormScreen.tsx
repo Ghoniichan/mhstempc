@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const PolicyNumberForm = () => {
   const [policyNumber, setPolicyNumber] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (policyNumber.trim()) {
       console.log('Policy Number submitted:', policyNumber);
@@ -16,7 +16,7 @@ const PolicyNumberForm = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPolicyNumber(e.target.value);
   };
 
