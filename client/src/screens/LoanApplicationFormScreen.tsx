@@ -99,9 +99,8 @@ const LoanApplicationFormScreen = () => {
             paddingLeft: '80px'
             }}>Loan Application</h3>
 
-            <div className="">
-                <PolicyNumberForm />
-            </div>
+
+            <PolicyNumberForm />
             <ApplicationForm/>
         </div>
     )
