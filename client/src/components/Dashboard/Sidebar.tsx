@@ -108,7 +108,7 @@ const Sidebar = () => {
       </a>
       <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-        <span className="description">Log Out</span>
+        <span className="description" onClick={logout}>Log Out</span>
       </NavLink>
     </>
   );
