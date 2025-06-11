@@ -81,7 +81,7 @@ const ApplicationForm: React.FC = () => {
     setFormData(prev => {
       if (section && section !== 'submissionDate') {
         // Type assertion to ensure we're working with object sections
-        const currentSection = prev[section] as Record<string, any>;
+        const currentSection = prev[section] as Record<string, string>;
         
         return {
           ...prev,
