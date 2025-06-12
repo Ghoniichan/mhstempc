@@ -55,6 +55,98 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
         ] as Employment[]
     });
 
+    const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+    const validateForm = () => {
+        const newErrors: {[key: string]: string} = {};
+
+        // Required fields validation
+        const requiredFields = {
+            'userInfo.date': 'Date is required',
+            'userInfo.policyNumber': 'Policy Number is required',
+            'userInfo.firstName': 'First Name is required',
+            'userInfo.lastName': 'Last Name is required',
+            'userInfo.presentAddress': 'Present Address is required',
+            'userInfo.houseType': 'House type is required',
+            'userInfo.birthDate': 'Date of Birth is required',
+            'userInfo.age': 'Age is required',
+            'userInfo.telCelNo': 'Tel/Cell No. is required',
+            'userInfo.civilStatus': 'Civil Status is required',
+            'userInfo.sex': 'Sex is required',
+            'userInfo.citizenship': 'Citizenship is required',
+            'userInfo.religion': 'Religion is required',
+            'userInfo.tinNumber': 'TIN Number is required',
+            // 'userInfo.presentEmployerAddress': 'Address of Present Employer is required',
+            // 'userInfo.businessLivelihood': 'Business/Livelihood is required',
+            // 'userInfo.businessType': 'Business type is required',
+            // 'userInfo.inclusiveDateOperation': 'Inclusive Dates of Operation is required',
+            // 'userInfo.businessAddress': 'Address of Business is required',
+            // 'userInfo.businessTelNo': 'Business Telephone No. is required',
+            // 'userInfo.fbAccEmailAddress': 'Facebook Account/E-mail Address is required'
+        };
+
+        // Check required fields
+        Object.entries(requiredFields).forEach(([fieldPath, errorMessage]) => {
+            const [section, field] = fieldPath.split('.');
+            if (section === 'userInfo') {
+                const value = formData.userInfo[field];
+                if (!value || value.trim() === '') {
+                    newErrors[fieldPath] = errorMessage;
+                }
+            }
+        });
+
+        
+        if (formData.userInfo.houseType === 'others' && (!formData.userInfo.houseTypeOther || formData.userInfo.houseTypeOther.trim() === '')) {
+            newErrors['userInfo.houseTypeOther'] = 'Please specify the house type';
+        }
+
+        
+        if (formData.userInfo.age && (isNaN(Number(formData.userInfo.age)) || Number(formData.userInfo.age) < 0 || Number(formData.userInfo.age) > 150)) {
+            newErrors['userInfo.age'] = 'Please enter a valid age';
+        }
+
+        
+        if (formData.userInfo.spouseName && formData.userInfo.spouseAge) {
+            if (isNaN(Number(formData.userInfo.spouseAge)) || Number(formData.userInfo.spouseAge) < 0 || Number(formData.userInfo.spouseAge) > 150) {
+                newErrors['userInfo.spouseAge'] = 'Please enter a valid spouse age';
+            }
+        }
+
+        
+        if (formData.userInfo.fbAccEmailAddress) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.userInfo.fbAccEmailAddress)) {
+                
+                if (!formData.userInfo.fbAccEmailAddress.includes('facebook.com') && !formData.userInfo.fbAccEmailAddress.includes('fb.com')) {
+                    newErrors['userInfo.fbAccEmailAddress'] = 'Please enter a valid email address or Facebook account URL';
+                }
+            }
+        }
+
+        // Beneficiaries percentage validation (only if beneficiary name is provided)
+        formData.beneficiaries.forEach((beneficiary, index) => {
+            if (beneficiary.name && beneficiary.percentage) {
+                const percentage = Number(beneficiary.percentage);
+                if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+                    newErrors[`beneficiary.${index}.percentage`] = 'Percentage must be between 0 and 100';
+                }
+            }
+        });
+
+        // Check if total percentage of beneficiaries equals 100% (only if any beneficiaries are provided)
+        const filledBeneficiaries = formData.beneficiaries.filter(b => b.name.trim() !== '' && b.percentage.trim() !== '');
+        if (filledBeneficiaries.length > 0) {
+            const totalPercentage = filledBeneficiaries.reduce((sum, b) => sum + Number(b.percentage || 0), 0);
+            if (totalPercentage !== 100) {
+                newErrors['beneficiaries.total'] = 'Total percentage of beneficiaries must equal 100%';
+            }
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleInputChange = (
         section: 'userInfo' | 'beneficiaries' | 'employmentHistory',
         field: string,
@@ -66,10 +158,29 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                 ...prev,
                 userInfo: { ...prev.userInfo, [field]: value }
             }));
+            // Clear error when user starts typing
+            const errorKey = `userInfo.${field}`;
+            if (errors[errorKey]) {
+                setErrors(prev => {
+                    const newErrors = { ...prev };
+                    delete newErrors[errorKey];
+                    return newErrors;
+                });
+            }
         } else if (section === 'beneficiaries' && typeof index === 'number') {
             const newBens = [...formData.beneficiaries];
             newBens[index] = { ...newBens[index], [field]: value };
             setFormData(prev => ({ ...prev, beneficiaries: newBens }));
+            // Clear beneficiary errors
+            const errorKey = `beneficiary.${index}.${field}`;
+            if (errors[errorKey]) {
+                setErrors(prev => {
+                    const newErrors = { ...prev };
+                    delete newErrors[errorKey];
+                    delete newErrors['beneficiaries.total'];
+                    return newErrors;
+                });
+            }
         } else if (section === 'employmentHistory' && typeof index === 'number') {
             const newEmps = [...formData.employmentHistory];
             newEmps[index] = { ...newEmps[index], [field]: value };
@@ -97,9 +208,14 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
         };
     };
 
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!validateForm()) {
+            alert('Please fill in all required fields correctly.');
+            return;
+        }
+
         const cleanedData = cleanFormArrays(formData);
         console.log("Submitting:", JSON.stringify(cleanedData, null, 2));
 
@@ -121,12 +237,19 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
             const response = await axios.post('/api/user/add-member', finalData);
             console.log('Form submitted successfully:', response.data);
             alert('Membership application submitted successfully!');
+            onNext();
         } catch (error) {
             console.error('Error submitting form:', error);
             alert('Failed to submit membership application. Please try again.');
         }
+    };
 
-        onNext();
+    const getFieldError = (fieldPath: string) => {
+        return errors[fieldPath];
+    };
+
+    const hasFieldError = (fieldPath: string) => {
+        return !!errors[fieldPath];
     };
 
     return (
@@ -148,38 +271,56 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Date and Policy Number */}
                                     <div className="d-flex flex-column align-items-end mb-5" style={{ maxWidth: 220, marginLeft: 'auto' }}>
                                         <div className="mb-3 w-100">
-                                            <label htmlFor="membershipDate" className="form-label fw-semibold">Date:</label>
+                                            <label htmlFor="membershipDate" className="form-label fw-semibold">
+                                                Date: <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="date"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.date') ? 'is-invalid' : ''}`}
                                                 id="membershipDate"
                                                 value={formData.userInfo.date}
                                                 onChange={e => handleInputChange('userInfo', 'date', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.date') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.date')}</div>
+                                            )}
                                         </div>
                                         <div className="w-100">
-                                            <label htmlFor="membershipPolicyNumber" className="form-label fw-semibold">Policy Number:</label>
+                                            <label htmlFor="membershipPolicyNumber" className="form-label fw-semibold">
+                                                Policy Number: <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.policyNumber') ? 'is-invalid' : ''}`}
                                                 id="membershipPolicyNumber"
                                                 value={formData.userInfo.policyNumber}
                                                 onChange={e => handleInputChange('userInfo', 'policyNumber', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.policyNumber') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.policyNumber')}</div>
+                                            )}
                                         </div>
                                     </div>
 
                                     {/* Row 1 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="firstName" className="form-label fw-semibold">First Name</label>
+                                            <label htmlFor="firstName" className="form-label fw-semibold">
+                                                First Name <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.firstName') ? 'is-invalid' : ''}`}
                                                 id="firstName"
                                                 value={formData.userInfo.firstName}
                                                 onChange={e => handleInputChange('userInfo', 'firstName', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.firstName') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.firstName')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
                                             <label htmlFor="middleName" className="form-label fw-semibold">Middle Name</label>
@@ -192,28 +333,40 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             />
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="lastName" className="form-label fw-semibold">Last Name</label>
+                                            <label htmlFor="lastName" className="form-label fw-semibold">
+                                                Last Name <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.lastName') ? 'is-invalid' : ''}`}
                                                 id="lastName"
                                                 value={formData.userInfo.lastName}
                                                 onChange={e => handleInputChange('userInfo', 'lastName', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.lastName') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.lastName')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
                                     {/* Row 2 */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="presentAddress" className="form-label fw-semibold">Present Address</label>
+                                            <label htmlFor="presentAddress" className="form-label fw-semibold">
+                                                Present Address <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control custom-address-input"
+                                                className={`form-control custom-address-input ${hasFieldError('userInfo.presentAddress') ? 'is-invalid' : ''}`}
                                                 id="presentAddress"
                                                 value={formData.userInfo.presentAddress}
                                                 onChange={e => handleInputChange('userInfo', 'presentAddress', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.presentAddress') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.presentAddress')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
@@ -234,7 +387,12 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 4 */}
                                     <Row className="mb-5">
                                         <Col xs={12}>
-                                            <p className="fw-semibold">Type of house residing in:</p>
+                                            <p className="fw-semibold">
+                                                Type of house residing in: <span className="text-danger">*</span>
+                                            </p>
+                                            {hasFieldError('userInfo.houseType') && (
+                                                <div className="text-danger mb-2">{getFieldError('userInfo.houseType')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={6} md={2} className="d-flex align-items-center">
                                             <input
@@ -245,6 +403,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 checked={formData.userInfo.houseType === 'owned'}
                                                 onChange={e => handleInputChange('userInfo', 'houseType', e.target.value)}
                                                 className="form-check-input me-2"
+                                                required
                                             />
                                             <label htmlFor="owned" className="form-check-label">Owned</label>
                                         </Col>
@@ -257,6 +416,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 checked={formData.userInfo.houseType === 'rented'}
                                                 onChange={e => handleInputChange('userInfo', 'houseType', e.target.value)}
                                                 className="form-check-input me-2"
+                                                required
                                             />
                                             <label htmlFor="rented" className="form-check-label">Rented</label>
                                         </Col>
@@ -269,6 +429,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 checked={formData.userInfo.houseType === 'livingWithParents'}
                                                 onChange={e => handleInputChange('userInfo', 'houseType', e.target.value)}
                                                 className="form-check-input me-2"
+                                                required
                                             />
                                             <label htmlFor="livingWithParents" className="form-check-label">Living with Parents</label>
                                         </Col>
@@ -281,115 +442,167 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 checked={formData.userInfo.houseType === 'others'}
                                                 onChange={e => handleInputChange('userInfo', 'houseType', e.target.value)}
                                                 className="form-check-input me-2"
+                                                required
                                             />
                                             <label htmlFor="others" className="form-check-label me-2">Others:</label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.houseTypeOther') ? 'is-invalid' : ''}`}
                                                 id="houseTypeOther"
                                                 placeholder="Specify"
                                                 value={formData.userInfo.houseTypeOther}
                                                 onChange={e => handleInputChange('userInfo', 'houseTypeOther', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.houseTypeOther') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.houseTypeOther')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
                                     {/* Row 5 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="birthDate" className="form-label fw-semibold">Date of Birth</label>
+                                            <label htmlFor="birthDate" className="form-label fw-semibold">
+                                                Date of Birth <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="date"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.birthDate') ? 'is-invalid' : ''}`}
                                                 id="birthDate"
                                                 value={formData.userInfo.birthDate}
                                                 onChange={e => handleInputChange('userInfo', 'birthDate', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.birthDate') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.birthDate')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="age" className="form-label fw-semibold">Age</label>
+                                            <label htmlFor="age" className="form-label fw-semibold">
+                                                Age <span className="text-danger">*</span>
+                                            </label>
                                             <input
-                                                type="text"
-                                                className="form-control"
+                                                type="number"
+                                                className={`form-control ${hasFieldError('userInfo.age') ? 'is-invalid' : ''}`}
                                                 id="age"
+                                                min="0"
+                                                max="150"
                                                 value={formData.userInfo.age}
                                                 onChange={e => handleInputChange('userInfo', 'age', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.age') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.age')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="telCelNo" className="form-label fw-semibold">Tel/Cell No.</label>
+                                            <label htmlFor="telCelNo" className="form-label fw-semibold">
+                                                Tel/Cell No. <span className="text-danger">*</span>
+                                            </label>
                                             <input
-                                                type="text"
-                                                className="form-control"
+                                                type="tel"
+                                                className={`form-control ${hasFieldError('userInfo.telCelNo') ? 'is-invalid' : ''}`}
                                                 id="telCelNo"
                                                 value={formData.userInfo.telCelNo}
                                                 onChange={e => handleInputChange('userInfo', 'telCelNo', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.telCelNo') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.telCelNo')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
                                     {/* Row 6 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="civilStatus" className="form-label fw-semibold">Civil Status</label>
+                                            <label htmlFor="civilStatus" className="form-label fw-semibold">
+                                                Civil Status <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.civilStatus') ? 'is-invalid' : ''}`}
                                                 id="civilStatus"
                                                 value={formData.userInfo.civilStatus}
                                                 onChange={e => handleInputChange('userInfo', 'civilStatus', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.civilStatus') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.civilStatus')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="sex" className="form-label fw-semibold">Sex</label>
+                                            <label htmlFor="sex" className="form-label fw-semibold">
+                                                Sex <span className="text-danger">*</span>
+                                            </label>
                                             <select
-                                                className="form-select"
+                                                className={`form-select ${hasFieldError('userInfo.sex') ? 'is-invalid' : ''}`}
                                                 style={{ border: '1px solid #002d62' }}
                                                 id="sex"
                                                 value={formData.userInfo.sex}
                                                 onChange={e => handleInputChange('userInfo', 'sex', e.target.value)}
+                                                required
                                                 >
                                                 <option value="" style={{ color: 'gray' }}>Select Sex</option>
                                                 <option value="M">M</option>
                                                 <option value="F">F</option>
                                                 <option value="Other">Other</option>
                                             </select>
-
-
+                                            {hasFieldError('userInfo.sex') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.sex')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="citizenship" className="form-label fw-semibold">Citizenship</label>
+                                            <label htmlFor="citizenship" className="form-label fw-semibold">
+                                                Citizenship <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.citizenship') ? 'is-invalid' : ''}`}
                                                 id="citizenship"
                                                 value={formData.userInfo.citizenship}
                                                 onChange={e => handleInputChange('userInfo', 'citizenship', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.citizenship') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.citizenship')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
                                     {/* Row 7 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={8}>
-                                            <label htmlFor="religion" className="form-label fw-semibold">Religion</label>
+                                            <label htmlFor="religion" className="form-label fw-semibold">
+                                                Religion <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.religion') ? 'is-invalid' : ''}`}
                                                 id="religion"
                                                 value={formData.userInfo.religion}
                                                 onChange={e => handleInputChange('userInfo', 'religion', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.religion') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.religion')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="tinNumber" className="form-label fw-semibold">TIN Number</label>
+                                            <label htmlFor="tinNumber" className="form-label fw-semibold">
+                                                TIN Number <span className="text-danger">*</span>
+                                            </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${hasFieldError('userInfo.tinNumber') ? 'is-invalid' : ''}`}
                                                 id="tinNumber"
                                                 value={formData.userInfo.tinNumber}
                                                 onChange={e => handleInputChange('userInfo', 'tinNumber', e.target.value)}
+                                                required
                                             />
+                                            {hasFieldError('userInfo.tinNumber') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.tinNumber')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
@@ -408,12 +621,18 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                         <Col xs={12} md={4}>
                                             <label htmlFor="spouseAge" className="form-label fw-semibold">Age</label>
                                             <input
-                                                type="text"
-                                                className="form-control"
+                                                type="number"
+                                                className={`form-control ${hasFieldError('userInfo.spouseAge') ? 'is-invalid' : ''}`}
                                                 id="spouseAge"
+                                                min="0"
+                                                max="150"
                                                 value={formData.userInfo.spouseAge}
                                                 onChange={e => handleInputChange('userInfo', 'spouseAge', e.target.value)}
+                                                
                                             />
+                                            {hasFieldError('userInfo.spouseAge') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.spouseAge')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={4}>
                                             <label htmlFor="spouseOccupation" className="form-label fw-semibold">Occupation</label>
@@ -450,6 +669,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                     className="form-control mb-2"
                                                     value={b.percentage}
                                                     onChange={e => handleInputChange('beneficiaries', 'percentage', e.target.value, idx)}
+                                                    
                                                 />
                                             ))}
                                         </Col>
@@ -480,6 +700,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                     className="form-control mb-2 custom-address-input"
                                                     value={emp.employmentDate}
                                                     onChange={e => handleInputChange('employmentHistory', 'employmentDate', e.target.value, idx)}
+                                                    
                                                 />
                                             ))}
                                         </Col>
@@ -508,6 +729,9 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 value={formData.userInfo.presentEmployerAddress}
                                                 onChange={e => handleInputChange('userInfo', 'presentEmployerAddress', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.presentEmployerAddress') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.presentEmployerAddress')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
@@ -522,11 +746,17 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 value={formData.userInfo.businessLivelihood}
                                                 onChange={e => handleInputChange('userInfo', 'businessLivelihood', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.businessLivelihood') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.businessLivelihood')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
                                     {/* Row 13 */}
                                     <Row className="mb-5">
+                                        {hasFieldError('userInfo.businessType') && (
+                                                <div className="invalid-feedback">{getFieldError('businessType')}</div>
+                                            )}
                                         <Col xs={12} md={3} className="d-flex align-items-center">
                                             <input
                                                 type="radio"
@@ -536,6 +766,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 checked={formData.userInfo.businessType === 'soleProprietorship'}
                                                 onChange={e => handleInputChange('userInfo', 'businessType', e.target.value)}
                                                 className="form-check-input me-2"
+                                                
                                             />
                                             <label htmlFor="soleProprietorship" className="form-check-label">Sole Proprietorship</label>
                                         </Col>
@@ -576,6 +807,9 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 value={formData.userInfo.inclusiveDateOperation}
                                                 onChange={e => handleInputChange('userInfo', 'inclusiveDateOperation', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.inclusiveDateOperation') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.inclusiveDateOperation')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
@@ -590,6 +824,9 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 value={formData.userInfo.businessAddress}
                                                 onChange={e => handleInputChange('userInfo', 'businessAddress', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.businessAddress') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.businessAddress')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
@@ -604,6 +841,9 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 value={formData.userInfo.businessTelNo}
                                                 onChange={e => handleInputChange('userInfo', 'businessTelNo', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.businessTelNo') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.businessTelNo')}</div>
+                                            )}
                                         </Col>
                                         <Col xs={12} md={12} xl={8}>
                                             <label htmlFor="fbAccEmailAddress" className="form-label fw-semibold">Facebook Account/E-mail Address</label>
@@ -614,6 +854,9 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 value={formData.userInfo.fbAccEmailAddress}
                                                 onChange={e => handleInputChange('userInfo', 'fbAccEmailAddress', e.target.value)}
                                             />
+                                            {hasFieldError('userInfo.fbAccEmailAddress') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.fbAccEmailAddress')}</div>
+                                            )}
                                         </Col>
                                     </Row>
 
