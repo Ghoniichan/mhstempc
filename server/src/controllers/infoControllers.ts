@@ -35,7 +35,7 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
     await client.query('BEGIN');
 
     const user = await pool.query("SELECT * FROM account_credentials WHERE email = $1", [
-      userInfo.email
+      userInfo.fbAccEmailAddress
     ]);
 
     if (user.rows.length > 0) {
@@ -103,19 +103,21 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
     const applicationId = appInsert.rows[0].id;
 
     // 3) Create beneficiaries
-    if (Array.isArray(beneficiaries)) {
+    if (beneficiaries && Array.isArray(beneficiaries)) {
       for (const b of beneficiaries) {
+      if (b && b.name && b.percentage && b.order_sequence) {
         await client.query(
-          `INSERT INTO beneficiaries (
-             membership_application_id, beneficiary_name, allowed_percentage, order_sequence
-           ) VALUES ($1,$2,$3,$4)`,
-          [
-            applicationId,
-            b.name,
-            b.percentage,
-            b.order_sequence
-          ]
+        `INSERT INTO beneficiaries (
+           membership_application_id, beneficiary_name, allowed_percentage, order_sequence
+         ) VALUES ($1,$2,$3,$4)`,
+        [
+          applicationId,
+          b.name,
+          b.percentage,
+          b.order_sequence
+        ]
         );
+      }
       }
     }
 
