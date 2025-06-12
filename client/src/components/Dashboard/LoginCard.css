@@ -1,0 +1,167 @@
+/* LoginCard.css - Responsive styles for the login component */
+
+/* Base styles */
+.login-container {
+  padding: 15px;
+}
+
+.login-box-area {
+  max-width: 850px;
+  min-height: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.login-left-box {
+  background: #f7f7f7;
+  min-height: 300px;
+  padding: 25px 10px;
+}
+
+.login-logo {
+  margin-bottom: 20px;
+  padding-top: 25px;
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
+.login-right-box {
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.login-header-title {
+  font-size: 20px;
+  padding-left: 10px;
+  padding-bottom: 20px;
+}
+
+.login-error-alert {
+  margin-left: 13px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.login-form-field {
+  padding-left: 13px;
+  margin-bottom: 4px;
+}
+
+.login-form-field.password-field {
+  margin-bottom: 16px;
+}
+
+.login-form-button {
+  margin-bottom: 2px;
+  padding-left: 13px;
+}
+
+/* Tablet styles (Large screens and below) */
+@media (max-width: 991.98px) {
+  .login-container {
+    padding: 15px;
+  }
+  
+  .login-box-area {
+    margin: 0 !important;
+    min-height: auto !important;
+  }
+  
+  .login-left-box {
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+    border-radius: 0.375rem 0.375rem 0 0 !important;
+  }
+  
+  .login-right-box {
+    padding-top: 10px !important;
+  }
+}
+
+/* Small tablet styles (Medium screens and below) */
+@media (max-width: 767.98px) {
+  .login-container {
+    padding: 10px;
+  }
+  
+  .login-box-area {
+    padding: 20px !important;
+  }
+  
+  .login-left-box {
+    padding: 20px 10px !important;
+    min-height: 250px !important;
+  }
+  
+  .login-logo {
+    max-width: 200px !important;
+    margin-bottom: 15px !important;
+    padding-top: 10px !important;
+  }
+  
+  .login-header-title {
+    font-size: 18px !important;
+    padding-bottom: 15px !important;
+  }
+}
+
+/* Mobile styles (Small screens and below) */
+@media (max-width: 575.98px) {
+  .login-container {
+    padding: 5px;
+  }
+  
+  .login-box-area {
+    padding: 15px !important;
+  }
+  
+  .login-left-box {
+    padding: 15px 5px !important;
+    min-height: 200px !important;
+  }
+  
+  .login-logo {
+    max-width: 150px !important;
+    margin-bottom: 10px !important;
+    padding-top: 5px !important;
+  }
+  
+  .login-header-title {
+    font-size: 16px !important;
+    padding-left: 5px !important;
+    padding-bottom: 10px !important;
+  }
+  
+  .login-form-container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  .login-form-field,
+  .login-form-field.password-field,
+  .login-form-button {
+    padding-left: 5px !important;
+  }
+}
+
+/* Typography responsive classes */
+@media (min-width: 576px) {
+  .fs-responsive-company {
+    font-size: 1.25rem; /* fs-5 equivalent */
+  }
+  
+  .fs-responsive-title {
+    font-size: 2.5rem; /* fs-1 equivalent */
+  }
+}
+
+@media (max-width: 575.98px) {
+  .fs-responsive-company {
+    font-size: 1rem; /* fs-6 equivalent */
+  }
+  
+  .fs-responsive-title {
+    font-size: 2rem; /* fs-2 equivalent */
+  }
+}

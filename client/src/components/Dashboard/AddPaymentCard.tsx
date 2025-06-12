@@ -12,7 +12,7 @@ interface PaymentFormData {
         day: string;
         year: string;
     };
-    accountID: string;
+    policyNum: string;
     collectedBy: string;
     loanId: string;
     loanAmount: string;
@@ -22,7 +22,7 @@ interface PaymentFormData {
 interface ValidationErrors {
     fullName?: string;
     dateIssued?: string;
-    accountID?: string;
+    policyNum?: string;
     collectedBy?: string;
     loanId?: string;
     loanAmount?: string;
@@ -38,7 +38,7 @@ const AddPaymentCard: React.FC = () => {
             day: '',
             year: ''
         },
-        accountID: '',
+        policyNum: '',
         collectedBy: '',
         loanId: '',
         loanAmount: '',
@@ -138,7 +138,7 @@ const AddPaymentCard: React.FC = () => {
 
         newErrors.fullName = validateFullName(formData.fullName);
         newErrors.dateIssued = validateDate(formData.dateIssued);
-        newErrors.accountID = validateAccountID(formData.accountID);
+        newErrors.policyNum = validateAccountID(formData.policyNum);
         newErrors.collectedBy = validateCollectedBy(formData.collectedBy);
         newErrors.loanId = validateLoanId(formData.loanId);
         newErrors.loanAmount = validateLoanAmount(formData.loanAmount);
@@ -203,7 +203,7 @@ const AddPaymentCard: React.FC = () => {
                         <div className="card shadow-lg mb-5 apc-card">
                             {/* Top Bar */}
                             <div className="top-bar">
-                                <span className="top-bar-text gothic-a1-bold">Add New Payment</span>
+                                <span className="paymenttop-bar-text gothic-a1-bold">Add New Payment</span>
                             </div>
 
                             {/* Card Body */}
@@ -279,18 +279,18 @@ const AddPaymentCard: React.FC = () => {
                                     {/* Row 2: Account ID & Collected By */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={6}>
-                                            <label htmlFor="accountID" className="form-label gothic-a1-bold">Account ID</label>
+                                            <label htmlFor="policyNum" className="form-label gothic-a1-bold">MHSTEMPC Policy Number</label>
                                             <input 
                                                 type="text" 
-                                                className={`form-control ${errors.accountID ? 'is-invalid' : ''}`}
+                                                className={`form-control ${errors.policyNum ? 'is-invalid' : ''}`}
                                                 id="accountID" 
-                                                placeholder='Account ID' 
-                                                value={formData.accountID}
-                                                onChange={handleInputChange('accountID')}
+                                                placeholder='MHSTEMPC Policy Number' 
+                                                value={formData.policyNum}
+                                                onChange={handleInputChange('policyNum')}
                                                 required  
                                             />
-                                            {errors.accountID && (
-                                                <div className="invalid-feedback">{errors.accountID}</div>
+                                            {errors.policyNum && (
+                                                <div className="invalid-feedback">{errors.policyNum}</div>
                                             )}
                                         </Col>
                                         <Col xs={12} md={6}>
