@@ -1,23 +1,30 @@
 import { useState } from 'react';
 import ApplicationForm from "../components/Dashboard/ApplicationForm"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from '../api/axiosInstance';
 
-const PolicyNumberForm = () => {
-  const [policyNumber, setPolicyNumber] = useState('');
+type PolicyNumberFormProps = {
+  policyNumber: string;
+  setPolicyNumber: (value: string) => void;
+  onSubmit: (policyNumber: string) => void;
+};
+
+const PolicyNumberForm = ({ policyNumber, setPolicyNumber, onSubmit }: PolicyNumberFormProps) => {
+  const [localPolicyNumber, setLocalPolicyNumber] = useState(policyNumber);
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (policyNumber.trim()) {
-      console.log('Policy Number submitted:', policyNumber);
-      // Add your auto-fill logic here
-      alert(`Policy Number ${policyNumber} submitted for auto-fill`);
+    if (localPolicyNumber.trim()) {
+      console.log('Policy Number submitted:', localPolicyNumber);
+      setPolicyNumber(localPolicyNumber);
+      onSubmit(localPolicyNumber); // Call the parent's submit handler
     } else {
       alert('Please enter a policy number');
     }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPolicyNumber(e.target.value);
+    setLocalPolicyNumber(e.target.value);
   };
 
   return (
@@ -43,8 +50,7 @@ const PolicyNumberForm = () => {
                         type="text"
                         className="form-control form-control-lg"
                         id="policyNumber"
-                        placeholder="123456789"
-                        value={policyNumber}
+                        value={localPolicyNumber}
                         onChange={handleInputChange}
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
@@ -84,6 +90,31 @@ const PolicyNumberForm = () => {
 };
 
 const LoanApplicationFormScreen = () => {
+    const [policyNumber, setPolicyNumber] = useState('');
+    const [data , setData] = useState<{
+        first_name?: string;
+        middle_name?: string;
+        last_name?: string;
+        present_address?: string;
+        tel_cel_no?: string;
+        policy_number?: string;
+        membership_date?: string;
+    }>({});
+
+    const handlePolicyNumberSubmit = async (policy_no: string) => {
+        try {
+          const response = await axios.get(`/api/user/${policy_no}`);
+          if (response.data) {
+            setData(response.data);
+            console.log('Fetched data:', response.data);
+          } else {
+            console.error('No data found for the given policy number');
+          }
+        } catch (error) {
+          console.error('Error fetching clients:', error);
+        }
+    };
+
     return(
         <div style={{
             marginLeft: '130px',
@@ -100,11 +131,15 @@ const LoanApplicationFormScreen = () => {
             }}>Loan Application</h3>
 
             <div className="">
-                <PolicyNumberForm />
+                <PolicyNumberForm 
+                    policyNumber={policyNumber}
+                    setPolicyNumber={setPolicyNumber}
+                    onSubmit={handlePolicyNumberSubmit}
+                />
             </div>
-            <ApplicationForm/>
+            <ApplicationForm user={data} />
         </div>
-    )
+    );  
 }
 
 export default LoanApplicationFormScreen

@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../api/axiosInstance';
 
 
 interface FormData {
@@ -39,22 +38,34 @@ interface FormData {
   submissionDate: string;
 }
 
-const ApplicationForm: React.FC = () => {
+interface ApplicationFormProps {
+  user: {
+    first_name?: string;
+    middle_name?: string;
+    last_name?: string;
+    present_address?: string;
+    tel_cel_no?: string;
+    policy_number?: string;
+    membership_date?: string;
+  }
+}
+
+const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({
     personalInfo: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      address: '',
-      contactNumber: ''
+      firstName: user?.first_name || '',
+      middleName: user?.middle_name || '',
+      lastName: user?.last_name || '',
+      address: user?.present_address || '',
+      contactNumber: user?.tel_cel_no || ''
     },
 
     membershipInfo: {
-      policyNumber: '',
+      policyNumber: user.policy_number || '',
       membershipType: '',
-      membershipDate: '',
+      membershipDate: user.membership_date ? new Date(user.membership_date).toISOString().split('T')[0] : '',
       numberOfShares: ''
     },
 
@@ -119,35 +130,25 @@ const ApplicationForm: React.FC = () => {
     navigate('/applicationFormTwo');
   };
 
-useEffect(() => {
-  const handler = setTimeout(() => {
-    const fetchPolicyNumber = async () => {
-      if (!formData.membershipInfo.policyNumber) return;
-
-      try {
-        const response = await axios.get(`/api/user/${formData.membershipInfo.policyNumber}`);
-        if (response.data && response.data.policyNumber) {
-          setFormData(prev => ({
-            ...prev,
-            membershipInfo: {
-              ...prev.membershipInfo,
-              policyNumber: response.data.policyNumber
-            }
-          }));
-        }
-        console.log('Fetched policy number:', response.data.first_name);
-      } catch (error) {
-        console.error('Error fetching policy number:', error);
+  useEffect(() => {
+  if (user) {
+    setFormData(prev => ({
+      ...prev,
+      personalInfo: {
+        firstName: user.first_name || '',
+        middleName: user.middle_name || '',
+        lastName: user.last_name || '',
+        address: user.present_address || '',
+        contactNumber: user.tel_cel_no || ''
+      },
+      membershipInfo: {
+        ...prev.membershipInfo,
+        policyNumber: user.policy_number || '',
+        membershipDate: user.membership_date ? new Date(user.membership_date).toISOString().split('T')[0] : ''
       }
-    };
-
-    fetchPolicyNumber();
-  }, 3000); // Wait 800ms after user stops typing
-
-  return () => {
-    clearTimeout(handler); // Cancel timeout if policyNumber changes before 800ms
-  };
-}, [formData.membershipInfo.policyNumber]);
+    }));
+  }
+}, [user]);
 
   return (
     <Container fluid className="py-3 main-content">
