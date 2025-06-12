@@ -19,7 +19,6 @@ import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import CreateNewPass from './screens/CreateNewPass';
 import PasswordReset from './screens/PasswordReset';
 import EmailVerif from './screens/EmailVerif';
-import AccountScreen from './screens/AccountScreen';
 import ClientScreen from './screens/ClientScreen';
 import ClientProfileLoanScreen from './screens/ClientProfileLoanScreen';
 import ClientProfileCapitalShareScreen from './screens/ClientProfileCapitalShareScreen';
@@ -95,7 +94,7 @@ function App() {
 
           //client
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/account" element={<AccountScreen />} />
+
 
           <Route path="/application" element={<Application />} />
           <Route path='/applicationForm' element={<LoanApplicationFormScreen />} />
