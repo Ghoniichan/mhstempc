@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -7,7 +7,7 @@ import { Button, Dropdown } from 'react-bootstrap';
 import CustomTable from './CustomTable';
 import './TableCard.css';
 import SearchBar from './SearchBar';
-import axios from '../../api/axiosInstance'
+import axios from '../../api/axiosInstance';
 
 type TableCardProps = object;
 
@@ -27,7 +27,7 @@ function formatRows(data: PolicyRecord[]): string[][] {
     if (!seen.has(key)) {
       seen.add(key);
       rows.push([
-        `${item.name}`, 
+        `${item.name}`,
         item.policy_number,
         item.fb_acc_email_address,
         item.tel_cel_no
@@ -66,7 +66,12 @@ const TableCard: React.FC<TableCardProps> = () => {
   };
 
   const handleRegisterClick = () => {
-    navigate('/registerApplicationForm'); 
+    navigate('/registerApplicationForm');
+  };
+
+  const handleSearchClick = () => {
+    alert('Search clicked');
+    // You can implement actual search logic here if desired
   };
 
   return (
@@ -74,9 +79,19 @@ const TableCard: React.FC<TableCardProps> = () => {
       <Card.Body>
         <Row className="justify-content-center">
           <Col xs={12}>
-            <Row className="mb-3">
+            <Row className="mb-3 align-items-end">
               <Col xs={12} md={6}>
                 <SearchBar />
+              </Col>
+              <Col xs={12} md={2}>
+                <Button
+                  variant="primary"
+                  style={{ width: '100%' }}
+                  className="mb-2"
+                  onClick={handleSearchClick}
+                >
+                  Search
+                </Button>
               </Col>
               <Col xs={12} md={2}>
                 <Button
@@ -102,16 +117,6 @@ const TableCard: React.FC<TableCardProps> = () => {
                     <Dropdown.Item onClick={() => alert('Non-Member clicked')}>Non-Member</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-              </Col>
-              <Col xs={12} md={2}>
-                <Button
-                  variant="danger"
-                  style={{ border: '1px solid red', width: '100%' }}
-                  className="mb-2"
-                  onClick={() => alert('Button 3 clicked')}
-                >
-                  Send SMS
-                </Button>
               </Col>
             </Row>
             <div className="w-100">
