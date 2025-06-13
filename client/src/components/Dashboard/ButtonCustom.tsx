@@ -52,6 +52,14 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
     setOpen(false);
   };
 
+  const handleClick = () => {
+    if (isDropdown) {
+      toggleDropdown();
+    } else {
+      onClick();
+    }
+  };
+
   return (
     <div className="position-relative d-flex justify-content-center align-items-center">
       <button
@@ -70,19 +78,21 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
           transition: 'all 0.2s ease',
           ...customStyle,
         }}
-        onClick={isDropdown ? toggleDropdown : onClick}
+        onClick={handleClick}
       >
-        <div
-          className="d-flex align-items-center justify-content-center"
-          style={{
-            width: iconSize,
-            height: iconSize,
-            borderRadius: '6px',
-            color: textColor,
-          }}
-        >
-          <i className={`bi ${icon}`} style={{ fontSize: iconSize, lineHeight: 1 }}></i>
-        </div>
+        {icon && (
+          <div
+            className="d-flex align-items-center justify-content-center"
+            style={{
+              width: iconSize,
+              height: iconSize,
+              borderRadius: '6px',
+              color: textColor,
+            }}
+          >
+            <i className={`bi ${icon}`} style={{ fontSize: iconSize, lineHeight: 1 }}></i>
+          </div>
+        )}
         {selectedLabel}
         {isDropdown && <i className="bi bi-caret-down-fill ms-1" />}
       </button>

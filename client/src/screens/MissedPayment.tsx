@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
@@ -34,7 +35,7 @@ const MissedPayment = () => {
     const lowerQuery = query.trim().toLowerCase();
 
     if (!lowerQuery) {
-      setFilteredData(missedPayments); 
+      setFilteredData(missedPayments);
       return;
     }
 
@@ -45,6 +46,25 @@ const MissedPayment = () => {
     );
 
     setFilteredData(result);
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredData.map(payment => ({
+        Name: payment.name,
+        ID: payment.id,
+        "Loan No.": payment.loanNo,
+        "Loan Amount": payment.loanAmount,
+        "Due Date": payment.dueDate,
+        Penalty: payment.penalty,
+        "Total Amount": payment.totalAmount,
+        "Contact No.": payment.contactNo,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Missed Payments");
+    XLSX.writeFile(workbook, "missed_payments.xlsx");
   };
 
   const rows = filteredData.map(payment => [
@@ -60,9 +80,7 @@ const MissedPayment = () => {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      <div style={{ width: "200px", flexShrink: 0 }}>
-        {/* Sidebar or nav placeholder */}
-      </div>
+      <div style={{ width: "200px", flexShrink: 0 }}></div>
       <div
         className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
         style={{ padding: "40px 20px" }}
@@ -72,7 +90,6 @@ const MissedPayment = () => {
           <h3 className="mb-0">Missed Payments</h3>
         </div>
 
-        {/* row for search + buttons */}
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "16px" }}>
           <div style={{ flex: 1 }}>
             <SearchBar onSearch={handleSearch} />
@@ -87,6 +104,7 @@ const MissedPayment = () => {
             iconSize="20px"
             fontSize="15px"
             height="43px"
+            onClick={exportToExcel} 
           />
         </div>
 

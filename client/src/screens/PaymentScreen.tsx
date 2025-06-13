@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
@@ -8,7 +9,6 @@ import Backbutton from "../components/Dashboard/Backbutton";
 const PaymentScreen = () => {
   const navigate = useNavigate();
 
-  // Full payment data
   const [payments] = useState([
     {
       name: "Micha Bandasan",
@@ -40,7 +40,7 @@ const PaymentScreen = () => {
     const lowerQuery = query.trim().toLowerCase();
 
     if (!lowerQuery) {
-      setFilteredPayments(payments); // Reset table when input is cleared
+      setFilteredPayments(payments);
       return;
     }
 
@@ -50,11 +50,29 @@ const PaymentScreen = () => {
         payment.loanNo.toLowerCase().includes(lowerQuery)
     );
 
-    setFilteredPayments(result); // Just update table, no alert
+    setFilteredPayments(result);
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredPayments.map(payment => ({
+        Name: payment.name,
+        ID: payment.id,
+        "Loan No.": payment.loanNo,
+        Method: payment.method,
+        "Date Release": payment.dateRelease,
+        Date: payment.date,
+        "Collected By": payment.collectedBy,
+        "Due Date": payment.dueDate,
+        "Loan Amount": payment.loanAmount,
+      }))
+    );
 
-  // Table row data
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Payments");
+    XLSX.writeFile(workbook, "payments.xlsx");
+  };
+
   const rows = filteredPayments.map(payment => [
     payment.name,
     payment.id,
@@ -69,9 +87,7 @@ const PaymentScreen = () => {
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      <div style={{ width: "200px", flexShrink: 0 }}>
-        {/* Sidebar or nav placeholder */}
-      </div>
+      <div style={{ width: "200px", flexShrink: 0 }}></div>
       <div
         className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
         style={{ padding: "40px 20px" }}
@@ -81,7 +97,6 @@ const PaymentScreen = () => {
           <h3 className="mb-0">Payments</h3>
         </div>
 
-        {/* Search + Buttons Row */}
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "16px" }}>
           <div style={{ flex: 1 }}>
             <SearchBar onSearch={handleSearch} />
@@ -108,6 +123,7 @@ const PaymentScreen = () => {
             iconSize="20px"
             fontSize="15px"
             height="43px"
+            onClick={exportToExcel} 
           />
         </div>
 
