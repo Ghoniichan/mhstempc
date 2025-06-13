@@ -66,6 +66,7 @@ const ClientProfileSavingsScreen = () => {
         <div style={{ flexGrow: 1, overflowY: 'auto', paddingRight: '10px' }}>
           <InformationCard
             title="Client Loan Profile"
+            name="John Doe"
             department="Finance"
             policyNumber="MHSTEMPC-123456"
             address="123 Main St, City, Country"

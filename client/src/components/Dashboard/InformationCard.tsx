@@ -7,6 +7,7 @@ import './InformationCard.css';
 
 interface InformationCardProps {
   title: string;
+  name: string;  // Added
   department: string;
   policyNumber: string;
   address: string;
@@ -21,6 +22,7 @@ interface InformationCardProps {
 
 const InformationCard: React.FC<InformationCardProps> = ({
   title,
+  name,  // Added
   department,
   policyNumber,
   address,
@@ -31,7 +33,6 @@ const InformationCard: React.FC<InformationCardProps> = ({
   columnHeadings,
   rows,
 }) => {
-  // const [active, setActive] = useState<string>('Loan');
   const buttons = ['Loan', 'Capital Share', 'Savings'];
 
   const baseButtonStyle: CSSProperties = {
@@ -62,7 +63,6 @@ const InformationCard: React.FC<InformationCardProps> = ({
     return '';
   })();
 
-
   return (
     <div className="information-card-fullwidth">
       <Row className="main-card-row">
@@ -84,6 +84,9 @@ const InformationCard: React.FC<InformationCardProps> = ({
                 <Col xs={9} md={10}>
                   <Row>
                     <Col xs={12} md={6}>
+                      <h5 className="form-label fw-semibold mb-3">
+                        Name: <span className="fw-normal">{name}</span>
+                      </h5>
                       <h5 className="form-label fw-semibold mb-3">
                         Department: <span className="fw-normal">{department}</span>
                       </h5>
@@ -156,8 +159,6 @@ const InformationCard: React.FC<InformationCardProps> = ({
           );
         })}
       </Row>
-
-
 
       <Row className="table-row">
         <Col xs={12} className="h-100">

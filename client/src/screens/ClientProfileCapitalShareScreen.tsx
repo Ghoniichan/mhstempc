@@ -30,7 +30,7 @@ const ClientProfileCapitalShareScreen = () => {
     const { date, or, ref, receivedAmount, balance } = newRow;
     if (date && or && ref && receivedAmount && balance) {
       setRows(prev => [...prev, [date, or, ref, receivedAmount, balance]]);
-      // Clear inputs
+      
       setNewRow({ date: '', or: '', ref: '', receivedAmount: '', balance: '' });
     } else {
       alert("Please fill out all fields");
@@ -52,7 +52,7 @@ const ClientProfileCapitalShareScreen = () => {
         style={{
           flexGrow: 1,
           overflowY: 'auto',
-          paddingRight: '10px',  // Optional: prevent scrollbar overlap
+          paddingRight: '10px',  
         }}
       >
         <InformationCard
@@ -69,7 +69,7 @@ const ClientProfileCapitalShareScreen = () => {
         />
       </div>
 
-      {/* Add Row Form (stays at bottom, doesn't scroll) */}
+      {/* Add Row Form  */}
       <div className="mt-4 w-100 bg-white pt-3" style={{ flexShrink: 0 }}>
         <h5>Add New Capital Share Entry</h5>
         <div className="row g-2 align-items-end">
