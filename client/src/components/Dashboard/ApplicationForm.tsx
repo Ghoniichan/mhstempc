@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
+import axios from '../../api/axiosInstance';
 
 
 interface FormData {
@@ -111,7 +112,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const cleanedData = { ...formData };
@@ -121,7 +122,18 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
 
     // Output JSON to console (you can modify this to send to your API)
     console.log('Form Data JSON:', JSON.stringify(cleanedData, null, 2));
-    
+
+    // Here you can send the cleanedData to your API endpoint
+    try {
+      const response = await axios.post('/api/loans/new', cleanedData);
+      console.log('Loan application submitted successfully:', response.data);
+      navigate('/applicationFormTwo');
+    } catch (error) {
+      console.error('Error submitting loan application:', error);
+      // You can add error handling UI here, like showing an alert or error message
+      alert('Failed to submit loan application. Please try again.');
+    }
+
     // Store it in memory instead of localStorage for Claude artifacts
     // localStorage.setItem('loanApplicationData', JSON.stringify(cleanedData));
     
