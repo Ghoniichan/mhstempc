@@ -1,30 +1,90 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
-import { useNavigate } from "react-router-dom";
 
 const PaymentScreen = () => {
   const navigate = useNavigate();
-    return (
-        <div className="d-flex" style={{ minHeight: '100vh' }}>
-      <div style={{ width: '200px', flexShrink: 0 }}>
+
+  // Full payment data
+  const [payments] = useState([
+    {
+      name: "Micha Bandasan",
+      id: "MHST12345",
+      loanNo: "LN20240601",
+      method: "Cash",
+      dateRelease: "2025-06-01",
+      date: "2025-06-10",
+      collectedBy: "Cashier 1",
+      dueDate: "2025-12-01",
+      loanAmount: "₱50,000",
+    },
+    {
+      name: "Juan Dela Cruz",
+      id: "MHST67890",
+      loanNo: "LN20240520",
+      method: "Online",
+      dateRelease: "2025-05-20",
+      date: "2025-06-05",
+      collectedBy: "Cashier 2",
+      dueDate: "2025-11-20",
+      loanAmount: "₱30,000",
+    },
+  ]);
+
+  const [filteredPayments, setFilteredPayments] = useState(payments);
+
+  const handleSearch = (query: string) => {
+    const lowerQuery = query.trim().toLowerCase();
+
+    if (!lowerQuery) {
+      setFilteredPayments(payments); // Reset table when input is cleared
+      return;
+    }
+
+    const result = payments.filter(
+      payment =>
+        payment.name.toLowerCase().includes(lowerQuery) ||
+        payment.loanNo.toLowerCase().includes(lowerQuery)
+    );
+
+    setFilteredPayments(result); // Just update table, no alert
+  };
+
+
+  // Table row data
+  const rows = filteredPayments.map(payment => [
+    payment.name,
+    payment.id,
+    payment.loanNo,
+    payment.method,
+    payment.dateRelease,
+    payment.date,
+    payment.collectedBy,
+    payment.dueDate,
+    payment.loanAmount,
+  ]);
+
+  return (
+    <div className="d-flex" style={{ minHeight: "100vh" }}>
+      <div style={{ width: "200px", flexShrink: 0 }}>
         {/* Sidebar or nav placeholder */}
       </div>
       <div
         className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
-        style={{ padding: '40px 20px' }}
+        style={{ padding: "40px 20px" }}
       >
-        <div className="d-flex align-items-center mb-3" style={{ gap: '12px' }}>
+        <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
           <h3 className="mb-0">Payments</h3>
         </div>
 
-
-        {/* row for search + buttons */}
-        <div className="d-flex align-items-center w-100 mb-4" style={{ gap: '16px' }}>
+        {/* Search + Buttons Row */}
+        <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "16px" }}>
           <div style={{ flex: 1 }}>
-            <SearchBar />
+            <SearchBar onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
@@ -36,7 +96,7 @@ const PaymentScreen = () => {
             iconSize="20px"
             fontSize="15px"
             height="45px"
-            onClick={() => navigate('/addPayment')}
+            onClick={() => navigate("/addPayment")}
           />
 
           <ButtonCustom
@@ -53,21 +113,21 @@ const PaymentScreen = () => {
 
         <CustomTable
           columnHeadings={[
-            'Name',
-            'ID',
-            'Loan No.',
-            'Method',
-            'Date Release',
-            'Date',
-            'Collected by',
-            'Due Date',
-            'Loan Amount',
+            "Name",
+            "ID",
+            "Loan No.",
+            "Method",
+            "Date Release",
+            "Date",
+            "Collected by",
+            "Due Date",
+            "Loan Amount",
           ]}
-          rows={[]}
+          rows={rows}
         />
       </div>
     </div>
-    )
-}
+  );
+};
 
-export default PaymentScreen
+export default PaymentScreen;
