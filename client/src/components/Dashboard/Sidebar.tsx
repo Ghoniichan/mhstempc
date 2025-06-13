@@ -82,6 +82,10 @@ const Sidebar = () => {
 
   const renderUserNavigation = () => (
     <>
+      <NavLink to="/userProfile" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-person"></i></span>
+        <span className="description">Account</span>
+      </NavLink>
       <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-grid"></i></span>
         <span className="description">Dashboard</span>

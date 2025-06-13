@@ -3,37 +3,43 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import './SearchBar.css';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSubmit = () => {
-    console.log('Searching for:', searchTerm);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    onSearch(value); // <- Automatically re-filters as you type
+    if (error && value.trim()) setError('');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      handleSubmit();
+      if (!searchTerm.trim()) {
+        setError('Please enter a name or loan number.');
+      }
     }
   };
 
   return (
     <div className="searchbar-container">
       <div className="searchbar-box shadow-sm">
-        <Search size={20} className="searchbar-icon" onClick={handleSubmit} />
+        <Search size={20} className="searchbar-icon" />
         <input
           type="text"
           placeholder="Search Name, Loan#"
           value={searchTerm}
-          onChange={handleSearch}
+          onChange={handleSearchChange}
           onKeyDown={handleKeyDown}
           className="searchbar-input gothic-a1-normal shadow-sm"
-          aria-label="Search"
         />
       </div>
+      {error && <div className="text-danger mt-1 ms-1 small">{error}</div>}
     </div>
   );
 };
