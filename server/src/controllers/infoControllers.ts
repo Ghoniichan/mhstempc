@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler } from 'express';
-import pool from '../config/db.config'; // Adjust path to your database connection
+import pool from '../config/db.config'; 
 import bcrypt from 'bcrypt';
 import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
 
