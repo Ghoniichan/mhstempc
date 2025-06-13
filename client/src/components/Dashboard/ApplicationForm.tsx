@@ -213,16 +213,20 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
                       required />
                   </Col>
 
-                  <Col xs={12} md={4}>
+                    <Col xs={12} md={4}>
                     <label htmlFor="policyNumber" className="form-label gothic-a1-bold">MHSTEMPC Policy Number</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="policyNumber" 
-                      value={formData.membershipInfo.policyNumber}
-                      onChange={(e) => handleInputChange('policyNumber', e.target.value, 'membershipInfo')}
-                      required />
-                  </Col>
+                    <div 
+                      className="form-control"
+                      style={{ 
+                      border: '1px solid #ced4da',
+                      padding: '0.375rem 0.75rem',
+                      borderRadius: '0.25rem',
+                      minHeight: '38px'
+                      }}
+                    >
+                      {formData.membershipInfo.policyNumber}
+                    </div>
+                    </Col>
                 </Row>
 
                 {/* Row 3 */}
