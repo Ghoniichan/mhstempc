@@ -1,6 +1,6 @@
 .edit-status-container {
-    width: 550px;
-    height: 370px;
+    width: 400px;
+    height: 240px;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 10px;
@@ -28,8 +28,8 @@
   }
   
   .edit-status-label {
-    width: 48%;
-    padding-right: 15px;
+    width: 52%;
+    padding-right: 10px;
     text-align: left;
     padding-top: 8px;
     font-size: 16px;
@@ -38,6 +38,7 @@
   .edit-status-field {
     width: 100%;
     position: relative;
+
   }
   
   .edit-status-dropdown {
@@ -45,11 +46,11 @@
     justify-content: space-between;
     align-items: center;
     padding: 8px 12px;
-    border: 1px solid #ced4da;
+    border: 2px solid #ced4da;
     border-radius: 4px;
     background-color: white;
     cursor: pointer;
-    height: 40px;
+    height: 45px;
     color: black;
   }
   
