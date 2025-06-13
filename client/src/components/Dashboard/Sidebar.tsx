@@ -126,16 +126,17 @@ const Sidebar = () => {
 
       {/* Settings Panel */}
       {showSettings && (
-        <div className="sidebar-settings-panel">
-          <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
-            <h5 className="ms-3 mt-3 h5-setting">Settings</h5>
-            <button className="btn-close" onClick={handleClosePanel}></button>
-          </div>
-          <div className="p-3">
-            <SettingSection />
-          </div>
+      <div className="sidebar-settings-panel">
+        <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
+          <h5 className="ms-3 mt-3 h5-setting">Settings</h5>
+          <button className="btn-close" onClick={handleClosePanel}></button>
         </div>
-      )}
+        <div className="p-3">
+          <SettingSection role={userRole === 'admin' ? 'Admin' : 'User'} />
+        </div>
+      </div>
+    )}
+
 
       {/* Notification Panel */}
       {showNotifications && (
