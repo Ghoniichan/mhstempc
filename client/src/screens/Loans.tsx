@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
@@ -21,7 +22,6 @@ const Loans = () => {
   const navigate = useNavigate();
   const [selectedDropdown, setSelectedDropdown] = useState("Active Loans");
 
-  // Sample loan data
   const [loanData] = useState<LoanData[]>([
     {
       name: "Micha Bandasan",
@@ -58,8 +58,8 @@ const Loans = () => {
     const trimmed = query.trim().toLowerCase();
 
     if (trimmed === "") {
-    setFilteredLoans(loanData);
-    return;
+      setFilteredLoans(loanData);
+      return;
     }
 
     const result = loanData.filter(
@@ -70,6 +70,26 @@ const Loans = () => {
     );
 
     setFilteredLoans(result);
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredLoans.map(loan => ({
+        Name: loan.name,
+        ID: loan.id,
+        "Loan No.": loan.loanNo,
+        "Loan Amount": loan.loanAmount,
+        "Terms of Payment": loan.terms,
+        "Capital Share": loan.capitalShare,
+        Savings: loan.savings,
+        "Due Date": loan.dueDate,
+        Balance: loan.balance,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Loans");
+    XLSX.writeFile(workbook, "loans.xlsx");
   };
 
   const rows = filteredLoans.map(loan => [
@@ -131,6 +151,7 @@ const Loans = () => {
             iconSize="20px"
             fontSize="15px"
             height="43px"
+            onClick={exportToExcel} 
           />
         </div>
 
