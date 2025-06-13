@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 import EditStatus from "../components/Dashboard/EditStatus";
-import { useNavigate } from "react-router-dom";
 
 const Application = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Application = () => {
       dateRelease: "2025-06-01",
       approvedBy: "Admin",
       dueDate: "2025-12-01",
-      status: "Pending"
+      status: "Pending",
     },
   ]);
 
@@ -37,7 +38,7 @@ const Application = () => {
     const updated = [...filteredApps];
     updated[editingIndex] = {
       ...updated[editingIndex],
-      status: newStatus
+      status: newStatus,
     };
 
     const globalIndex = applications.findIndex(
@@ -54,23 +55,40 @@ const Application = () => {
   };
 
   const handleSearch = (query: string) => {
-  const lowerQuery = query.trim().toLowerCase();
+    const lowerQuery = query.trim().toLowerCase();
 
-  if (lowerQuery === "") {
-    // Show all applications if search is cleared
-    setFilteredApps(applications);
-    return;
-  }
+    if (lowerQuery === "") {
+      setFilteredApps(applications);
+      return;
+    }
 
-  const result = applications.filter(
-    app =>
-      app.name.toLowerCase().includes(lowerQuery) ||
-      app.loanNo.toLowerCase().includes(lowerQuery)
-  );
+    const result = applications.filter(
+      app =>
+        app.name.toLowerCase().includes(lowerQuery) ||
+        app.loanNo.toLowerCase().includes(lowerQuery)
+    );
 
-  setFilteredApps(result);
+    setFilteredApps(result);
   };
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(
+      filteredApps.map(app => ({
+        Name: app.name,
+        "MHSTEMPC Policy No.": app.id,
+        "Loan No.": app.loanNo,
+        "Loan Amount": app.loanAmount,
+        "Date Release": app.dateRelease,
+        "Approved By": app.approvedBy,
+        "Due Date": app.dueDate,
+        "Approval Status": app.status,
+      }))
+    );
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Applications");
+    XLSX.writeFile(workbook, "applications.xlsx");
+  };
 
   const rows = filteredApps.map((app, index) => [
     app.name,
@@ -126,6 +144,7 @@ const Application = () => {
             iconSize="20px"
             fontSize="15px"
             height="43px"
+            onClick={exportToExcel} // ✅ added export logic
           />
         </div>
 
