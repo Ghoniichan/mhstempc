@@ -67,7 +67,7 @@ const InformationCard: React.FC<InformationCardProps> = ({
     <div className="information-card-fullwidth">
       <Row className="main-card-row">
         <Col xs={12} s={12} md={12} lg={12} className="mx-auto">
-          <div className="card shadow-lg p-0 mb-4 mt-3 bg-white rounded w-100 overflow-auto">
+          <div className="card shadow-md p-0 mb-4 mt-3 bg-white rounded w-100 overflow-auto">
             <div className="ic-top-bar">
               <span className="top-bar-text">{title}</span>
             </div>

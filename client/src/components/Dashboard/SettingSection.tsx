@@ -4,8 +4,11 @@ import SettingChangePass from './SettingChangePass';
 import SettingChangeNumber from './SettingChangeNumber';
 import './SettingSection.css';
 
+interface SettingSectionProps {
+  role: 'Admin' | 'User';
+}
 
-const SettingSection = () => {
+const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
   const [showSettingsChangePass, setShowSettingsChangePass] = useState(false);
   const [showSettingsChangeNumber, setShowSettingsChangeNumber] = useState(false);
 
@@ -13,14 +16,14 @@ const SettingSection = () => {
 
   const handleSettingsClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowSettingsChangePass((prev) => !prev);
-    setShowSettingsChangeNumber(false); // Ensure only one panel is open
+    setShowSettingsChangePass(prev => !prev);
+    setShowSettingsChangeNumber(false);
   };
 
   const handleChangeNumberClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowSettingsChangeNumber((prev) => !prev);
-    setShowSettingsChangePass(false); // Ensure only one panel is open
+    setShowSettingsChangeNumber(prev => !prev);
+    setShowSettingsChangePass(false);
   };
 
   const handleClosePanel = () => {
@@ -29,12 +32,12 @@ const SettingSection = () => {
   };
 
   const handleAuditLogClick = () => {
-    handleClosePanel(); // Close any open panel before navigating
+    handleClosePanel();
     navigate('/auditLog');
   };
 
   const handleAboutUsClick = () => {
-    handleClosePanel(); // Close any open panel before navigating
+    handleClosePanel();
     navigate('/aboutSetting');
   };
 
@@ -59,13 +62,29 @@ const SettingSection = () => {
           </button>
         </div>
 
-        <h6 className="custom-header">Security</h6>
-        <div className="card shadow-sm mb-4 custom-card-setting">
-          <button onClick={handleAuditLogClick} type="button" className="btn text-nowrap text-start">
-            <h6>Audit Logs</h6>
-            <p className="mb-0">Check your security</p>
-          </button>
-        </div>
+        {role === 'Admin' && (
+          <>
+            <h6 className="custom-header">Security</h6>
+            <div className="card shadow-sm mb-4 custom-card-setting">
+              <button onClick={handleAuditLogClick} type="button" className="btn text-nowrap text-start">
+                <h6>Audit Logs</h6>
+                <p className="mb-0">Check your security</p>
+              </button>
+            </div>
+          </>
+        )}
+
+        {role === 'User' && (
+          <>
+            <h6 className="custom-header">Security</h6>
+            <div className="card shadow-sm mb-4 custom-card-setting">
+              <button onClick={handleAuditLogClick} type="button" className="btn text-nowrap text-start">
+                <h6>Report a Bug</h6>
+                <p className="mb-0">Report site issues encountered</p>
+              </button>
+            </div>
+          </>
+        )}
 
         <h6 className="custom-header">About</h6>
         <div className="card shadow-sm custom-card-setting">
