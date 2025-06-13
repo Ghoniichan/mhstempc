@@ -20,14 +20,14 @@ type PolicyRecord = {
 
 function formatRows(data: PolicyRecord[]): string[][] {
   const seen = new Set();
-  const rows = [];
+  const rows: string[][] = [];
 
   for (const item of data) {
     const key = `${item.policy_number}-${item.tel_cel_no}`;
     if (!seen.has(key)) {
       seen.add(key);
       rows.push([
-        `${item.name}`,
+        item.name,
         item.policy_number,
         item.fb_acc_email_address,
         item.tel_cel_no
@@ -58,10 +58,16 @@ const TableCard: React.FC<TableCardProps> = () => {
   }, []);
 
   const columnHeadings = [
-    'Name', 'MHSTEMPC Policy Number', 'Email', 'Contact Number'
+    'Name', 
+    'MHSTEMPC Policy Number', 
+    'Email', 
+    'Contact Number'
   ];
 
-  const handleRowClick = (_row: Array<string>) => {
+  const handleRowClick = (row: Array<string>) => {
+    const policyNumber = row[1];  // Assuming 2nd column is policy number
+    alert(`Policy Number: ${policyNumber}`);
+    console.log(`Clicked Policy Number: ${policyNumber}`);
     navigate('/clientLoan');
   };
 
@@ -71,7 +77,6 @@ const TableCard: React.FC<TableCardProps> = () => {
 
   const handleSearchClick = () => {
     alert('Search clicked');
-    // You can implement actual search logic here if desired
   };
 
   return (
