@@ -36,6 +36,7 @@ const ClientProfileLoanScreen = () => {
       >
         <h1>Client Profile</h1>
         <InformationCard
+          name="John Doe"
           title="Client Loan Profile"
           department="Finance"
           policyNumber="MHSTEMPC-123456"

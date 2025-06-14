@@ -14,6 +14,10 @@ const SchedofLoanRelease = () => {
     navigate(path);
   };
 
+  const handleSearch = (query: string): void => {
+    console.log("Search query:", query);
+  };
+
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}>
@@ -30,9 +34,9 @@ const SchedofLoanRelease = () => {
 
         {/* row for search + buttons */}
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "16px" }}>
-          <div style={{ flex: 1 }}>
-            <SearchBar />
-          </div>
+            <div style={{ flex: 1 }}>
+            <SearchBar onSearch={handleSearch} />
+            </div>
 
           <ButtonCustom
             text={selectedDropdown}
