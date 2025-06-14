@@ -56,6 +56,7 @@ const ClientProfileCapitalShareScreen = () => {
         }}
       >
         <InformationCard
+          name="John Doe"
           title="Client Loan Profile"
           department="Finance"
           policyNumber="MHSTEMPC-123456"
