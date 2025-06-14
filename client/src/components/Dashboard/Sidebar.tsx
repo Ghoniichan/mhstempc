@@ -13,7 +13,12 @@ const Sidebar = () => {
 
   const logout = () => {
     localStorage.removeItem('token');
+<<<<<<< HEAD
   };
+=======
+    localStorage.removeItem('role');
+  }
+>>>>>>> a8f7878269ef700b72c69fa269b3927d3a5f992f
 
   useEffect(() => {
     const getUserRole = () => {
@@ -107,7 +112,7 @@ const Sidebar = () => {
       </a>
       <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-        <span className="description">Log Out</span>
+        <span className="description" onClick={logout}>Log Out</span>
       </NavLink>
     </>
   );
@@ -122,7 +127,7 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-grid"></i></span>
         <span className="description">Dashboard</span>
       </NavLink>
-      <NavLink to="/appointment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/userAppointment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
         <span className="Navicon"><i className="bi bi-calendar-event"></i></span>
         <span className="description">Appointment</span>
       </NavLink>
