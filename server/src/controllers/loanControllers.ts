@@ -60,3 +60,20 @@ export const loans: RequestHandler = async (req: Request, res: Response): Promis
         client.release();
     }
 };
+
+export const getloans: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            `SELECT CONCAT(m.last_name, ', ', m.first_name) AS name, m.policy_number, l.id, l.requested_amount, l.application_date, l.due_date, l.status
+            FROM membership_applications m
+            JOIN loan_applications l ON m.id = l.membership_application_id;`
+        );
+        res.status(200).json(result.rows);
+    } catch (err: any) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    } finally {
+        client.release();
+    }
+};
