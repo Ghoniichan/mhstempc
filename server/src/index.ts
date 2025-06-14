@@ -5,7 +5,7 @@ import getAccounts from "./routes/accountsRoutes";
 import authRoutes from "./routes/jwtAuth"
 import sendEmail from "./routes/notificationRoutes";
 import infoRoutes from "./routes/infoRoutes";
-import { loans } from "./controllers/loanControllers";
+import loanRoutes from "./routes/loanRoutes";
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ app.use("/api/user", infoRoutes);
 
 app.use("/api/notification", sendEmail);
 
-app.use("/api/loans", loans);
+app.use("/api/loans", loanRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
