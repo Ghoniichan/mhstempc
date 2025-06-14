@@ -84,9 +84,8 @@ const TableCard: React.FC = () => {
 
   // Updated type to ReactNode[]
   const handleRowClick = (row: React.ReactNode[]) => {
-    const policyNumber = row[1] as string; // Assumes cell is string
-    alert(`Policy Number: ${policyNumber}`);
-    navigate('/clientLoan');
+    const policyNumber = row[1] as string;
+    navigate('/clientLoan', { state: { policy_no: policyNumber } });
   };
 
   const columnHeadings = [
