@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
@@ -26,6 +26,10 @@ const Application = () => {
   ]);
 
   const [filteredApps, setFilteredApps] = useState(applications);
+
+  useEffect(() => {
+    document.title = "MHSTEMPC | Applications";
+  }, []);
 
   const openEditModal = (index: number) => {
     setEditingIndex(index);
@@ -144,7 +148,7 @@ const Application = () => {
             iconSize="20px"
             fontSize="15px"
             height="43px"
-            onClick={exportToExcel} // ✅ added export logic
+            onClick={exportToExcel}
           />
         </div>
 

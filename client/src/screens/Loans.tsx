@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
@@ -71,6 +71,10 @@ const Loans = () => {
 
     setFilteredLoans(result);
   };
+
+    useEffect(() => {
+      document.title = "MHSTEMPC | Loans";
+    }, []);
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(

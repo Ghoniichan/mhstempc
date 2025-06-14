@@ -96,7 +96,7 @@ const LoginCard = () => {
       <div className='row border rounded-3 p-3 bg-white shadow login-box-area' style={{ maxWidth: '850px', height: '600px', margin: '0 auto', width: '100%' }}>
         {/* Left box */}
         <div className='col-lg-6 col-12 rounded-3 d-flex justify-content-center align-items-center flex-column left-box'
-          style={{ background: '#f7f7f7', height: '300px', padding: '25px 10px' }}>
+          style={{ background: '#f7f7f7', height: '550px', padding: '25px 10px' }}>
           <div className='text-center'>
             <img src={logo} alt='mhstempcLogo' className='img-fluid'
               width="400px"

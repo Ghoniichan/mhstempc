@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
@@ -72,6 +72,10 @@ const PaymentScreen = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Payments");
     XLSX.writeFile(workbook, "payments.xlsx");
   };
+
+    useEffect(() => {
+      document.title = "MHSTEMPC | Payment";
+    }, []);
 
   const rows = filteredPayments.map(payment => [
     payment.name,

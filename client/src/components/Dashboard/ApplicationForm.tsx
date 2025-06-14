@@ -85,6 +85,10 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
     submissionDate: new Date().toISOString()
   });
 
+  useEffect(() => {
+    document.title = "MHSTEMPC | Loan Application";
+  }, []);
+
   const handleInputChange = (
     field: string,
     value: string,
@@ -92,7 +96,6 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
   ) => {
     setFormData(prev => {
       if (section && section !== 'submissionDate') {
-        // Type assertion to ensure we're working with object sections
         const currentSection = prev[section] as Record<string, string>;
         
         return {
@@ -104,7 +107,6 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
         };
       }
 
-      // Handle direct field updates (like submissionDate)
       return {
         ...prev,
         [field]: value
@@ -120,25 +122,17 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
       delete cleanedData.coMaker;
     }
 
-    // Output JSON to console (you can modify this to send to your API)
     console.log('Form Data JSON:', JSON.stringify(cleanedData, null, 2));
 
-    // Here you can send the cleanedData to your API endpoint
     try {
       const response = await axios.post('/api/loans/new', cleanedData);
       console.log('Loan application submitted successfully:', response.data);
       navigate('/applicationFormTwo');
     } catch (error) {
       console.error('Error submitting loan application:', error);
-      // You can add error handling UI here, like showing an alert or error message
       alert('Failed to submit loan application. Please try again.');
     }
 
-    // Store it in memory instead of localStorage for Claude artifacts
-    // localStorage.setItem('loanApplicationData', JSON.stringify(cleanedData));
-    
-    // Call the onNext function and navigate
-    // onNext();
     navigate('/applicationFormTwo');
   };
 
