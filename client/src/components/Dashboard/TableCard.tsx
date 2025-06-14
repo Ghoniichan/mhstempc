@@ -9,8 +9,6 @@ import './TableCard.css';
 import SearchBar from './SearchBar';
 import axios from '../../api/axiosInstance';
 
-type TableCardProps = object;
-
 type PolicyRecord = {
   name: string;
   policy_number: string;
@@ -18,37 +16,42 @@ type PolicyRecord = {
   tel_cel_no: string;
 };
 
-function formatRows(data: PolicyRecord[]): string[][] {
-  const seen = new Set();
-  const rows: string[][] = [];
-
-  for (const item of data) {
-    const key = `${item.policy_number}-${item.tel_cel_no}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      rows.push([
-        item.name,
-        item.policy_number,
-        item.fb_acc_email_address,
-        item.tel_cel_no
-      ]);
-    }
-  }
-
-  return rows;
-}
-
-const TableCard: React.FC<TableCardProps> = () => {
+const TableCard: React.FC = () => {
   const navigate = useNavigate();
-  const [clients, setClients] = useState<Array<Array<string>>>([]);
 
+  // Updated state types to ReactNode[][]
+  const [clients, setClients] = useState<React.ReactNode[][]>([]);
+  const [originalClients, setOriginalClients] = useState<React.ReactNode[][]>([]);
+
+  // Format API data into table row arrays
+  const formatRows = (data: PolicyRecord[]): React.ReactNode[][] => {
+    const seen = new Set<string>();
+    const rows: React.ReactNode[][] = [];
+
+    data.forEach(item => {
+      const key = `${item.policy_number}-${item.tel_cel_no}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        rows.push([
+          item.name,
+          item.policy_number,
+          item.fb_acc_email_address,
+          item.tel_cel_no,
+        ]);
+      }
+    });
+
+    return rows;
+  };
+
+  // Fetch client data on component mount
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await axios.get('/api/user/clients');
-        const clientsArray = formatRows(response.data);
-        setClients(clientsArray);
-        console.log('Fetched clients:', clientsArray);
+        const response = await axios.get<PolicyRecord[]>('/api/user/clients');
+        const rows = formatRows(response.data);
+        setOriginalClients(rows);
+        setClients(rows);
       } catch (error) {
         console.error('Error fetching clients:', error);
       }
@@ -57,27 +60,41 @@ const TableCard: React.FC<TableCardProps> = () => {
     fetchClients();
   }, []);
 
-  const columnHeadings = [
-    'Name', 
-    'MHSTEMPC Policy Number', 
-    'Email', 
-    'Contact Number'
-  ];
+  // Search handling
+  const handleSearch = (query: string) => {
+    const trimmed = query.trim().toLowerCase();
 
-  const handleRowClick = (row: Array<string>) => {
-    const policyNumber = row[1];  // Assuming 2nd column is policy number
-    alert(`Policy Number: ${policyNumber}`);
-    console.log(`Clicked Policy Number: ${policyNumber}`);
-    navigate('/clientLoan');
+    if (trimmed === '') {
+      setClients(originalClients);
+      return;
+    }
+
+    const filtered = originalClients.filter(row =>
+      row.some(cell =>
+        typeof cell === 'string' && cell.toLowerCase().includes(trimmed)
+      )
+    );
+
+    setClients(filtered);
   };
 
   const handleRegisterClick = () => {
     navigate('/registerApplicationForm');
   };
 
-  const handleSearchClick = () => {
-    alert('Search clicked');
+  // Updated type to ReactNode[]
+  const handleRowClick = (row: React.ReactNode[]) => {
+    const policyNumber = row[1] as string; // Assumes cell is string
+    alert(`Policy Number: ${policyNumber}`);
+    navigate('/clientLoan');
   };
+
+  const columnHeadings = [
+    'Name',
+    'MHSTEMPC Policy Number',
+    'Email',
+    'Contact Number',
+  ];
 
   return (
     <Card className="mb-4 mt-3 shadow-sm rounded" style={{ width: '100%' }}>
@@ -86,30 +103,20 @@ const TableCard: React.FC<TableCardProps> = () => {
           <Col xs={12}>
             <Row className="mb-3 align-items-end">
               <Col xs={12} md={6}>
-                <SearchBar />
+                <SearchBar onSearch={handleSearch} />
               </Col>
-              <Col xs={12} md={2}>
-                <Button
-                  variant="primary"
-                  style={{ width: '100%' }}
-                  className="mb-2"
-                  onClick={handleSearchClick}
-                >
-                  Search
-                </Button>
-              </Col>
-              <Col xs={12} md={2}>
+              <Col xs={12} md={3}>
                 <Button
                   variant="light"
-                  style={{ border: '1px solid lightgray', width: '100%' }}
-                  className="mb-2"
+                  className="mb-2 w-100"
+                  style={{ border: '1px solid lightgray' }}
                   onClick={handleRegisterClick}
                 >
                   Register Member
                 </Button>
               </Col>
-              <Col xs={12} md={2}>
-                <Dropdown style={{ width: '100%' }} className="mb-2">
+              <Col xs={12} md={3}>
+                <Dropdown className="mb-2 w-100">
                   <Dropdown.Toggle
                     variant="light"
                     style={{ border: '1px solid lightgray', width: '100%' }}
@@ -124,6 +131,7 @@ const TableCard: React.FC<TableCardProps> = () => {
                 </Dropdown>
               </Col>
             </Row>
+
             <div className="w-100">
               <CustomTable
                 columnHeadings={columnHeadings}
