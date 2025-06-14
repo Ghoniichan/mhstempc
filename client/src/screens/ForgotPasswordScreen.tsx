@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/Dashboard/CustomButton";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
@@ -25,9 +25,13 @@ const ForgotPasswordScreen = () => {
       return;
     }
 
-    setError(""); // clear error on valid submission
+    setError("");
     navigate("/emailVerif");
   };
+
+  useEffect(() => {
+        document.title = "MHSTEMPC | Forgot Password";
+      }, []);
 
   return (
     <div

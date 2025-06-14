@@ -19,11 +19,9 @@ type PolicyRecord = {
 const TableCard: React.FC = () => {
   const navigate = useNavigate();
 
-  // Updated state types to ReactNode[][]
   const [clients, setClients] = useState<React.ReactNode[][]>([]);
   const [originalClients, setOriginalClients] = useState<React.ReactNode[][]>([]);
 
-  // Format API data into table row arrays
   const formatRows = (data: PolicyRecord[]): React.ReactNode[][] => {
     const seen = new Set<string>();
     const rows: React.ReactNode[][] = [];
@@ -44,7 +42,6 @@ const TableCard: React.FC = () => {
     return rows;
   };
 
-  // Fetch client data on component mount
   useEffect(() => {
     const fetchClients = async () => {
       try {
@@ -84,7 +81,7 @@ const TableCard: React.FC = () => {
 
   // Updated type to ReactNode[]
   const handleRowClick = (row: React.ReactNode[]) => {
-    const policyNumber = row[1] as string; // Assumes cell is string
+    const policyNumber = row[1] as string;
     alert(`Policy Number: ${policyNumber}`);
     navigate('/clientLoan');
   };

@@ -14,7 +14,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    onSearch(value); // <- Automatically re-filters as you type
+    onSearch(value); 
     if (error && value.trim()) setError('');
   };
 

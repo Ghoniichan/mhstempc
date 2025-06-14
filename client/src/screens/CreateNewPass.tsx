@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CustomButton from "../components/Dashboard/CustomButton";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
 import '../screens/CreateNewPass.css';
@@ -37,6 +37,10 @@ const CreateNewPass = () => {
     }
   };
 
+  useEffect(() => {
+          document.title = "MHSTEMPC | Create New Password";
+        }, []);
+
   return (
     <div
       style={{
@@ -70,7 +74,7 @@ const CreateNewPass = () => {
               id="password"
               className="inputBox form-control ps-5 pe-5"
               placeholder="Enter New Password"
-              style={{ border: '1px solid #002d62' }}
+              style={{ border: '1px solid #002d62', height: '55px' }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -97,7 +101,7 @@ const CreateNewPass = () => {
               id="confirmPassword"
               className="inputBox form-control ps-5 pe-5"
               placeholder="Re-enter Password"
-              style={{ border: '1px solid #002d62' }}
+              style={{ border: '1px solid #002d62', height: '55px' }}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />

@@ -1,7 +1,12 @@
 import CustomTable from "../components/Dashboard/CustomTable";
 import Backbutton from "../components/Dashboard/Backbutton";
+import { useEffect } from "react";
 
 const UserCapitalShare = () => {
+    useEffect(() => {
+          document.title = "MHSTEMPC | Capital Share";
+        }, []);
+
     return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}>

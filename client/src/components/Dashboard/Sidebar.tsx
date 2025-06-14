@@ -10,17 +10,17 @@ const Sidebar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const location = useLocation();
-  
+
   const logout = () => {
     localStorage.removeItem('token');
-  }
+  };
 
   useEffect(() => {
     const getUserRole = () => {
       try {
         const jwtToken = localStorage.getItem('token');
         if (!jwtToken) {
-          setUserRole('user'); // default fallback role
+          setUserRole('user');
           return;
         }
 
@@ -31,12 +31,44 @@ const Sidebar = () => {
         setUserRole(isAdmin ? 'admin' : 'user');
       } catch (error) {
         console.error("Invalid token or decoding failed", error);
-        setUserRole('user'); // fallback in case of error
+        setUserRole('user');
       }
     };
 
     getUserRole();
   }, [location.pathname]);
+
+  useEffect(() => {
+    let title = "MHSTEMPC";
+
+    if (showSettings) {
+      title = "MHSTEMPC | Settings";
+    } else if (showNotifications) {
+      title = "MHSTEMPC | Notifications";
+    } else {
+      switch (location.pathname) {
+        case "/dashboard":
+          title = "MHSTEMPC | Dashboard";
+          break;
+        case "/client":
+          title = "MHSTEMPC | Client";
+          break;
+        case "/userProfile":
+          title = "MHSTEMPC | Account";
+          break;
+        case "/appointment":
+          title = "MHSTEMPC | Appointment";
+          break;
+        case "/home":
+          title = "MHSTEMPC | Home";
+          break;
+        default:
+          title = "MHSTEMPC";
+      }
+    }
+
+    document.title = title;
+  }, [location.pathname, showSettings, showNotifications]);
 
   const handleSettingsClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -109,7 +141,6 @@ const Sidebar = () => {
     </>
   );
 
-  // Don't show anything until userRole is set
   if (!userRole) return null;
 
   return (
@@ -128,21 +159,18 @@ const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Settings Panel */}
       {showSettings && (
-      <div className="sidebar-settings-panel">
-        <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
-          <h5 className="ms-3 mt-3 h5-setting">Settings</h5>
-          <button className="btn-close" onClick={handleClosePanel}></button>
+        <div className="sidebar-settings-panel">
+          <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
+            <h5 className="ms-3 mt-3 h5-setting">Settings</h5>
+            <button className="btn-close" onClick={handleClosePanel}></button>
+          </div>
+          <div className="p-3">
+            <SettingSection role={userRole === 'admin' ? 'Admin' : 'User'} />
+          </div>
         </div>
-        <div className="p-3">
-          <SettingSection role={userRole === 'admin' ? 'Admin' : 'User'} />
-        </div>
-      </div>
-    )}
+      )}
 
-
-      {/* Notification Panel */}
       {showNotifications && (
         <div className="sidebar-settings-panel">
           <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
