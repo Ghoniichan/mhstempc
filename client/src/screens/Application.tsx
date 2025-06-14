@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
@@ -6,6 +6,7 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 import EditStatus from "../components/Dashboard/EditStatus";
+import axios from '../api/axiosInstance';
 
 const Application = () => {
   const navigate = useNavigate();
@@ -107,6 +108,43 @@ const Application = () => {
       Update
     </button>,
   ]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/loans/all');
+      if (response.data && Array.isArray(response.data)) {
+          // Transform the data
+          const transformedData = response.data.map((item, index) => ({
+            name: item.name,
+            id: item.id,
+            loanNo: `LN-${item.application_date.slice(0, 10).replace(/-/g, '')}-${(index + 1)
+              .toString()
+              .padStart(3, '0')}`,
+            loanAmount: `₱${Number(item.requested_amount).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}`,
+            dateRelease: item.application_date.slice(0, 10),
+            approvedBy: "Admin", // Replace with actual data if available
+            dueDate: item.due_date.slice(0, 10),
+            status: item.status.charAt(0).toUpperCase() + item.status.slice(1), // e.g. 'Pending'
+          }));
+
+          // Set the state
+          setApplications(transformedData);
+          setFilteredApps(transformedData);
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+
+      console.log("Applications fetched successfully:", response.data);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+    }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh", position: "relative" }}>
