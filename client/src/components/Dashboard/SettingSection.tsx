@@ -41,6 +41,11 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
     navigate('/aboutSetting');
   };
 
+  const handleBugReportClick = () => {
+    handleClosePanel();
+    navigate('/userBugReport');
+  };
+
   return (
     <>
       <div className='small-setting-section'>
@@ -78,7 +83,7 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
           <>
             <h6 className="custom-header">Security</h6>
             <div className="card shadow-sm mb-4 custom-card-setting">
-              <button onClick={handleAuditLogClick} type="button" className="btn text-nowrap text-start">
+              <button onClick={handleBugReportClick} type="button" className="btn text-nowrap text-start">
                 <h6>Report a Bug</h6>
                 <p className="mb-0">Report site issues encountered</p>
               </button>
