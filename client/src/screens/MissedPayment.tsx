@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
@@ -77,6 +77,10 @@ const MissedPayment = () => {
     payment.totalAmount,
     payment.contactNo,
   ]);
+
+    useEffect(() => {
+      document.title = "MHSTEMPC | Missed Payment";
+    }, []);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>

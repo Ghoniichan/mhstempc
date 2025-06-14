@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -48,14 +48,12 @@ const AddPaymentCard: React.FC = () => {
     const [errors, setErrors] = useState<ValidationErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Handle input changes
     const handleInputChange = (field: keyof Omit<PaymentFormData, 'dateIssued' | 'submissionTimestamp'>) => 
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setFormData(prev => ({
                 ...prev,
                 [field]: e.target.value
             }));
-            // Clear error when user starts typing
             if (errors[field]) {
                 setErrors(prev => ({
                     ...prev,
@@ -64,7 +62,6 @@ const AddPaymentCard: React.FC = () => {
             }
         };
 
-    // Handle date changes
     const handleDateChange = (field: keyof PaymentFormData['dateIssued']) => 
         (e: React.ChangeEvent<HTMLSelectElement>) => {
             setFormData(prev => ({
@@ -74,7 +71,6 @@ const AddPaymentCard: React.FC = () => {
                     [field]: e.target.value
                 }
             }));
-            // Clear date error when user selects
             if (errors.dateIssued) {
                 setErrors(prev => ({
                     ...prev,
@@ -83,7 +79,6 @@ const AddPaymentCard: React.FC = () => {
             }
         };
 
-    // Validation functions
     const validateFullName = (name: string): string | undefined => {
         if (!name.trim()) return 'Full name is required';
         if (name.trim().length < 2) return 'Full name must be at least 2 characters';
@@ -132,7 +127,6 @@ const AddPaymentCard: React.FC = () => {
         return undefined;
     };
 
-    // Validate all fields
     const validateForm = (): boolean => {
         const newErrors: ValidationErrors = {};
 
@@ -145,11 +139,9 @@ const AddPaymentCard: React.FC = () => {
 
         setErrors(newErrors);
 
-        // Return true if no errors
         return !Object.values(newErrors).some(error => error !== undefined);
     };
 
-    // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -160,25 +152,14 @@ const AddPaymentCard: React.FC = () => {
         }
 
         try {
-            // Add submission timestamp
             const finalFormData: PaymentFormData = {
                 ...formData,
                 submissionTimestamp: new Date().toISOString()
             };
 
-            // Generate JSON output
             const jsonOutput = JSON.stringify(finalFormData, null, 2);
-            
-            // Log JSON to console (for development)
             console.log('Payment Form Data JSON:', jsonOutput);
-            
-            // Show success message with JSON (remove in production)
             alert(`Payment saved successfully!\n\nJSON Output:\n${jsonOutput}`);
-            
-            // Here you would typically send to your API
-            // await savePaymentToAPI(finalFormData);
-            
-            // Navigate to payment page
             navigate('/payment');
             
         } catch (error) {
@@ -188,11 +169,13 @@ const AddPaymentCard: React.FC = () => {
             setIsSubmitting(false);
         }
     };
-
-    // Handle cancel
     const handleCancel = () => {
         navigate('/payment');
     };
+
+      useEffect(() => {
+        document.title = "MHSTEMPC | Add Payment";
+      }, []);
 
     return (
         <Container fluid className="add-payment-container py-5">

@@ -1,7 +1,12 @@
 import CustomTable from "../components/Dashboard/CustomTable";
 import Backbutton from "../components/Dashboard/Backbutton";
+import { useEffect } from "react";
 
 const UserLoanScreen = () => {
+    useEffect(() => {
+      document.title = "MHSTEMPC | Loans";
+    }, []);
+
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}>
@@ -16,7 +21,6 @@ const UserLoanScreen = () => {
           <h3 className="mb-0">Loans</h3>
         </div>
 
-        {/* row for search + buttons */}
 
         <CustomTable
           columnHeadings={[

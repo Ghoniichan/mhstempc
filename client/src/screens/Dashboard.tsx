@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SimpleCard from "../components/Dashboard/SimpleCard";
 import { useEffect, useState } from "react";
 
 const Dashboard = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [userRole, setUserRole] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
@@ -21,6 +22,36 @@ const Dashboard = () => {
 
         getUserRole();
     }, []);
+
+    useEffect(() => {
+        let title = "MHSTEMPC";
+
+        if (userRole === 'admin') {
+            if (location.pathname === '/application') {
+                title = "MHSTEMPC | Applications";
+            } else if (location.pathname === '/loans') {
+                title = "MHSTEMPC | Loans";
+            } else if (location.pathname === '/payment') {
+                title = "MHSTEMPC | Payment";
+            } else if (location.pathname === '/missedPayment') {
+                title = "MHSTEMPC | Missed Payment";
+            } else {
+                title = "MHSTEMPC | Admin Dashboard";
+            }
+        } else if (userRole === 'user') {
+            if (location.pathname === '/userLoan') {
+                title = "MHSTEMPC | My Loan";
+            } else if (location.pathname === '/userCapitalShare') {
+                title = "MHSTEMPC | Capital Share";
+            } else if (location.pathname === '/userSavings') {
+                title = "MHSTEMPC | Savings";
+            } else {
+                title = "MHSTEMPC | My Dashboard";
+            }
+        }
+
+        document.title = title;
+    }, [location.pathname, userRole]);
 
     if (isLoading) {
         return (
@@ -42,7 +73,7 @@ const Dashboard = () => {
         width: "100%",
         padding: "45px 20px",
         boxSizing: "border-box",
-        marginLeft: window.innerWidth > 768 ? "200px" : "0", // Responsive sidebar offset
+        marginLeft: window.innerWidth > 768 ? "200px" : "0",
     };
 
     const cardContainerStyle: React.CSSProperties = {

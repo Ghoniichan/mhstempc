@@ -1,7 +1,12 @@
 import CustomTable from "../components/Dashboard/CustomTable";
 import Backbutton from "../components/Dashboard/Backbutton";
+import { useEffect } from "react";
 
 const UserSavings = () => {
+  useEffect(() => {
+        document.title = "MHSTEMPC | Savings";
+      }, []);
+
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}>

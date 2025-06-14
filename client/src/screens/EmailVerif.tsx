@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
 import Form from "react-bootstrap/Form";
 import CustomButton from "../components/Dashboard/CustomButton";
@@ -16,7 +16,7 @@ const EmailVerif = () => {
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
-    setError(false); // Clear error when user starts typing
+    setError(false); 
 
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
@@ -53,9 +53,12 @@ const EmailVerif = () => {
       return;
     }
 
-    // Proceed with verification
     navigate("/newpass");
   };
+
+  useEffect(() => {
+        document.title = "MHSTEMPC | Email Verification";
+      }, []);
 
   return (
     <div
