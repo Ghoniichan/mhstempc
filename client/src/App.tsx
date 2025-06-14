@@ -31,11 +31,14 @@ import AuditLogScreen from './screens/AuditLogScreen';
 import AboutSettingScreen from './screens/AboutSettingScreen';
 import AppointmentRequestScreen from './screens/AppointmentRequestScreen'; 
 
+
 // User
 import UserLoanScreen from './screens/UserLoanScreen';
 import UserCapitalShare from './screens/UserCapitalShare';
 import UserSavings from './screens/UserSavings';
 import UserProfile from './screens/UserProfile';
+import UserAppointmentScreen from './screens/UserAppointmentScreen';
+import UserBugReportScreen from './screens/UserBugReportScreen';
 
 // Components
 import NavBar from './components/Dashboard/NavBar';
@@ -121,6 +124,8 @@ function App() {
           <Route path="/userCapitalShare" element={<UserCapitalShare />} />
           <Route path="/userSavings" element={<UserSavings/>} />
           <Route path="/userProfile" element={<UserProfile/>}/>
+          <Route path="/userAppointment" element={<UserAppointmentScreen />} />
+          <Route path="/userBugReport" element={<UserBugReportScreen />} />
         </Route>
 
         {/* Main layout for general public pages */}
