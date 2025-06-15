@@ -28,6 +28,21 @@ export const user: RequestHandler = async (req: Request, res: Response): Promise
   }
 }
 
+export const profile: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("SELECT first_name, middle_name, last_name, present_address, fb_acc_email_address, tel_cel_no, policy_number, membership_date FROM membership_applications WHERE account_id = $1;", [id]);
+    if (result.rows.length === 0) {
+      res.status(404).json("User not found");
+      return;
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
+
 export const addMember: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { userInfo, beneficiaries, employer } = req.body;
   const client = await pool.connect();
