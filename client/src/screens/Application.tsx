@@ -121,10 +121,8 @@ const Application = () => {
           // Transform the data
           const transformedData = response.data.map((item, index) => ({
             name: item.name,
-            id: item.id,
-            loanNo: `LN-${item.application_date.slice(0, 10).replace(/-/g, '')}-${(index + 1)
-              .toString()
-              .padStart(3, '0')}`,
+            id: item.policy_number,
+            loanNo: item.id,
             loanAmount: `₱${Number(item.requested_amount).toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2
