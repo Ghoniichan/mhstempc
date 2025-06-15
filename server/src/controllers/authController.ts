@@ -3,6 +3,7 @@ import { Request, Response, RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import pool from '../config/db.config'; // Adjust path to your database connection
 import jwtGenerator from '../utils/jwtGenerator'; // Adjust path to your JWT utility
+import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
@@ -67,6 +68,18 @@ export const register: RequestHandler = async(req: Request, res: Response) => {
 export const verify = async (req: Request, res: Response): Promise<void> => {
   try {
     res.json(true);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
+
+export const genPass = async (req: Request, res: Response): Promise<void> => {
+  const { pass } = req.params; 
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const bcryptPassword = await bcrypt.hash(pass, salt);
+    res.json({ password: pass, hash: bcryptPassword });
   } catch (err: any) {
     console.error(err.message);
     res.status(500).send("Server error");
