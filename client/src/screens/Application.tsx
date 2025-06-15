@@ -119,7 +119,7 @@ const Application = () => {
         const response = await axios.get('/api/loans/all');
       if (response.data && Array.isArray(response.data)) {
           // Transform the data
-          const transformedData = response.data.map((item, index) => ({
+          const transformedData = response.data.map(item => ({
             name: item.name,
             id: item.policy_number,
             loanNo: item.id,
