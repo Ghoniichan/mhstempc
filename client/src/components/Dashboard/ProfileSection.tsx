@@ -1,11 +1,13 @@
-import { useState, useRef, ChangeEvent } from 'react';
+import { useState, useRef, ChangeEvent, useEffect } from 'react';
 import './ProfileSection.css';
 import ProfileIcon from '../../../src/assets/Images/ProfileIcon.png';
+import axios from '../../api/axiosInstance';
 
 const ProfileSection = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profilePic, setProfilePic] = useState(ProfileIcon);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -63,6 +65,58 @@ const ProfileSection = () => {
       setIsEditing(false);
     }
   };
+
+  useEffect(() => {
+    // Load initial profile data from localStorage or API
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+    const payload = token.split('.')[1];
+    const decoded = JSON.parse(atob(payload));
+    const id = decoded?.user?.id;
+
+    // Fetch user profile data from API
+    const fetchProfileData = async () => {
+      try {
+        const response = await axios.get(`/api/user/profile/${id}`);
+        const data = response.data;
+
+        setFormData({
+          firstName: data.first_name || '',
+          middleName: data.middle_name || '',
+          lastName: data.last_name || '',
+          address: data.present_address || '',
+          zip: '', // no corresponding field; set as needed
+          email: data.fb_acc_email_address || '',
+          department: '', // no corresponding field; set as needed
+          policyNumber: data.policy_number || '',
+          contact: data.tel_cel_no || '',
+          membershipType: 'Regular', // or map from data.membership_type if available
+          dateOfMembership: data.membership_date
+            ? new Date(data.membership_date).toISOString().slice(0, 10)
+            : '',
+        });
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="sectionnn">

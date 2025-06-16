@@ -77,3 +77,58 @@ export const getloans: RequestHandler = async (req: Request, res: Response): Pro
         client.release();
     }
 };
+
+
+
+
+export const updateLoanStatus: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    const ALLOWED_STATUSES = ['pending', 'approved', 'rejected', 'processing'];
+    const client = await pool.connect();
+    try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Validate presence
+    if (!status) {
+        res.status(400).json({ error: "Missing 'status' in request body" });
+        return;
+    }
+    // Optionally validate allowed values
+    if (!ALLOWED_STATUSES.includes(status)) {
+        res.status(400).json({ error: `Invalid status value. Allowed: ${ALLOWED_STATUSES.join(', ')}` });
+        return;
+    }
+
+    // Check if loan exists
+    const findRes = await client.query(
+        'SELECT id, status FROM loan_applications WHERE id = $1',
+        [id]
+    );
+    if (findRes.rows.length === 0) {
+        res.status(404).json({ error: 'Loan application not found' });
+        return;
+    }
+
+    // Update status
+    const updateRes = await client.query(
+        `UPDATE loan_applications
+            SET status = $1
+        WHERE id = $2
+        RETURNING id, membership_application_id, requested_amount, application_date, due_date, status`
+        ,
+        [status, id]
+    );
+    const updatedLoan = updateRes.rows[0];
+
+    res.status(200).json({
+        message: "Status updated successfully",
+        loan: updatedLoan,
+    });
+    } catch (err: any) {
+    console.error('Error in updateLoanStatus:', err);
+    // If you had a transaction here, you might roll back; but since it's a single UPDATE, no explicit BEGIN/COMMIT needed.
+    res.status(500).json({ error: 'Internal server error' });
+    } finally {
+    client.release();
+    }
+};
