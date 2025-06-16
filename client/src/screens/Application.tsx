@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-=======
 import { useState, useEffect } from "react";
->>>>>>> a8f7878269ef700b72c69fa269b3927d3a5f992f
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
@@ -16,6 +12,7 @@ const Application = () => {
   const navigate = useNavigate();
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState("All");
 
   const [applications, setApplications] = useState([
     {
@@ -67,14 +64,15 @@ const Application = () => {
     const lowerQuery = query.trim().toLowerCase();
 
     if (lowerQuery === "") {
-      setFilteredApps(applications);
+      filterByStatus(selectedStatus);
       return;
     }
 
     const result = applications.filter(
       app =>
-        app.name.toLowerCase().includes(lowerQuery) ||
-        app.loanNo.toLowerCase().includes(lowerQuery)
+        (app.name.toLowerCase().includes(lowerQuery) ||
+          app.loanNo.toLowerCase().includes(lowerQuery)) &&
+        (selectedStatus === "All" || app.status.toLowerCase() === selectedStatus.toLowerCase())
     );
 
     setFilteredApps(result);
@@ -99,6 +97,19 @@ const Application = () => {
     XLSX.writeFile(workbook, "applications.xlsx");
   };
 
+  const filterByStatus = (status: string) => {
+    setSelectedStatus(status);
+
+    if (status === "All") {
+      setFilteredApps(applications);
+    } else {
+      const filtered = applications.filter(
+        app => app.status.toLowerCase() === status.toLowerCase()
+      );
+      setFilteredApps(filtered);
+    }
+  };
+
   const rows = filteredApps.map((app, index) => [
     app.name,
     app.id,
@@ -121,8 +132,7 @@ const Application = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/loans/all');
-      if (response.data && Array.isArray(response.data)) {
-          // Transform the data
+        if (response.data && Array.isArray(response.data)) {
           const transformedData = response.data.map((item, index) => ({
             name: item.name,
             id: item.id,
@@ -134,22 +144,19 @@ const Application = () => {
               maximumFractionDigits: 2
             })}`,
             dateRelease: item.application_date.slice(0, 10),
-            approvedBy: "Admin", // Replace with actual data if available
+            approvedBy: "Admin",
             dueDate: item.due_date.slice(0, 10),
-            status: item.status.charAt(0).toUpperCase() + item.status.slice(1), // e.g. 'Pending'
+            status: item.status.charAt(0).toUpperCase() + item.status.slice(1),
           }));
 
-          // Set the state
           setApplications(transformedData);
           setFilteredApps(transformedData);
-      } else {
-        console.error("Unexpected response format:", response.data);
+        } else {
+          console.error("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching applications:", error);
       }
-
-      console.log("Applications fetched successfully:", response.data);
-    } catch (error) {
-      console.error("Error fetching applications:", error);
-    }
     };
     fetchData();
   }, []);
@@ -168,6 +175,23 @@ const Application = () => {
           <div style={{ flex: 1 }}>
             <SearchBar onSearch={handleSearch} />
           </div>
+
+          <ButtonCustom
+            text={`Status: ${selectedStatus}`}
+            backgroundColor="#ffffff"
+            textColor="#000"
+            borderColor="#d9d9d9"
+            iconSize="20px"
+            fontSize="14px"
+            height="45px"
+            isDropdown={true}
+            dropdownItems={[
+              { label: "All", onClick: () => filterByStatus("All") },
+              { label: "Approved", onClick: () => filterByStatus("Approved") },
+              { label: "Disapproved", onClick: () => filterByStatus("Disapproved") },
+              { label: "Pending", onClick: () => filterByStatus("Pending") },
+            ]}
+          />
 
           <ButtonCustom
             text="Application"

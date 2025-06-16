@@ -134,7 +134,7 @@ const MembershipFormSecond: React.FC<MembershipFormSecondProps> = ({ onCancel })
                   >
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary px-5">
+                  <button type="submit" className="btn btn-primary px-5" style={{backgroundColor: '#002d62'}}>
                     Submit
                   </button>
                 </div>

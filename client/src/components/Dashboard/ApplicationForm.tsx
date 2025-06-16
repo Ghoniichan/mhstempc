@@ -157,16 +157,15 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
 }, [user]);
 
   return (
-    <Container fluid className="py-3 main-content">
-      <Row className="justify-content-center">
-        <Col xs={12} md={10} lg={9} xl={8}>
+    <Container fluid className="py-1 main-content">
+      
           <div className="top-bar">
             <span className="top-bar-text gothic-a1-bold">
               MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
             </span>
           </div>
 
-          <div className="card shadow-lg p-4 mb-5 bg-white rounded" style={{width: '1200px', maxWidth: '970px'}}>
+          <div className="formcard shadow-lg p-4 mb-5 bg-white rounded " style={{width: '1200px', maxWidth: '970px'}}>
             <div className="card-body scrollable-form">
               <form onSubmit={handleSubmit}>
                 {/* Row 1 */}
@@ -393,14 +392,14 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
                   We agreed and understand that if the borrower whose name appears above was unable to pay for three consecutive months, we will surrender our client ATM card (where we obtain our salary) to MHSTEMPC to deduct payments for the loan involved.
                 </p>
 
-                <Row className="mb-5">
+                <Row className="mb-2">
                   <Col xs={12} md={6}>
-                    <label htmlFor="comakerName" className="form-label gothic-a1-bold">Co-Makers Name</label>
+                    <label htmlFor="comakerName" className="form-label gothic-a1-bold">Co-Makers Name:</label>
                     <input 
                       type="text" 
                       className="form-control" 
                       id="comakerName" 
-                      style={{width: '450px', maxWidth: '500px'}}
+                      style={{width: '450px', maxWidth: '500px', paddingBottom: '10px'}}
                       value={formData.coMaker?.name || ''}
                       onChange={(e) => handleInputChange('name', e.target.value, 'coMaker')}
                       />
@@ -418,6 +417,57 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
                       />
                   </Col>
                 </Row>
+                
+                <Row className="mb-2">
+                  <Col xs={12} md={6}>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      id="comakerName" 
+                      style={{width: '450px', maxWidth: '500px', paddingBottom: '10px'}}
+                      value={formData.coMaker?.name || ''}
+                      onChange={(e) => handleInputChange('name', e.target.value, 'coMaker')}
+                      />
+                  </Col>
+
+                  <Col xs={12} md={6}>
+                    <input 
+                      type="date" 
+                      className="form-control" 
+                      id="comakerSignDate" 
+                      style={{width: '430px', maxWidth: '500px'}} 
+                      value={formData.coMaker?.dateSigned || ''}
+                      onChange={(e) => handleInputChange('dateSigned', e.target.value, 'coMaker')}
+                      />
+                  </Col>
+                </Row>
+
+                <Row className="mb-5">
+                  <Col xs={12} md={6}>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      id="comakerName" 
+                      style={{width: '450px', maxWidth: '500px', paddingBottom: '10px'}}
+                      value={formData.coMaker?.name || ''}
+                      onChange={(e) => handleInputChange('name', e.target.value, 'coMaker')}
+                      />
+                  </Col>
+
+                  <Col xs={12} md={6}>
+                    <input 
+                      type="date" 
+                      className="form-control" 
+                      id="comakerSignDate" 
+                      style={{width: '430px', maxWidth: '500px'}} 
+                      value={formData.coMaker?.dateSigned || ''}
+                      onChange={(e) => handleInputChange('dateSigned', e.target.value, 'coMaker')}
+                      />
+                  </Col>
+                </Row>
+                
+
+                
 
                 {/* Officer Use Section */}
                 <h4 className="card-title mb-5 text-center gothic-a1-bold" style={{ fontSize: '20px' }}>
@@ -454,8 +504,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
               </form>
             </div>
           </div>
-        </Col>
-      </Row>
+        
     </Container>
   );
 };
