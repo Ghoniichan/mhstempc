@@ -48,13 +48,7 @@ const ClientProfileCapitalShareScreen = () => {
     >
       <h1>Client Profile</h1>
 
-      <div
-        style={{
-          flexGrow: 1,
-          overflowY: 'auto',
-          paddingRight: '10px',  
-        }}
-      >
+      <div style={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', paddingRight: '10px' }}>
         <InformationCard
           name="John Doe"
           title="Client Loan Profile"
