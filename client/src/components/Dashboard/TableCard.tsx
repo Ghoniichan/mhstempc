@@ -83,13 +83,10 @@ const TableCard: React.FC = () => {
   // Updated type to ReactNode[]
   const handleRowClick = (row: React.ReactNode[]) => {
     const policyNumber = row[1] as string;
-<<<<<<< HEAD
+
   alert(`Policy Number: ${policyNumber}`);
   navigate('/clientLoan', { state: { policy_no: policyNumber } });
 
-=======
-    navigate('/clientLoan', { state: { policy_no: policyNumber } });
->>>>>>> 4268600491634c87dc60a996934688c47502905e
   };
 
   const columnHeadings = [
