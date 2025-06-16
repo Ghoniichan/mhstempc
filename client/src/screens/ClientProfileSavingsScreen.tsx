@@ -62,8 +62,7 @@ const ClientProfileSavingsScreen = () => {
       <div className="flex-grow-1 d-flex flex-column" style={{ padding: '40px 20px', overflow: 'hidden' }}>
         <h1>Client Profile</h1>
 
-        {/* Scrollable InformationCard */}
-        <div style={{ flexGrow: 1, overflowY: 'auto', paddingRight: '10px' }}>
+        <div style={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', paddingRight: '10px' }}>
           <InformationCard
             title="Client Loan Profile"
             name="John Doe"
@@ -79,7 +78,7 @@ const ClientProfileSavingsScreen = () => {
           />
         </div>
 
-        {/* Add Savings Entry Form - fixed at bottom */}
+        {/* Add Savings Entry Form */}
         <div className="mt-4 bg-white pt-3" style={{ flexShrink: 0 }}>
           <h5>Add New Savings Entry</h5>
           <div className="row g-2 align-items-end">
