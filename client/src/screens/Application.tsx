@@ -38,17 +38,13 @@ const Application = () => {
     setShowEditModal(true);
   };
 
-// Example inside handleUpdateStatus in your React component:
   const handleUpdateStatus = async (newStatus: string) => {
     if (editingIndex === null) return;
 
     const editedApp = filteredApps[editingIndex];
-    const loanIdentifier = editedApp.loanNo; // must match the DB id used in backend
-
-    // Optionally keep previousStatus for rollback
+    const loanIdentifier = editedApp.loanNo;
     const previousStatus = editedApp.status;
 
-    // Optimistic UI update (optional):
     const optimisticApp = { ...editedApp, status: newStatus };
     setFilteredApps(prev => {
       const arr = [...prev];
@@ -69,49 +65,36 @@ const Application = () => {
         status: newStatus.toLowerCase(),
       });
       console.log("Server response:", response.data);
-      // Optionally replace optimistic data with server-returned data:
-      // const updatedFromServer = response.data.loan;
-      // setFilteredApps(...) and setApplications(...) accordingly.
     } catch (error) {
       console.error("Failed to update status on server:", error);
-      // Rollback on error
       setFilteredApps(prev => {
         const arr = [...prev];
-        // Find index again: careful because filteredApps state was overwritten optimistically
         const idx = prev.findIndex(app => app.id === loanIdentifier);
-        if (idx !== -1) {
-          arr[idx] = { ...arr[idx], status: previousStatus };
-        }
+        if (idx !== -1) arr[idx] = { ...arr[idx], status: previousStatus };
         return arr;
       });
       setApplications(prev => {
         const arr = [...prev];
         const idx = prev.findIndex(app => app.id === loanIdentifier);
-        if (idx !== -1) {
-          arr[idx] = { ...arr[idx], status: previousStatus };
-        }
+        if (idx !== -1) arr[idx] = { ...arr[idx], status: previousStatus };
         return arr;
       });
       alert("Failed to update status. Please try again.");
     }
   };
 
-
   const handleSearch = (query: string) => {
     const lowerQuery = query.trim().toLowerCase();
-
     if (lowerQuery === "") {
       filterByStatus(selectedStatus);
       return;
     }
-
     const result = applications.filter(
       app =>
         (app.name.toLowerCase().includes(lowerQuery) ||
           app.loanNo.toLowerCase().includes(lowerQuery)) &&
         (selectedStatus === "All" || app.status.toLowerCase() === selectedStatus.toLowerCase())
     );
-
     setFilteredApps(result);
   };
 
@@ -128,7 +111,6 @@ const Application = () => {
         "Approval Status": app.status,
       }))
     );
-
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Applications");
     XLSX.writeFile(workbook, "applications.xlsx");
@@ -136,7 +118,6 @@ const Application = () => {
 
   const filterByStatus = (status: string) => {
     setSelectedStatus(status);
-
     if (status === "All") {
       setFilteredApps(applications);
     } else {
@@ -169,14 +150,8 @@ const Application = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/loans/all');
-<<<<<<< HEAD
         if (response.data && Array.isArray(response.data)) {
-          const transformedData = response.data.map((item, index) => ({
-=======
-      if (response.data && Array.isArray(response.data)) {
-          // Transform the data
-          const transformedData = response.data.map(item => ({
->>>>>>> 4268600491634c87dc60a996934688c47502905e
+          const transformedData = response.data.map((item) => ({
             name: item.name,
             id: item.policy_number,
             loanNo: item.id,
@@ -189,7 +164,6 @@ const Application = () => {
             dueDate: item.due_date.slice(0, 10),
             status: item.status.charAt(0).toUpperCase() + item.status.slice(1),
           }));
-
           setApplications(transformedData);
           setFilteredApps(transformedData);
         } else {
@@ -198,13 +172,6 @@ const Application = () => {
       } catch (error) {
         console.error("Error fetching applications:", error);
       }
-<<<<<<< HEAD
-=======
-
-    } catch (error) {
-      console.error("Error fetching applications:", error);
-    }
->>>>>>> 4268600491634c87dc60a996934688c47502905e
     };
     fetchData();
   }, []);
