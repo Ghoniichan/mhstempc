@@ -38,27 +38,64 @@ const Application = () => {
     setShowEditModal(true);
   };
 
-  const handleUpdateStatus = (newStatus: string) => {
+// Example inside handleUpdateStatus in your React component:
+  const handleUpdateStatus = async (newStatus: string) => {
     if (editingIndex === null) return;
 
-    const updated = [...filteredApps];
-    updated[editingIndex] = {
-      ...updated[editingIndex],
-      status: newStatus,
-    };
+    const editedApp = filteredApps[editingIndex];
+    const loanIdentifier = editedApp.loanNo; // must match the DB id used in backend
 
-    const globalIndex = applications.findIndex(
-      app => app.loanNo === updated[editingIndex].loanNo
-    );
+    // Optionally keep previousStatus for rollback
+    const previousStatus = editedApp.status;
 
-    const updatedGlobal = [...applications];
-    updatedGlobal[globalIndex] = updated[editingIndex];
-
-    setFilteredApps(updated);
-    setApplications(updatedGlobal);
+    // Optimistic UI update (optional):
+    const optimisticApp = { ...editedApp, status: newStatus };
+    setFilteredApps(prev => {
+      const arr = [...prev];
+      arr[editingIndex] = optimisticApp;
+      return arr;
+    });
+    setApplications(prev => {
+      const arr = [...prev];
+      const idx = prev.findIndex(app => app.id === loanIdentifier);
+      if (idx !== -1) arr[idx] = optimisticApp;
+      return arr;
+    });
     setShowEditModal(false);
     setEditingIndex(null);
+
+    try {
+      const response = await axios.patch(`/api/loans/${loanIdentifier}/status`, {
+        status: newStatus.toLowerCase(),
+      });
+      console.log("Server response:", response.data);
+      // Optionally replace optimistic data with server-returned data:
+      // const updatedFromServer = response.data.loan;
+      // setFilteredApps(...) and setApplications(...) accordingly.
+    } catch (error) {
+      console.error("Failed to update status on server:", error);
+      // Rollback on error
+      setFilteredApps(prev => {
+        const arr = [...prev];
+        // Find index again: careful because filteredApps state was overwritten optimistically
+        const idx = prev.findIndex(app => app.id === loanIdentifier);
+        if (idx !== -1) {
+          arr[idx] = { ...arr[idx], status: previousStatus };
+        }
+        return arr;
+      });
+      setApplications(prev => {
+        const arr = [...prev];
+        const idx = prev.findIndex(app => app.id === loanIdentifier);
+        if (idx !== -1) {
+          arr[idx] = { ...arr[idx], status: previousStatus };
+        }
+        return arr;
+      });
+      alert("Failed to update status. Please try again.");
+    }
   };
+
 
   const handleSearch = (query: string) => {
     const lowerQuery = query.trim().toLowerCase();
@@ -132,13 +169,17 @@ const Application = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/loans/all');
+<<<<<<< HEAD
         if (response.data && Array.isArray(response.data)) {
           const transformedData = response.data.map((item, index) => ({
+=======
+      if (response.data && Array.isArray(response.data)) {
+          // Transform the data
+          const transformedData = response.data.map(item => ({
+>>>>>>> 4268600491634c87dc60a996934688c47502905e
             name: item.name,
-            id: item.id,
-            loanNo: `LN-${item.application_date.slice(0, 10).replace(/-/g, '')}-${(index + 1)
-              .toString()
-              .padStart(3, '0')}`,
+            id: item.policy_number,
+            loanNo: item.id,
             loanAmount: `₱${Number(item.requested_amount).toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2
@@ -157,6 +198,13 @@ const Application = () => {
       } catch (error) {
         console.error("Error fetching applications:", error);
       }
+<<<<<<< HEAD
+=======
+
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+    }
+>>>>>>> 4268600491634c87dc60a996934688c47502905e
     };
     fetchData();
   }, []);
