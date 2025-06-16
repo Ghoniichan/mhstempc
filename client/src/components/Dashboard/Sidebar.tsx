@@ -12,13 +12,10 @@ const Sidebar = () => {
   const location = useLocation();
 
   const logout = () => {
-    localStorage.removeItem('token');
-<<<<<<< HEAD
-  };
-=======
-    localStorage.removeItem('role');
-  }
->>>>>>> a8f7878269ef700b72c69fa269b3927d3a5f992f
+  localStorage.removeItem('token');
+  localStorage.removeItem('role');
+};
+
 
   useEffect(() => {
     const getUserRole = () => {

@@ -23,7 +23,7 @@ const RegisterApplicationFormScreen = () => {
         className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
         style={{ padding: "40px 20px" }}
       >
-        <h1>Register Application Form</h1>
+        <h3>Register Application Form</h3>
         {step === 1 && <MembershipForm onNext={handleNext} />}
         {step === 2 && <MembershipFormSecond onCancel={handleCancel} />}
       </div>
