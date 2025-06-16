@@ -11,7 +11,7 @@ const ClientProfileLoanScreen = () => {
         className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
         style={{ padding: '40px 20px' }}
       >
-        <h1>Clients</h1>
+        <h3>Clients</h3>
         <TableCard />
       </div>
     </div>

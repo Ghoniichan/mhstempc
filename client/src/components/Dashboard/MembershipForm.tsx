@@ -42,6 +42,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
             businessTelNo: '',
             fbAccEmailAddress: '',
             presentEmployerAddress: ''
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         beneficiaries: [
             { name: '', percentage: '' },
@@ -271,7 +272,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Date and Policy Number */}
                                     <div className="d-flex flex-column align-items-end mb-5" style={{ maxWidth: 220, marginLeft: 'auto' }}>
                                         <div className="mb-3 w-100">
-                                            <label htmlFor="membershipDate" className="form-label fw-semibold">
+                                            <label htmlFor="membershipDate" className="form-label gothic-a1-bold">
                                                 Date: <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -287,7 +288,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </div>
                                         <div className="w-100">
-                                            <label htmlFor="membershipPolicyNumber" className="form-label fw-semibold">
+                                            <label htmlFor="membershipPolicyNumber" className="form-label gothic-a1-bold">
                                                 Policy Number: <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -307,7 +308,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 1 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="firstName" className="form-label fw-semibold">
+                                            <label htmlFor="firstName" className="form-label gothic-a1-bold">
                                                 First Name <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -323,7 +324,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="middleName" className="form-label fw-semibold">Middle Name</label>
+                                            <label htmlFor="middleName" className="form-label gothic-a1-bold">Middle Name</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -333,7 +334,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             />
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="lastName" className="form-label fw-semibold">
+                                            <label htmlFor="lastName" className="form-label gothic-a1-bold">
                                                 Last Name <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -353,7 +354,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 2 */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="presentAddress" className="form-label fw-semibold">
+                                            <label htmlFor="presentAddress" className="form-label gothic-a1-bold">
                                                 Present Address <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -373,7 +374,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 3 */}
                                     <Row className="mb-5">
                                         <Col xs={12}>
-                                            <label htmlFor="provincialAddress" className="form-label fw-semibold">Provincial Address (If any)</label>
+                                            <label htmlFor="provincialAddress" className="form-label gothic-a1-bold">Provincial Address (If any)</label>
                                             <input
                                                 type="text"
                                                 className="form-control custom-address-input"
@@ -387,7 +388,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 4 */}
                                     <Row className="mb-5">
                                         <Col xs={12}>
-                                            <p className="fw-semibold">
+                                            <p className="gothic-a1-bold">
                                                 Type of house residing in: <span className="text-danger">*</span>
                                             </p>
                                             {hasFieldError('userInfo.houseType') && (
@@ -444,7 +445,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 className="form-check-input me-2"
                                                 required
                                             />
-                                            <label htmlFor="others" className="form-check-label me-2">Others:</label>
+                                            <label htmlFor="others" className="form-check-label me-2 ">Others:</label>
                                             <input
                                                 type="text"
                                                 className={`form-control ${hasFieldError('userInfo.houseTypeOther') ? 'is-invalid' : ''}`}
@@ -462,7 +463,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 5 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="birthDate" className="form-label fw-semibold">
+                                            <label htmlFor="birthDate" className="form-label gothic-a1-bold">
                                                 Date of Birth <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -478,7 +479,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="age" className="form-label fw-semibold">
+                                            <label htmlFor="age" className="form-label gothic-a1-bold">
                                                 Age <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -496,7 +497,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="telCelNo" className="form-label fw-semibold">
+                                            <label htmlFor="telCelNo" className="form-label gothic-a1-bold">
                                                 Tel/Cell No. <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -516,7 +517,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 6 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="civilStatus" className="form-label fw-semibold">
+                                            <label htmlFor="civilStatus" className="form-label gothic-a1-bold">
                                                 Civil Status <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -532,7 +533,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="sex" className="form-label fw-semibold">
+                                            <label htmlFor="sex" className="form-label gothic-a1-bold">
                                                 Sex <span className="text-danger">*</span>
                                             </label>
                                             <select
@@ -553,12 +554,12 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="citizenship" className="form-label fw-semibold">
+                                            <label htmlFor="citizenship" className="form-label gothic-a1-bold">
                                                 Citizenship <span className="text-danger">*</span>
                                             </label>
                                             <input
                                                 type="text"
-                                                className={`form-control ${hasFieldError('userInfo.citizenship') ? 'is-invalid' : ''}`}
+                                                className= {`form-control ${hasFieldError('userInfo.citizenship') ? 'is-invalid' : ''}`}
                                                 id="citizenship"
                                                 value={formData.userInfo.citizenship}
                                                 onChange={e => handleInputChange('userInfo', 'citizenship', e.target.value)}
@@ -573,7 +574,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 7 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={8}>
-                                            <label htmlFor="religion" className="form-label fw-semibold">
+                                            <label htmlFor="religion" className="form-label gothic-a1-bold">
                                                 Religion <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -589,7 +590,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="tinNumber" className="form-label fw-semibold">
+                                            <label htmlFor="tinNumber" className="form-label gothic-a1-bold">
                                                 TIN Number <span className="text-danger">*</span>
                                             </label>
                                             <input
@@ -609,7 +610,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 8 */}
                                     <Row className="mb-5">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="spouseName" className="form-label fw-semibold">Spouse</label>
+                                            <label htmlFor="spouseName" className="form-label gothic-a1-bold">Spouse</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -619,7 +620,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             />
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="spouseAge" className="form-label fw-semibold">Age</label>
+                                            <label htmlFor="spouseAge" className="form-label gothic-a1-bold">Age</label>
                                             <input
                                                 type="number"
                                                 className={`form-control ${hasFieldError('userInfo.spouseAge') ? 'is-invalid' : ''}`}
@@ -635,7 +636,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="spouseOccupation" className="form-label fw-semibold">Occupation</label>
+                                            <label htmlFor="spouseOccupation" className="form-label gothic-a1-bold">Occupation</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
@@ -649,7 +650,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 9 */}
                                     <Row className="mb-5">
                                         <Col xs={12} md={8}>
-                                            <label htmlFor="beneficiaryName" className="form-label fw-semibold">Name of Beneficiaries:</label>
+                                            <label htmlFor="beneficiaryName" className="form-label gothic-a1-bold">Name of Beneficiaries:</label>
                                             {formData.beneficiaries.map((b, idx) => (
                                                 <input
                                                     key={idx}
@@ -661,7 +662,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             ))}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="allowedPercentage" className="form-label fw-semibold">Allowed Percentage:</label>
+                                            <label htmlFor="allowedPercentage" className="form-label gothic-a1-bold">Allowed Percentage:</label>
                                             {formData.beneficiaries.map((b, idx) => (
                                                 <input
                                                     key={idx}
@@ -675,12 +676,12 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                         </Col>
                                     </Row>
 
-                                    <h5 className="mb-3">Employment Information:</h5>
+                                    <h5 className="mb-3 gothic-a1-bold">Employment Information:</h5>
 
                                     {/* Row 10 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="employerName" className="form-label fw-semibold">Name of Employers:</label>
+                                            <label htmlFor="employerName" className="form-label gothic-a1-bold">Name of Employers:</label>
                                             {formData.employmentHistory.map((emp, idx) => (
                                                 <input
                                                     key={idx}
@@ -692,7 +693,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             ))}
                                         </Col>
                                         <Col xs={12} md={4}>
-                                            <label htmlFor="employmentDate" className="form-label fw-semibold">Date of Employment:</label>
+                                            <label htmlFor="employmentDate" className="form-label gothic-a1-bold">Date of Employment:</label>
                                             {formData.employmentHistory.map((emp, idx) => (
                                                 <input
                                                     key={idx}
@@ -721,7 +722,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 11 */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="presentEmployerAddress" className="form-label fw-semibold">Address of Present Employer</label>
+                                            <label htmlFor="presentEmployerAddress" className="form-label gothic-a1-bold">Address of Present Employer</label>
                                             <input
                                                 type="text"
                                                 className="form-control custom-address-input"
@@ -738,7 +739,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 12 */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="businessLivelihood" className="form-label fw-semibold">Business/Livelihood</label>
+                                            <label htmlFor="businessLivelihood" className="form-label gothic-a1-bold">Business/Livelihood</label>
                                             <input
                                                 type="text"
                                                 className="form-control custom-address-input"
@@ -792,14 +793,14 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 onChange={e => handleInputChange('userInfo', 'businessType', e.target.value)}
                                                 className="form-check-input me-2"
                                             />
-                                            <label htmlFor="corporation" className="form-check-label">Corporation</label>
+                                            <label htmlFor="corporation" className="form-check-label ">Corporation</label>
                                         </Col>
                                     </Row>
 
                                     {/* Row 14 */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="inlcusiveDateOperation" className="form-label fw-semibold">Inclusive Dates of Operation</label>
+                                            <label htmlFor="inlcusiveDateOperation" className="form-label gothic-a1-bold">Inclusive Dates of Operation</label>
                                             <input
                                                 type="date"
                                                 className="form-control custom-address-input"
@@ -816,7 +817,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 15 */}
                                     <Row className="mb-3">
                                         <Col xs={12}>
-                                            <label htmlFor="businessAddress" className="form-label fw-semibold">Address of Business</label>
+                                            <label htmlFor="businessAddress" className="form-label gothic-a1-bold">Address of Business</label>
                                             <input
                                                 type="text"
                                                 className="form-control custom-address-input"
@@ -833,7 +834,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     {/* Row 16 */}
                                     <Row className="mb-3">
                                         <Col xs={12} md={12} xl={4}>
-                                            <label htmlFor="businessTelNo" className="form-label fw-semibold">Business Telephone No.</label>
+                                            <label htmlFor="businessTelNo" className="form-label gothic-a1-bold">Business Telephone No.</label>
                                             <input
                                                 type="text"
                                                 className="form-control custom-address-input"
@@ -846,7 +847,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             )}
                                         </Col>
                                         <Col xs={12} md={12} xl={8}>
-                                            <label htmlFor="fbAccEmailAddress" className="form-label fw-semibold">Facebook Account/E-mail Address</label>
+                                            <label htmlFor="fbAccEmailAddress" className="form-label gothic-a1-bold">Facebook Account/E-mail Address</label>
                                             <input
                                                 type="text"
                                                 className="form-control custom-address-input"
@@ -862,7 +863,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
 
                                     {/* Submit */}
                                     <div className="mt-4 d-flex">
-                                        <button type="submit" className="btn btn-primary px-5 ms-auto">Next</button>
+                                        <button type="submit" className="btn btn-primary px-5 ms-auto gothic-a1-bold" style={{backgroundColor: '#002d62'}}>Next</button>
                                     </div>
                                 </form>
                             </div>

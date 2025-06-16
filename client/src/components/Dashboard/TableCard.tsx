@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Button, Dropdown } from 'react-bootstrap';
+import {  Dropdown } from 'react-bootstrap';
 import CustomTable from './CustomTable';
 import './TableCard.css';
 import SearchBar from './SearchBar';
 import axios from '../../api/axiosInstance';
+import ButtonCustom from './ButtonCustom';
 
 type PolicyRecord = {
   name: string;
@@ -82,12 +83,9 @@ const TableCard: React.FC = () => {
   // Updated type to ReactNode[]
   const handleRowClick = (row: React.ReactNode[]) => {
     const policyNumber = row[1] as string;
-<<<<<<< HEAD
-    alert(`Policy Number: ${policyNumber}`);
-    navigate('/clientLoan');
-=======
-    navigate('/clientLoan', { state: { policy_no: policyNumber } });
->>>>>>> a8f7878269ef700b72c69fa269b3927d3a5f992f
+  alert(`Policy Number: ${policyNumber}`);
+  navigate('/clientLoan', { state: { policy_no: policyNumber } });
+
   };
 
   const columnHeadings = [
@@ -107,14 +105,17 @@ const TableCard: React.FC = () => {
                 <SearchBar onSearch={handleSearch} />
               </Col>
               <Col xs={12} md={3}>
-                <Button
-                  variant="light"
-                  className="mb-2 w-100"
-                  style={{ border: '1px solid lightgray' }}
-                  onClick={handleRegisterClick}
-                >
-                  Register Member
-                </Button>
+                <ButtonCustom 
+                  text="Register"
+                  icon="bi bi-person-plus"
+                  backgroundColor="#ffffff"
+                  textColor="#000000"
+                  borderColor="lightgray"
+                  iconSize="20px"
+                  fontSize="15px"
+                  height="43px"
+                  onClick= {handleRegisterClick}
+                />
               </Col>
               <Col xs={12} md={3}>
                 <Dropdown className="mb-2 w-100">

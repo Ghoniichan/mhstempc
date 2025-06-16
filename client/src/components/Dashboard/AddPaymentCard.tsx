@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './AddPaymentCard.css';
 import { useNavigate } from 'react-router-dom';
+import axios from '../../api/axiosInstance';
 
 interface PaymentFormData {
     fullName: string;
@@ -28,8 +29,115 @@ interface ValidationErrors {
     loanAmount?: string;
 }
 
+// Policy Number Form Component
+type PolicyNumberFormProps = {
+    policyNumber: string;
+    setPolicyNumber: (value: string) => void;
+    onSubmit: (policyNumber: string) => void;
+};
+
+const PolicyNumberForm = ({ policyNumber, setPolicyNumber, onSubmit }: PolicyNumberFormProps) => {
+    const [localPolicyNumber, setLocalPolicyNumber] = useState(policyNumber);
+    const [validationError, setValidationError] = useState('');
+
+    const handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        setValidationError('');
+        
+        if (localPolicyNumber.trim()) {
+            console.log('Policy Number submitted:', localPolicyNumber);
+            setPolicyNumber(localPolicyNumber);
+            onSubmit(localPolicyNumber);
+        } else {
+            setValidationError('Please enter a policy number');
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLocalPolicyNumber(e.target.value);
+        if (validationError) {
+            setValidationError('');
+        }
+    };
+
+    return (
+        <div className="container-fluid mb-4">
+            
+                <div className="col-12 col-md-10 col-lg-8">
+                    <div className="card shadow rounded-3" style={{width: '800px', maxWidth: '970px'}}>
+                        <div className="card-body p-1" >
+                            <div className="mb-1">
+                                <p className="text-muted mb-2 gothic-a1-normal" style={{fontSize: '16px', paddingTop: '20px', paddingLeft: '20px'}}>
+                                    Enter MHSTEMPC Policy Number to auto-fill personal information.
+                                </p>
+                            </div>
+                            
+                            <div style={{padding:'15px'}}>
+                                <div className="mb-3">
+                                    <label htmlFor="policyNumber" className="form-label gothic-a1-bold" style={{fontSize: '17px'}}>
+                                        MHSTEMPC Policy Number
+                                    </label>
+                                    <div className="row g-2">
+                                        <div className="col-12 col-sm-10">
+                                            <input
+                                                type="text"
+                                                className={`form-control form-control-lg ${validationError ? 'is-invalid' : ''}`}
+                                                id="policyNumber"
+                                                value={localPolicyNumber}
+                                                onChange={handleInputChange}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleSubmit(e);
+                                                    }
+                                                }}
+                                                style={{
+                                                    borderRadius: '8px',
+                                                    border: '2px solid #e9ecef',
+                                                    fontSize: '1rem'
+                                                }}
+                                            />
+                                            {validationError && (
+                                                <div className="invalid-feedback">{validationError}</div>
+                                            )}
+                                        </div>
+                                        <div className="col-12 col-sm-2">
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary btn-lg w-100 fw-semibold"
+                                                onClick={handleSubmit}
+                                                style={{
+                                                    backgroundColor: '#002d62',
+                                                    borderRadius: '10px'
+                                                }}
+                                            >
+                                                Enter
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+    );
+};
+
 const AddPaymentCard: React.FC = () => {
     const navigate = useNavigate();
+    
+    // Add policy number state
+    const [policyNumber, setPolicyNumber] = useState('');
+    const [, setUserData] = useState<{
+        first_name?: string;
+        middle_name?: string;
+        last_name?: string;
+        present_address?: string;
+        tel_cel_no?: string;
+        policy_number?: string;
+        membership_date?: string;
+    }>({});
     
     const [formData, setFormData] = useState<PaymentFormData>({
         fullName: '',
@@ -47,6 +155,35 @@ const AddPaymentCard: React.FC = () => {
 
     const [errors, setErrors] = useState<ValidationErrors>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handlePolicyNumberSubmit = async (policy_no: string) => {
+        try {
+            const response = await axios.get(`/api/user/${policy_no}`);
+            if (response.data) {
+                setUserData(response.data);
+                console.log('Fetched data:', response.data);
+                
+                const fullName = `${response.data.last_name || ''}, ${response.data.first_name || ''} ${response.data.middle_name || ''}`.trim();
+                setFormData(prev => ({
+                    ...prev,
+                    fullName: fullName.replace(/,\s*$/, ''),
+                    policyNum: policy_no
+                }));
+            } else {
+                console.error('No data found for the given policy number');
+                setErrors(prev => ({
+                    ...prev,
+                    policyNum: 'No data found for the given policy number'
+                }));
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            setErrors(prev => ({
+                ...prev,
+                policyNum: 'Invalid Policy Number'
+            }));
+        }
+    };
 
     const handleInputChange = (field: keyof Omit<PaymentFormData, 'dateIssued' | 'submissionTimestamp'>) => 
         (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +215,23 @@ const AddPaymentCard: React.FC = () => {
                 }));
             }
         };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleSubmit(e as any);
+        }
+    };
+
+    // Add handleSelectKeyDown for select elements
+    const handleSelectKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            handleSubmit(e as any);
+        }
+    };
 
     const validateFullName = (name: string): string | undefined => {
         if (!name.trim()) return 'Full name is required';
@@ -169,19 +323,27 @@ const AddPaymentCard: React.FC = () => {
             setIsSubmitting(false);
         }
     };
+
     const handleCancel = () => {
         navigate('/payment');
     };
 
-      useEffect(() => {
+    useEffect(() => {
         document.title = "MHSTEMPC | Add Payment";
-      }, []);
+    }, []);
 
     return (
         <Container fluid className="add-payment-container py-5">
             <Row className="justify-content-center">
                 <Col xs={12}>
                     <div className="form-wrapper">
+                        {/* Policy Number Form */}
+                        <PolicyNumberForm
+                            policyNumber={policyNumber}
+                            setPolicyNumber={setPolicyNumber}
+                            onSubmit={handlePolicyNumberSubmit}
+                        />
+
                         {/* Card with Top Bar Integrated */}
                         <div className="card shadow-lg mb-5 apc-card">
                             {/* Top Bar */}
@@ -203,6 +365,7 @@ const AddPaymentCard: React.FC = () => {
                                                 placeholder="Surname, First Name, M.I., Suffix" 
                                                 value={formData.fullName}
                                                 onChange={handleInputChange('fullName')}
+                                                onKeyDown={handleKeyDown}
                                                 required 
                                             />
                                             {errors.fullName && (
@@ -217,6 +380,7 @@ const AddPaymentCard: React.FC = () => {
                                                     id="month" 
                                                     value={formData.dateIssued.month}
                                                     onChange={handleDateChange('month')}
+                                                    onKeyDown={handleSelectKeyDown}
                                                     required
                                                 >
                                                     <option value="">Month</option>
@@ -233,6 +397,7 @@ const AddPaymentCard: React.FC = () => {
                                                     id="day" 
                                                     value={formData.dateIssued.day}
                                                     onChange={handleDateChange('day')}
+                                                    onKeyDown={handleSelectKeyDown}
                                                     required
                                                 >
                                                     <option value="">Day</option>
@@ -245,6 +410,7 @@ const AddPaymentCard: React.FC = () => {
                                                     id="year" 
                                                     value={formData.dateIssued.year}
                                                     onChange={handleDateChange('year')}
+                                                    onKeyDown={handleSelectKeyDown}
                                                     required
                                                 >
                                                     <option value="">Year</option>
@@ -270,6 +436,7 @@ const AddPaymentCard: React.FC = () => {
                                                 placeholder='MHSTEMPC Policy Number' 
                                                 value={formData.policyNum}
                                                 onChange={handleInputChange('policyNum')}
+                                                onKeyDown={handleKeyDown}
                                                 required  
                                             />
                                             {errors.policyNum && (
@@ -285,6 +452,7 @@ const AddPaymentCard: React.FC = () => {
                                                 placeholder='Collected By' 
                                                 value={formData.collectedBy}
                                                 onChange={handleInputChange('collectedBy')}
+                                                onKeyDown={handleKeyDown}
                                                 required 
                                             />
                                             {errors.collectedBy && (
@@ -304,6 +472,7 @@ const AddPaymentCard: React.FC = () => {
                                                 placeholder='Loan No.' 
                                                 value={formData.loanId}
                                                 onChange={handleInputChange('loanId')}
+                                                onKeyDown={handleKeyDown}
                                                 style={{width: '365px'}}
                                                 required 
                                             />
@@ -324,6 +493,7 @@ const AddPaymentCard: React.FC = () => {
                                                 placeholder='Loan Amount'
                                                 value={formData.loanAmount}
                                                 onChange={handleInputChange('loanAmount')}
+                                                onKeyDown={handleKeyDown}
                                                 style={{width: '365px'}}
                                                 required 
                                             />
