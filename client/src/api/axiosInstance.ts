@@ -1,7 +1,7 @@
 // src/api/axiosInstance.ts
 import axios, { InternalAxiosRequestConfig } from "axios";
 //import.meta.env.VITE_APP_API_BASE_URL ||
-const baseURL =  "http://localhost:9000";
+const baseURL =  import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:9000";
 const instance = axios.create({ baseURL });
 
 // 1. Add a request interceptor
