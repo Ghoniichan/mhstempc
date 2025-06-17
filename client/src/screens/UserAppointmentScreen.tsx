@@ -3,33 +3,41 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { FaClock, FaCalendarAlt } from 'react-icons/fa';
+import axios from '../api/axiosInstance';
 
 const UserAppointmentScreen = () => {
   const [time, setTime] = useState('10:00');
   const [date, setDate] = useState('2025-03-22');
   const [subject, setSubject] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setSuccess(false);
 
     try {
+      const token = localStorage.getItem('token');
+      //get account_id
+      const accountId = token ? JSON.parse(atob(token.split('.')[1])).user.id : null;
+      if (!accountId) {
+        throw new Error('No account ID found in token.');
+      }
+      
       const appointmentPayload = {
         // Single sender UUID
-        sender: 'admin-uuid-or-id-here',
+        sender: accountId,
         // Table columns mapping
         appointment_date: date,
         appointment_time: time,
         message: subject
       };
-      console.log('Creating appointment:', appointmentPayload);
 
-      setSuccess(true);
+      const response = await axios.post('/api/notifications/book-appointment', appointmentPayload);
+      if (response.status !== 201) {
+        throw new Error('Failed to book appointment.');
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
     } finally {
@@ -83,7 +91,6 @@ const UserAppointmentScreen = () => {
             </Form.Group>
 
             {error && <div className="alert alert-danger">{error}</div>}
-            {success && <div className="alert alert-success">Logged to console!</div>}
 
             <Button
               variant="primary"

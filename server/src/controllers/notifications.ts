@@ -19,6 +19,16 @@ export const bookAppointment = async (req: Request, res: Response): Promise<void
     try {
         await client.query('BEGIN');
 
+        const member_id = await client.query(
+            "SELECT id FROM membership_applications WHERE account_id = $1",
+            [sender]
+        );
+        
+        if (member_id.rows.length === 0) {
+            res.status(404).json({ error: "Member not found" });
+            return;
+        }
+
         const admin_ids = (await client.query("SELECT account_id FROM account_credentials WHERE is_admin = TRUE")).rows;
         const adminIds = admin_ids.map(r => r.account_id);
         if (adminIds.length === 0) {
@@ -33,7 +43,7 @@ export const bookAppointment = async (req: Request, res: Response): Promise<void
         VALUES
             ($1, $2::uuid[], $3, $4, $5)
         RETURNING *`,
-        [sender, adminIds, appointment_date, appointment_time, message]
+        [member_id.rows[0].id, adminIds, appointment_date, appointment_time, message]
         );
 
         if (insertResult.rows.length === 0) {
