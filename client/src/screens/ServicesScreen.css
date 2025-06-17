@@ -1,102 +1,101 @@
-/* ServicesScreen.css - Enhanced with your existing styles */
-
-.cont {
+.services-screen-wrapper .cont {
     background-color: white;
 }
 
-.srvs {
+.services-screen-wrapper .srvs {
     margin-bottom: 30px;
     margin-top: 100px;
 }
 
-.column {
+.services-screen-wrapper .column {
     text-align: center;
     margin-bottom: 40px;
 }
 
-.row {
+.services-screen-wrapper .row {
     justify-content: center;
     align-items: center;
 }
 
-.card-title {
+.services-screen-wrapper .card-title {
     font-size: 22px;
     padding-top: 15px;
 }
 
-.card {
+.services-screen-wrapper .card {
     max-width: 250px;
     width: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
 
-.card:hover {
+.services-screen-wrapper .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Responsive Breakpoints */
 @media (max-width: 992px) {
-    .srvs {
+    .services-screen-wrapper .srvs {
         margin-top: 80px;
         font-size: 2.2rem;
     }
-    
-    .card {
+
+    .services-screen-wrapper .card {
         max-width: 220px;
     }
-    
-    .card-title {
+
+    .services-screen-wrapper .card-title {
         font-size: 20px;
     }
 }
 
 @media (max-width: 768px) {
-    .srvs {
+    .services-screen-wrapper .srvs {
         margin-top: 60px;
         margin-bottom: 25px;
         font-size: 1.8rem;
     }
-    
-    .column {
+
+    .services-screen-wrapper .column {
         margin-bottom: 30px;
     }
-    
-    .card {
+
+    .services-screen-wrapper .card {
         max-width: 280px;
         margin-bottom: 20px;
     }
-    
-    .card-title {
+
+    .services-screen-wrapper .card-title {
         font-size: 20px;
         padding-top: 10px;
     }
-    
-    .card-body {
+
+    .services-screen-wrapper .card-body {
         padding: 1.5rem !important;
     }
 }
 
 @media (max-width: 576px) {
-    .srvs {
+    .services-screen-wrapper .srvs {
         margin-top: 50px;
         margin-bottom: 20px;
         font-size: 1.6rem;
     }
-    
-    .column {
+
+    .services-screen-wrapper .column {
         margin-bottom: 25px;
     }
-    
-    .card {
+
+    .services-screen-wrapper .card {
         max-width: 300px;
     }
-    
-    .card-title {
+
+    .services-screen-wrapper .card-title {
         font-size: 18px;
     }
-    
-    .card-body {
+
+    .services-screen-wrapper .card-body {
         padding: 1.25rem !important;
     }
 }

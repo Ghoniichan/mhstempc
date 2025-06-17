@@ -77,7 +77,8 @@ const EmailVerif = () => {
       <ColumnLayoutCard
         title="Email Verification"
         description="Please enter the 4 digit code that you received on your email"
-        titleStyle={{ fontSize: "20px", paddingLeft: "15px" }}
+        titleStyle={{ fontSize: "20px", paddingLeft: "15px", 
+          paddingTop: '15px' }}
         descriptionStyle={{
           fontSize: "15px",
           color: "#1e1e1e",
