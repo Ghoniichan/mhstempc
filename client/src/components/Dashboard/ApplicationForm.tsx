@@ -215,7 +215,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
               </Col>
               <Col xs={12} md={4}>
                 <label className="form-label gothic-a1-bold">Policy Number</label>
-                <div className="form-control" style={{ backgroundColor: '#e9ecef' }}>
+                <div className="form-control" style={{ backgroundColor: '#e9ecef', height: '38px' }}>
                   {formData.membershipInfo.policyNumber}
                 </div>
               </Col>
