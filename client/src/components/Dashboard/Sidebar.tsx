@@ -99,6 +99,10 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-people"></i></span>
         <span className="description">Client</span>
       </NavLink>
+      <NavLink to="/appointment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+        <span className="Navicon"><i className="bi bi-calendar-event"></i></span>
+        <span className="description">Appointment</span>
+      </NavLink>
       <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
         <span className="Navicon"><i className="bi bi-bell"></i></span>
         <span className="description">Notification</span>

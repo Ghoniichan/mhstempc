@@ -1,12 +1,14 @@
-.add-payment-container {
-    margin-left: 0px;
+/* AddPaymentCard.css – scoped to .add-payment-card-wrapper */
+
+.add-payment-card-wrapper .add-payment-container {
+    margin-left: 0;
     padding-top: 4rem;
     padding-right: 20rem;
     padding-left: 1rem;
     min-height: 100vh;
 }
 
-.paymenttop-bar {
+.add-payment-card-wrapper .paymenttop-bar {
     background-color: #002D62;
     height: 50px;
     width: 100%;
@@ -21,13 +23,11 @@
     font-weight: 600;  
     margin-bottom: 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Fixed: Ensure top bar stays attached to card */
     position: relative;
     z-index: 1;
 }
 
-/* Fixed: Updated card styling to work with top bar */
-.apc-card {
+.add-payment-card-wrapper .apc-card {
     background-color: white;
     width: 100%;
     max-width: 800px;
@@ -36,44 +36,40 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 0;
-    /* Fixed: Remove any conflicting borders or margins */
     border: none;
     position: relative;
 }
 
-/* Fixed: Ensure card body doesn't interfere with top bar */
-.apc-card .card-body {
+.add-payment-card-wrapper .apc-card .card-body {
     padding: 24px;
     margin-top: 0;
     border-top: none;
-    /* Fixed: Ensure proper background */
     background-color: white;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
 
-/* Style for the custom dropdown icon */
-.custom-dropdown {
-    padding-right: 2.5rem; /* Add space for the icon */
+.add-payment-card-wrapper .custom-dropdown {
+    padding-right: 2.5rem;
 }
 
-.dropdown-icon {
-    position: absolute; /* Fixed: Added missing position */
-    right: 1rem; /* Position the icon inside the dropdown */
-    top: 50%; /* Center the icon vertically */
+.add-payment-card-wrapper .dropdown-icon {
+    position: absolute; 
+    right: 1rem; 
+    top: 50%; 
     transform: translateY(-50%);
-    pointer-events: none; /* Prevent the icon from blocking clicks */
-    font-size: 1.2rem; /* Adjust icon size */
-    color: #6c757d; /* Optional: Match Bootstrap's default text color */
+    pointer-events: none; 
+    font-size: 1.2rem; 
+    color: #6c757d; 
 }
 
 /* Dropdowns row for Date Issued */
-.date-select {
+.add-payment-card-wrapper .date-select {
     display: flex;
     gap: 8px;
 }
 
-.date-select .form-select {
+.add-payment-card-wrapper .date-select .form-select {
     min-width: 70px;
     text-align: center;
     font-size: 15px;
@@ -81,41 +77,39 @@
     border: 1.5px solid #002D62;
 }
 
-.date-select .form-select:focus {
+.add-payment-card-wrapper .date-select .form-select:focus {
     border-color: #002D62;
     box-shadow: 0 0 0 0.2rem rgba(0, 45, 98, 0.25);
 }
 
 /* Input styling */
-.form-control {
+.add-payment-card-wrapper .form-control {
     width: 100%;
-    /* max-width: 400px; */
     height: 40px;
-    border: 1.5px solid #002D62; /* Fixed: Added consistent border */
+    border: 1.5px solid #002D62;
 }
 
-/* Fixed: Added focus state for form controls */
-.form-control:focus {
+.add-payment-card-wrapper .form-control:focus {
     border-color: #002D62;
     box-shadow: 0 0 0 0.2rem rgba(0, 45, 98, 0.25);
     outline: none;
 }
 
-.form-select {
+.add-payment-card-wrapper .form-select {
     font-size: 15px;
     height: 40px;
 }
 
 /* Wrapper to center the form and limit its width */
-.form-wrapper {
+.add-payment-card-wrapper .form-wrapper {
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
     padding-top: 0;
 }
 
-/* Fixed: Ensure proper top bar text styling */
-.top-bar-text {
+/* Top-bar text styling */
+.add-payment-card-wrapper .top-bar-text {
     color: white;
     font-size: 16px;
     font-weight: 600;
@@ -123,93 +117,94 @@
     padding: 0;
 }
 
-/* Fixed: Gothic font classes */
-.gothic-a1-bold {
+/* Gothic font */
+.add-payment-card-wrapper .gothic-a1-bold {
     font-weight: 600;
 }
 
-/* Fixed: Bootstrap overrides to prevent conflicts */
-.apc-card.card {
+/* Bootstrap overrides */
+.add-payment-card-wrapper .apc-card.card {
     border: none;
     border-radius: 12px;
 }
 
-.apc-card .card-header {
-    display: none; /* Hide default card header if present */
+.add-payment-card-wrapper .apc-card .card-header {
+    display: none;
 }
 
-/* Fixed: Ensure buttons are properly styled */
-.btn-primary {
+/* Button styles */
+.add-payment-card-wrapper .btn-primary {
     background-color: #002D62;
     border-color: #002D62;
 }
 
-.btn-primary:hover {
+.add-payment-card-wrapper .btn-primary:hover {
     background-color: #001a3d;
     border-color: #001a3d;
 }
 
-.btn-secondary {
+.add-payment-card-wrapper .btn-secondary {
     background-color: white;
     border-color: #002D62;
     color: #002D62;
 }
 
-.btn-secondary:hover {
+.add-payment-card-wrapper .btn-secondary:hover {
     background-color: #f8f9fa;
     border-color: #001a3d;
     color: #001a3d;
 }
 
+/* Responsive tweaks */
 @media (max-width: 768px) {
-    .add-payment-container {
+    .add-payment-card-wrapper .add-payment-container {
         padding-right: 1rem;
         padding-left: 1rem;
     }
     
-    .top-bar {
+    .add-payment-card-wrapper .top-bar {
         font-size: 14px;
         height: 50px;
         padding-left: 16px;
-        max-width: 100%; /* Fixed: Ensure full width on mobile */
+        max-width: 100%;
     }
     
-    .apc-card {
-        max-width: 100%; /* Fixed: Ensure full width on mobile */
+    .add-payment-card-wrapper .apc-card {
+        max-width: 100%;
     }
     
-    .apc-card .card-body {
+    .add-payment-card-wrapper .apc-card .card-body {
         padding: 24px 16px;
     }
     
-    .date-select {
+    .add-payment-card-wrapper .date-select {
         flex-direction: column;
         gap: 12px;
     }
     
-    .date-select .form-select {
+    .add-payment-card-wrapper .date-select .form-select {
         min-width: auto;
-        max-width: 100%; /* Fixed: Full width on mobile */
+        max-width: 100%;
     }
     
-    .form-control {
-        max-width: 100%; /* Fixed: Full width on mobile */
+    .add-payment-card-wrapper .form-control {
+        max-width: 100%;
     }
 }
 
-/* Background for the whole page */
-body {
+/* Page background */
+.add-payment-card-wrapper body {
     background-color: #f5f5f5;
 }
 
-/* Fixed: Ensure proper container layout */
-.container-fluid {
+/* Container overrides */
+.add-payment-card-wrapper .container-fluid {
     padding-left: 15px;
     padding-right: 15px;
 }
 
-/* Fixed: Error message styling */
-.invalid-feedback {
+/* Error styling */
+.add-payment-card-wrapper .invalid-feedback {
     display: block;
     width: 100%;
     margin-top: 0.25rem;
@@ -217,11 +212,11 @@ body {
     color: #dc3545;
 }
 
-.is-invalid {
+.add-payment-card-wrapper .is-invalid {
     border-color: #dc3545;
 }
 
-.is-invalid:focus {
+.add-payment-card-wrapper .is-invalid:focus {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }

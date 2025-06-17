@@ -63,7 +63,7 @@ const PolicyNumberForm = ({ policyNumber, setPolicyNumber, onSubmit }: PolicyNum
     return (
         <div className="container-fluid mb-4">
             
-                <div className="col-12 col-md-10 col-lg-8">
+                <div className="col-12 col-md-10 col-lg-8" >
                     <div className="card shadow rounded-3" style={{width: '800px', maxWidth: '970px'}}>
                         <div className="card-body p-1" >
                             <div className="mb-1">
@@ -224,14 +224,7 @@ const AddPaymentCard: React.FC = () => {
         }
     };
 
-    // Add handleSelectKeyDown for select elements
-    const handleSelectKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            handleSubmit(e as any);
-        }
-    };
+    // (Removed unused handleSelectKeyDown function)
 
     const validateFullName = (name: string): string | undefined => {
         if (!name.trim()) return 'Full name is required';
@@ -249,7 +242,7 @@ const AddPaymentCard: React.FC = () => {
             parseInt(date.day));
         
         const today = new Date();
-        if (selectedDate > today) return 'Date cannot be in the future';
+        if (selectedDate > today) return 'Date invalid';
         
         return undefined;
     };
@@ -333,203 +326,195 @@ const AddPaymentCard: React.FC = () => {
     }, []);
 
     return (
-        <Container fluid className="add-payment-container py-5">
-            <Row className="justify-content-center">
-                <Col xs={12}>
-                    <div className="form-wrapper">
-                        {/* Policy Number Form */}
-                        <PolicyNumberForm
-                            policyNumber={policyNumber}
-                            setPolicyNumber={setPolicyNumber}
-                            onSubmit={handlePolicyNumberSubmit}
+        <div className="add-payment-card-wrapper">
+      <Container fluid className="add-payment-container py-5" >
+        <Row className="justify-content-center">
+          <Col xs={12}>
+            <div className="form-wrapper">
+              <PolicyNumberForm
+                policyNumber={policyNumber}
+                setPolicyNumber={setPolicyNumber}
+                onSubmit={handlePolicyNumberSubmit}
+              />
+
+              <div className="card shadow-lg mb-5 apc-card">
+                <div className="paymenttop-bar">
+                  <span className="top-bar-text gothic-a1-bold">Add New Payment</span>
+                </div>
+                <div className="card-body">
+                  <form onSubmit={handleSubmit}>
+                    <Row className="mb-3">
+                      <Col xs={12} md={6}>
+                        <label htmlFor="fullName" className="form-label gothic-a1-bold">
+                          Full Name
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control ${errors.fullName ? 'is-invalid' : ''}`}
+                          id="fullName"
+                          placeholder="Surname, First Name, M.I., Suffix"
+                          value={formData.fullName}
+                          onChange={handleInputChange('fullName')}
+                          onKeyDown={handleKeyDown}
+                          required
                         />
-
-                        {/* Card with Top Bar Integrated */}
-                        <div className="card shadow-lg mb-5 apc-card">
-                            {/* Top Bar */}
-                            <div className="top-bar">
-                                <span className="paymenttop-bar-text gothic-a1-bold">Add New Payment</span>
-                            </div>
-
-                            {/* Card Body */}
-                            <div className="card-body">
-                                <form onSubmit={handleSubmit}>
-                                    {/* Row 1: Full Name & Date Issued */}
-                                    <Row className="mb-3">
-                                        <Col xs={12} md={6}>
-                                            <label htmlFor="fullName" className="form-label gothic-a1-bold">Full Name</label>
-                                            <input 
-                                                type="text" 
-                                                className={`form-control ${errors.fullName ? 'is-invalid' : ''}`}
-                                                id="fullName" 
-                                                placeholder="Surname, First Name, M.I., Suffix" 
-                                                value={formData.fullName}
-                                                onChange={handleInputChange('fullName')}
-                                                onKeyDown={handleKeyDown}
-                                                required 
-                                            />
-                                            {errors.fullName && (
-                                                <div className="invalid-feedback">{errors.fullName}</div>
-                                            )}
-                                        </Col>
-                                        <Col xs={12} md={6}>
-                                            <label htmlFor="dateIssued" className="form-label gothic-a1-bold">Date Issued</label>
-                                            <div className="date-select d-flex gap-2">
-                                                <select 
-                                                    className={`form-select ${errors.dateIssued ? 'is-invalid' : ''}`}
-                                                    id="month" 
-                                                    value={formData.dateIssued.month}
-                                                    onChange={handleDateChange('month')}
-                                                    onKeyDown={handleSelectKeyDown}
-                                                    required
-                                                >
-                                                    <option value="">Month</option>
-                                                    {[
-                                                        'January', 'February', 'March', 'April',
-                                                        'May', 'June', 'July', 'August',
-                                                        'September', 'October', 'November', 'December'
-                                                    ].map((month, index) => (
-                                                        <option key={index} value={month}>{month}</option>
-                                                    ))}
-                                                </select>
-                                                <select 
-                                                    className={`form-select ${errors.dateIssued ? 'is-invalid' : ''}`}
-                                                    id="day" 
-                                                    value={formData.dateIssued.day}
-                                                    onChange={handleDateChange('day')}
-                                                    onKeyDown={handleSelectKeyDown}
-                                                    required
-                                                >
-                                                    <option value="">Day</option>
-                                                    {Array.from({ length: 31 }, (_, i) => (
-                                                        <option key={i + 1} value={i + 1}>{i + 1}</option>
-                                                    ))}
-                                                </select>
-                                                <select 
-                                                    className={`form-select ${errors.dateIssued ? 'is-invalid' : ''}`}
-                                                    id="year" 
-                                                    value={formData.dateIssued.year}
-                                                    onChange={handleDateChange('year')}
-                                                    onKeyDown={handleSelectKeyDown}
-                                                    required
-                                                >
-                                                    <option value="">Year</option>
-                                                    {Array.from({ length: 96 }, (_, i) => (
-                                                        <option key={1930 + i} value={1930 + i}>{1930 + i}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {errors.dateIssued && (
-                                                <div className="invalid-feedback d-block">{errors.dateIssued}</div>
-                                            )}
-                                        </Col>
-                                    </Row>
-
-                                    {/* Row 2: Account ID & Collected By */}
-                                    <Row className="mb-3">
-                                        <Col xs={12} md={6}>
-                                            <label htmlFor="policyNum" className="form-label gothic-a1-bold">MHSTEMPC Policy Number</label>
-                                            <input 
-                                                type="text" 
-                                                className={`form-control ${errors.policyNum ? 'is-invalid' : ''}`}
-                                                id="accountID" 
-                                                placeholder='MHSTEMPC Policy Number' 
-                                                value={formData.policyNum}
-                                                onChange={handleInputChange('policyNum')}
-                                                onKeyDown={handleKeyDown}
-                                                required  
-                                            />
-                                            {errors.policyNum && (
-                                                <div className="invalid-feedback">{errors.policyNum}</div>
-                                            )}
-                                        </Col>
-                                        <Col xs={12} md={6}>
-                                            <label htmlFor="collectedBy" className="form-label gothic-a1-bold">Collected By</label>
-                                            <input 
-                                                type="text" 
-                                                className={`form-control ${errors.collectedBy ? 'is-invalid' : ''}`}
-                                                id="collectedBy" 
-                                                placeholder='Collected By' 
-                                                value={formData.collectedBy}
-                                                onChange={handleInputChange('collectedBy')}
-                                                onKeyDown={handleKeyDown}
-                                                required 
-                                            />
-                                            {errors.collectedBy && (
-                                                <div className="invalid-feedback">{errors.collectedBy}</div>
-                                            )}
-                                        </Col>
-                                    </Row>
-
-                                    {/* Row 3: Loan ID */}
-                                    <Row className="mb-3">
-                                        <Col xs={12}>
-                                            <label htmlFor="loanId" className="form-label gothic-a1-bold">Loan No.</label>
-                                            <input 
-                                                type="text" 
-                                                className={`form-control ${errors.loanId ? 'is-invalid' : ''}`}
-                                                id="loanId" 
-                                                placeholder='Loan No.' 
-                                                value={formData.loanId}
-                                                onChange={handleInputChange('loanId')}
-                                                onKeyDown={handleKeyDown}
-                                                style={{width: '365px'}}
-                                                required 
-                                            />
-                                            {errors.loanId && (
-                                                <div className="invalid-feedback">{errors.loanId}</div>
-                                            )}
-                                        </Col>
-                                    </Row>
-
-                                    {/* Row 4: Loan Amount */}
-                                    <Row className="mb-3">
-                                        <Col xs={12}>
-                                            <label htmlFor="loanAmount" className="form-label gothic-a1-bold">Loan Amount</label>
-                                            <input 
-                                                type="text" 
-                                                className={`form-control ${errors.loanAmount ? 'is-invalid' : ''}`}
-                                                id="loanAmount" 
-                                                placeholder='Loan Amount'
-                                                value={formData.loanAmount}
-                                                onChange={handleInputChange('loanAmount')}
-                                                onKeyDown={handleKeyDown}
-                                                style={{width: '365px'}}
-                                                required 
-                                            />
-                                            {errors.loanAmount && (
-                                                <div className="invalid-feedback">{errors.loanAmount}</div>
-                                            )}
-                                        </Col>
-                                    </Row>
-
-                                    {/* Buttons */}
-                                    <div className="mt-4 d-flex justify-content-end">
-                                        <button
-                                            type="button"
-                                            className="btn btn-secondary px-4 me-2 gothic-a1-bold"
-                                            style={{ color: '#002d62', backgroundColor: 'white' }}
-                                            onClick={handleCancel}
-                                            disabled={isSubmitting}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            className="btn btn-primary px-4 gothic-a1-bold"
-                                            style={{ backgroundColor: '#002d62' }}
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting ? 'Saving...' : 'Save Payment'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                        {errors.fullName && <div className="invalid-feedback">{errors.fullName}</div>}
+                      </Col>
+                      <Col xs={12} md={6}>
+                        <label htmlFor="dateIssued" className="form-label gothic-a1-bold">
+                          Date Issued
+                        </label>
+                        <div className="date-select">
+                          {['month', 'day', 'year'].map((field) => (
+                            <select
+                              key={field}
+                              className={`form-select ${errors.dateIssued ? 'is-invalid' : ''}`}
+                              value={formData.dateIssued[field as keyof typeof formData.dateIssued]}
+                              onChange={handleDateChange(field as keyof PaymentFormData['dateIssued'])}
+                              onKeyDown={handleKeyDown}
+                              required
+                            >
+                              <option value="">{field.charAt(0).toUpperCase() + field.slice(1)}</option>
+                              {field === 'month'
+                                ? [
+                                    'January',
+                                    'February',
+                                    'March',
+                                    'April',
+                                    'May',
+                                    'June',
+                                    'July',
+                                    'August',
+                                    'September',
+                                    'October',
+                                    'November',
+                                    'December'
+                                  ].map((m) => (
+                                    <option key={m} value={m}>
+                                      {m}
+                                    </option>
+                                  ))
+                                : Array.from({ length: field === 'year' ? 96 : 31 }, (_, i) => {
+                                    const val = field === 'year' ? 1930 + i : i + 1;
+                                    return (
+                                      <option key={val} value={val}>
+                                        {val}
+                                      </option>
+                                    );
+                                  })}
+                            </select>
+                          ))}
                         </div>
+                        {errors.dateIssued && (
+                          <div className="invalid-feedback d-block">{errors.dateIssued}</div>
+                        )}
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col xs={12} md={6}>
+                        <label htmlFor="policyNum" className="form-label gothic-a1-bold">
+                          MHSTEMPC Policy Number
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control ${errors.policyNum ? 'is-invalid' : ''}`}
+                          id="policyNum"
+                          placeholder="Policy Number"
+                          value={formData.policyNum}
+                          onChange={handleInputChange('policyNum')}
+                          onKeyDown={handleKeyDown}
+                          required
+                        />
+                        {errors.policyNum && <div className="invalid-feedback">{errors.policyNum}</div>}
+                      </Col>
+                      <Col xs={12} md={6}>
+                        <label htmlFor="collectedBy" className="form-label gothic-a1-bold">
+                          Collected By
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control ${errors.collectedBy ? 'is-invalid' : ''}`}
+                          id="collectedBy"
+                          placeholder="Collected By"
+                          value={formData.collectedBy}
+                          onChange={handleInputChange('collectedBy')}
+                          onKeyDown={handleKeyDown}
+                          required
+                        />
+                        {errors.collectedBy && (
+                          <div className="invalid-feedback">{errors.collectedBy}</div>
+                        )}
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col xs={12}>
+                        <label htmlFor="loanId" className="form-label gothic-a1-bold">
+                          Loan No.
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control ${errors.loanId ? 'is-invalid' : ''}`}
+                          id="loanId"
+                          placeholder="Loan No."
+                          value={formData.loanId}
+                          onChange={handleInputChange('loanId')}
+                          onKeyDown={handleKeyDown}
+                          style={{width: '365px'}}
+                          required
+                        />
+                        {errors.loanId && <div className="invalid-feedback">{errors.loanId}</div>}
+                      </Col>
+                    </Row>
+
+                    <Row className="mb-3">
+                      <Col xs={12}>
+                        <label htmlFor="loanAmount" className="form-label gothic-a1-bold">
+                          Loan Amount
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control ${errors.loanAmount ? 'is-invalid' : ''}`}
+                          id="loanAmount"
+                          placeholder="Loan Amount"
+                          value={formData.loanAmount}
+                          onChange={handleInputChange('loanAmount')}
+                          onKeyDown={handleKeyDown}
+                          style={{width: '365px'}}
+                          required
+                        />
+                        {errors.loanAmount && (
+                          <div className="invalid-feedback">{errors.loanAmount}</div>
+                        )}
+                      </Col>
+                    </Row>
+
+                    <div className="mt-4 d-flex justify-content-end">
+                      <button
+                        type="button"
+                        className="btn btn-secondary px-4 me-2 gothic-a1-bold"
+                        onClick={handleCancel}
+                        disabled={isSubmitting}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-primary px-4 gothic-a1-bold"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Saving...' : 'Save Payment'}
+                      </button>
                     </div>
-                </Col>
-            </Row>
-        </Container>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
     );
 };
 

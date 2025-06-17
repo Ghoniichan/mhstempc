@@ -25,7 +25,7 @@ const PasswordReset = () => {
                 <ColumnLayoutCard 
                     title="Password Reset!"
                     description="Your password has been successfully reset. Click below to continue."
-                    titleStyle={{ fontSize: '23px', textAlign: 'center' }}
+                    titleStyle={{ fontSize: '23px', textAlign: 'center', paddingTop: '20px' }}
                     descriptionStyle={{ fontSize: '15px', color: '#1e1e1e', textAlign: 'center', margin: '10px' }}
                 >
                     <CustomButton label="Back to Login" onClick={handleBackToLogin} />

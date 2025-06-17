@@ -27,7 +27,7 @@ const NavBar = () => {
       title = 'MHSTEMPC | Help';
     } else if (path === '/forms') {
       title = 'MHSTEMPC | Forms';
-    } else if (path === '/about') {
+    } else if (path === '/aboutUs') {
       title = 'MHSTEMPC | About Us';
     } else if (path === '/login') {
       title = 'MHSTEMPC | Login';
@@ -74,7 +74,7 @@ const NavBar = () => {
               <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/forms" onClick={closeMenu}>Forms</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/about" onClick={closeMenu}>About Us</NavLink>
+              <NavLink className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} to="/aboutUs" onClick={closeMenu}>About Us</NavLink>
             </li>
             <li className="nav-item login-nav-item">
               <NavLink className={({ isActive }) => `nav-link login-link ${isActive ? 'active' : ''}`} to="/login" onClick={closeMenu}>Login</NavLink>

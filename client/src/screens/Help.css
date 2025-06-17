@@ -1,139 +1,101 @@
-.cont {
+.help-screen-wrapper .cont {
     background-color: white;
-    width: 100%;
-    overflow-y: auto;
 }
 
-.help {
+.help-screen-wrapper .help {
     margin-bottom: 30px;
     margin-top: 100px;
 }
 
-.column {
+.help-screen-wrapper .column {
     text-align: center;
     margin-bottom: 40px;
 }
 
-.row {
+.help-screen-wrapper .row {
     justify-content: center;
     align-items: center;
 }
 
-.card-title {
-  font-size: 22px;
-  padding-top: 15px;
+.help-screen-wrapper .card-title {
+    font-size: 22px;
+    padding-top: 15px;
 }
 
-.card {
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  border-color: #d9d9d9;
-  border-width: 2px;
-  max-width: 100%;
-  width: 100%;
-  min-width: 250px;
+.help-screen-wrapper .card {
+    max-width: 250px;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.phoneImg,
-.emailImg,
-.faqImg {
-  max-width: 100px;
-  height: auto;
-  object-fit: contain;
+.help-screen-wrapper .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Responsive Styles */
 @media (max-width: 992px) {
-    .help {
+    .help-screen-wrapper .help {
         margin-top: 80px;
         font-size: 2.2rem;
     }
-    
-    .card {
+
+    .help-screen-wrapper .card {
         max-width: 220px;
     }
-    
-    .card-title {
+
+    .help-screen-wrapper .card-title {
         font-size: 20px;
-    }
-    
-    .phoneImg,
-    .emailImg,
-    .faqImg {
-        max-width: 70px;
     }
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
-    .help {
+    .help-screen-wrapper .help {
         margin-top: 60px;
         margin-bottom: 25px;
         font-size: 1.8rem;
     }
-    
-    .column {
+
+    .help-screen-wrapper .column {
         margin-bottom: 30px;
     }
-    
-    .card {
+
+    .help-screen-wrapper .card {
         max-width: 280px;
         margin-bottom: 20px;
     }
-    
-    .card-title {
-        font-size: 18px;
+
+    .help-screen-wrapper .card-title {
+        font-size: 20px;
         padding-top: 10px;
     }
-    
-    .card-body {
+
+    .help-screen-wrapper .card-body {
         padding: 1.5rem !important;
-    }
-    
-    .phoneImg,
-    .emailImg,
-    .faqImg {
-        max-width: 60px;
-    }
-    
-    .contact-info {
-        font-size: 14px;
     }
 }
 
-/* Small mobile styles */
 @media (max-width: 576px) {
-    .help {
+    .help-screen-wrapper .help {
         margin-top: 50px;
         margin-bottom: 20px;
         font-size: 1.6rem;
     }
-    
-    .column {
+
+    .help-screen-wrapper .column {
         margin-bottom: 25px;
     }
-    
-    .card {
-        min-height: 300px;
+
+    .help-screen-wrapper .card {
+        max-width: 300px;
     }
-    
-    .card-title {
+
+    .help-screen-wrapper .card-title {
         font-size: 18px;
     }
-    
-    .card-body {
+
+    .help-screen-wrapper .card-body {
         padding: 1.25rem !important;
     }
-    
-    .phoneImg,
-    .emailImg,
-    .faqImg {
-        max-width: 50px;
-    }
-    
-    .contact-info {
-        font-size: 13px;
-    }
 }
-

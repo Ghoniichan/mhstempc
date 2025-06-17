@@ -120,7 +120,7 @@ const LoginCard = () => {
         <div className="col-md-6 col-12 right-box" style={{ paddingBottom: '20px' }}>
           <div>
             <div className="header text-center text-lg-start">
-              <p className="mb-0 fw-bold gothic-a1-bold login-header-title" style={{ fontSize: '25px', paddingLeft: '10px', paddingBottom: '30px' }}>Log In to your Account</p>
+              <p className="mb-0 fw-bold gothic-a1-bold login-header-title" style={{ fontSize: '25px', paddingLeft: '10px', paddingBottom: '30px', paddingTop: '80px' }}>Log In to your Account</p>
               {/* <small className="mb-3 gothic-a1-regular" style={{ paddingLeft: '10px', display: 'block' }}>Welcome back!</small> */}
             </div>
           </div>
