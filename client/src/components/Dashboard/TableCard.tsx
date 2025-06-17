@@ -8,7 +8,8 @@ import CustomTable from './CustomTable';
 import './TableCard.css';
 import SearchBar from './SearchBar';
 import axios from '../../api/axiosInstance';
-import ButtonCustom from './ButtonCustom';
+// import ButtonCustom from './ButtonCustom';
+import Button from 'react-bootstrap/Button';
 
 type PolicyRecord = {
   name: string;
@@ -106,7 +107,7 @@ const TableCard: React.FC = () => {
                 <SearchBar onSearch={handleSearch} />
               </Col>
               <Col xs={12} md={3}>
-                <ButtonCustom 
+                {/* <ButtonCustom 
                   text="Register"
                   icon="bi bi-person-plus"
                   backgroundColor="#ffffff"
@@ -116,10 +117,20 @@ const TableCard: React.FC = () => {
                   fontSize="15px"
                   height="43px"
                   onClick= {handleRegisterClick}
-                />
+                /> */}
+                <Button
+                  variant="light"
+                  className="  w-100"
+                  style={{ border: '1px solid lightgray', width: '100%' }}
+                  onClick={handleRegisterClick}
+                >
+                  <i className="bi bi-person-plus me-2"></i>
+                  Register
+                </Button>
+
               </Col>
               <Col xs={12} md={3}>
-                <Dropdown className="mb-2 w-100">
+                <Dropdown className=" w-100">
                   <Dropdown.Toggle
                     variant="light"
                     style={{ border: '1px solid lightgray', width: '100%' }}
