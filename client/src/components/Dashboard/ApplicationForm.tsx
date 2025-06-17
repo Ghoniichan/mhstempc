@@ -6,7 +6,6 @@ import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 
-
 interface FormData {
   personalInfo: {
     firstName: string;
@@ -31,10 +30,10 @@ interface FormData {
     dateSigned: string;
   };
 
-  coMaker?: {
+  coMakers: {
     name: string;
     dateSigned: string;
-  };
+  }[];
 
   submissionDate: string;
 }
@@ -48,10 +47,10 @@ interface ApplicationFormProps {
     tel_cel_no?: string;
     policy_number?: string;
     membership_date?: string;
-  }
+  };
 }
 
-const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
+const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({
@@ -62,14 +61,14 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
       address: user?.present_address || '',
       contactNumber: user?.tel_cel_no || ''
     },
-
     membershipInfo: {
       policyNumber: user.policy_number || '',
       membershipType: '',
-      membershipDate: user.membership_date ? new Date(user.membership_date).toISOString().split('T')[0] : '',
+      membershipDate: user.membership_date
+        ? new Date(user.membership_date).toISOString().split('T')[0]
+        : '',
       numberOfShares: ''
     },
-
     loanInfo: {
       purpose: '',
       amount: '',
@@ -77,400 +76,317 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({user}) => {
       otherPaymentTerms: '',
       dateSigned: ''
     },
-
-    coMaker: {
-      name: '',
-      dateSigned: ''
-    },
+    coMakers: [
+      { name: '', dateSigned: '' },
+      { name: '', dateSigned: '' },
+      { name: '', dateSigned: '' }
+    ],
     submissionDate: new Date().toISOString()
   });
 
   useEffect(() => {
-    document.title = "MHSTEMPC | Loan Application";
+    document.title = 'MHSTEMPC | Loan Application';
   }, []);
 
   const handleInputChange = (
+    section: keyof Omit<FormData, 'coMakers' | 'submissionDate'>,
     field: string,
-    value: string,
-    section?: keyof FormData
+    value: string
+  ) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleCoMakerChange = (
+    index: number,
+    field: 'name' | 'dateSigned',
+    value: string
   ) => {
     setFormData(prev => {
-      if (section && section !== 'submissionDate') {
-        const currentSection = prev[section] as Record<string, string>;
-        
-        return {
-          ...prev,
-          [section]: {
-            ...currentSection,
-            [field]: value
-          }
-        };
-      }
-
-      return {
-        ...prev,
-        [field]: value
-      } as FormData;
+      const newCoMakers = prev.coMakers.map((cm, i) =>
+        i === index ? { ...cm, [field]: value } : cm
+      );
+      return { ...prev, coMakers: newCoMakers };
     });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const cleanedData = { ...formData };
-    if (!cleanedData.coMaker?.name && !cleanedData.coMaker?.dateSigned) {
-      delete cleanedData.coMaker;
-    }
-
-    console.log('Form Data JSON:', JSON.stringify(cleanedData, null, 2));
+    cleanedData.coMakers = cleanedData.coMakers.filter(
+      cm => cm.name || cm.dateSigned
+    );
 
     try {
-      const response = await axios.post('/api/loans/new', cleanedData);
-      console.log('Loan application submitted successfully:', response.data);
+      await axios.post('/api/loans/new', cleanedData);
       navigate('/applicationFormTwo');
-    } catch (error) {
-      console.error('Error submitting loan application:', error);
+    } catch {
       alert('Failed to submit loan application. Please try again.');
     }
-
-    navigate('/applicationFormTwo');
   };
 
   useEffect(() => {
-  if (user) {
-    setFormData(prev => ({
-      ...prev,
-      personalInfo: {
-        firstName: user.first_name || '',
-        middleName: user.middle_name || '',
-        lastName: user.last_name || '',
-        address: user.present_address || '',
-        contactNumber: user.tel_cel_no || ''
-      },
-      membershipInfo: {
-        ...prev.membershipInfo,
-        policyNumber: user.policy_number || '',
-        membershipDate: user.membership_date ? new Date(user.membership_date).toISOString().split('T')[0] : ''
-      }
-    }));
-  }
-}, [user]);
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        personalInfo: {
+          firstName: user.first_name || '',
+          middleName: user.middle_name || '',
+          lastName: user.last_name || '',
+          address: user.present_address || '',
+          contactNumber: user.tel_cel_no || ''
+        },
+        membershipInfo: {
+          ...prev.membershipInfo,
+          policyNumber: user.policy_number || '',
+          membershipDate: user.membership_date
+            ? new Date(user.membership_date).toISOString().split('T')[0]
+            : ''
+        }
+      }));
+    }
+  }, [user]);
 
   return (
     <Container fluid className="py-1 main-content">
-      
-          <div className="top-bar">
-            <span className="top-bar-text gothic-a1-bold">
-              MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
-            </span>
-          </div>
+      <div className="top-bar">
+        <span className="top-bar-text gothic-a1-bold">
+          MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
+        </span>
+      </div>
 
-          <div className="formcard shadow-lg p-4 mb-5 bg-white rounded " style={{width: '1200px', maxWidth: '970px'}}>
-            <div className="card-body scrollable-form">
-              <form onSubmit={handleSubmit}>
-                {/* Row 1 */}
-                <Row className="mb-3">
-                  <Col xs={12} md={4}>
-                    <label htmlFor="firstName" className="form-label gothic-a1-bold">First Name</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="firstName" 
-                      value={formData.personalInfo.firstName}
-                      onChange={(e) => handleInputChange('firstName', e.target.value, 'personalInfo')}
-                      required />
+      <div className="formcard shadow-lg p-4 mb-5 bg-white rounded" style={{ width: '1200px', maxWidth: '970px' }}>
+        <div className="card-body scrollable-form">
+          <form onSubmit={handleSubmit}>
+            {/* Row 1 */}
+            <Row className="mb-3">
+              <Col xs={12} md={4}>
+                <label htmlFor="firstName" className="form-label gothic-a1-bold">First Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="firstName"
+                  value={formData.personalInfo.firstName}
+                  onChange={e => handleInputChange('personalInfo', 'firstName', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label htmlFor="middleName" className="form-label gothic-a1-bold">Middle Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="middleName"
+                  value={formData.personalInfo.middleName}
+                  onChange={e => handleInputChange('personalInfo', 'middleName', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label htmlFor="lastName" className="form-label gothic-a1-bold">Last Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="lastName"
+                  value={formData.personalInfo.lastName}
+                  onChange={e => handleInputChange('personalInfo', 'lastName', e.target.value)}
+                  required
+                />
+              </Col>
+            </Row>
+
+            {/* Row 2 */}
+            <Row className="mb-3">
+              <Col xs={12} md={8}>
+                <label htmlFor="address" className="form-label gothic-a1-bold">Address</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="address"
+                  value={formData.personalInfo.address}
+                  onChange={e => handleInputChange('personalInfo', 'address', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label className="form-label gothic-a1-bold">Policy Number</label>
+                <div className="form-control" style={{ backgroundColor: '#e9ecef' }}>
+                  {formData.membershipInfo.policyNumber}
+                </div>
+              </Col>
+            </Row>
+
+            {/* Row 3 */}
+            <Row className="mb-3">
+              <Col xs={12} md={4}>
+                <label htmlFor="contactNumber" className="form-label gothic-a1-bold">Contact Number</label>
+                <input
+                  type="tel"
+                  className="form-control"
+                  id="contactNumber"
+                  value={formData.personalInfo.contactNumber}
+                  onChange={e => handleInputChange('personalInfo', 'contactNumber', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label htmlFor="membershipType" className="form-label gothic-a1-bold">Membership Type</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="membershipType"
+                  value={formData.membershipInfo.membershipType}
+                  onChange={e => handleInputChange('membershipInfo', 'membershipType', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label htmlFor="membershipDate" className="form-label gothic-a1-bold">Membership Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="membershipDate"
+                  value={formData.membershipInfo.membershipDate}
+                  onChange={e => handleInputChange('membershipInfo', 'membershipDate', e.target.value)}
+                  required
+                />
+              </Col>
+            </Row>
+
+            {/* Row 4 */}
+            <Row className="mb-3">
+              <Col xs={12} md={4}>
+                <label htmlFor="numberOfShares" className="form-label gothic-a1-bold">Number of Shares</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="numberOfShares"
+                  value={formData.membershipInfo.numberOfShares}
+                  onChange={e => handleInputChange('membershipInfo', 'numberOfShares', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label htmlFor="purpose" className="form-label gothic-a1-bold">Loan Purpose</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="purpose"
+                  value={formData.loanInfo.purpose}
+                    onChange={e => handleInputChange('loanInfo', 'purpose', e.target.value)}
+                  required
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                <label htmlFor="amount" className="form-label gothic-a1-bold">Loan Amount</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="amount"
+                  value={formData.loanInfo.amount}
+                  onChange={e => handleInputChange('loanInfo', 'amount', e.target.value)}
+                  required
+                />
+              </Col>
+            </Row>
+
+            {/* Row 5 */}
+            <Row className="mb-3">
+              <Col>
+                <label className="form-label gothic-a1-bold">Payment Terms</label>
+                <Row className="align-items-center">
+                  <Col xs={4}>
+                    <input
+                      type="radio"
+                      name="paymentTerms"
+                      value="sixMonths"
+                      checked={formData.loanInfo.paymentTerms === 'sixMonths'}
+                      onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
+                    /> 6 months
                   </Col>
-
-                  <Col xs={12} md={4}>
-                    <label htmlFor="middleName" className="form-label gothic-a1-bold">Middle Name</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="middleName" 
-                      value={formData.personalInfo.middleName}
-                      onChange={(e) => handleInputChange('middleName', e.target.value, 'personalInfo')}
-                      required />
+                  <Col xs={4}>
+                    <input
+                      type="radio"
+                      name="paymentTerms"
+                      value="threeMonths"
+                      checked={formData.loanInfo.paymentTerms === 'threeMonths'}
+                      onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
+                    /> 3 months
                   </Col>
-
-                  <Col xs={12} md={4}>
-                    <label htmlFor="lastName" className="form-label gothic-a1-bold">Last Name</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="lastName" 
-                      value={formData.personalInfo.lastName}
-                      onChange={(e) => handleInputChange('lastName', e.target.value, 'personalInfo')}
-                      required />
-                  </Col>
-                </Row>
-
-                {/* Row 2 */}
-                <Row className="mb-3">
-                  <Col xs={12} md={8}>
-                    <label htmlFor="address" className="form-label gothic-a1-bold">Address</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="address" 
-                      value={formData.personalInfo.address}
-                      onChange={(e) => handleInputChange('address', e.target.value, 'personalInfo')}
-                      style={{width: '900px', maxWidth: '585px'}} 
-                      required />
-                  </Col>
-
-                    <Col xs={12} md={4}>
-                    <label htmlFor="policyNumber" className="form-label gothic-a1-bold">MHSTEMPC Policy Number</label>
-                    <div 
-                      className="form-control"
-                      style={{ 
-                      border: '1px solid #ced4da',
-                      padding: '0.375rem 0.75rem',
-                      borderRadius: '0.25rem',
-                      minHeight: '38px'
-                      }}
-                    >
-                      {formData.membershipInfo.policyNumber}
-                    </div>
-                    </Col>
-                </Row>
-
-                {/* Row 3 */}
-                <Row className="mb-3">
-                  <Col xs={12} md={4}>
-                    <label htmlFor="contactNumber" className="form-label gothic-a1-bold">Contact Number</label>
-                    <input 
-                      type="tel" 
-                      className="form-control" 
-                      id="contactNumber" 
-                      value={formData.personalInfo.contactNumber}
-                      onChange={(e) => handleInputChange('contactNumber', e.target.value, 'personalInfo')}
-                      required />
-                  </Col>
-
-                  <Col xs={12} md={4}>
-                    <label htmlFor="membershipType" className="form-label gothic-a1-bold">Type of Membership</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="membershipType" 
-                      value={formData.membershipInfo.membershipType}
-                      onChange={(e) => handleInputChange('membershipType', e.target.value, 'membershipInfo')}
-                      required />
-                  </Col>
-
-                  <Col xs={12} md={4}>
-                    <label htmlFor="membershipDate" className="form-label gothic-a1-bold">Date of Membership</label>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      id="membershipDate" 
-                      value={formData.membershipInfo.membershipDate}
-                      onChange={(e) => handleInputChange('membershipDate', e.target.value, 'membershipInfo')}
-                      required />
-                  </Col>
-                </Row>
-
-                {/* Row 4 */}
-                <Row className="mb-3">
-                  <Col xs={12} md={4}>
-                    <label htmlFor="shareNumber" className="form-label gothic-a1-bold">Number of Shares</label>
-                    <input 
-                      type="number" 
-                      className="form-control" 
-                      id="shareNumber" 
-                      value={formData.membershipInfo.numberOfShares}
-                      onChange={(e) => handleInputChange('numberOfShares', e.target.value, 'membershipInfo')}
-                      required />
-                  </Col>
-
-                  <Col xs={12} md={4}>
-                    <label htmlFor="loanPurpose" className="form-label gothic-a1-bold">Purpose of Loan</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="loanPurpose" 
-                      value={formData.loanInfo.purpose}
-                      onChange={(e) => handleInputChange('purpose', e.target.value, 'loanInfo')}
-                      required />
-                  </Col>
-
-                  <Col xs={12} md={4}>
-                    <label htmlFor="loanAmount" className="form-label gothic-a1-bold">Amount of Loan</label>
-                    <input 
-                      type="number" 
-                      className="form-control" 
-                      id="loanAmount" 
-                      value={formData.loanInfo.amount}
-                      onChange={(e) => handleInputChange('amount', e.target.value, 'loanInfo')}
-                      required />
-                  </Col>
-                </Row>
-
-                {/* Row 5 */}
-                <Row className="mb-3">
-                  <Col xs={12}>
-                    <label className="form-label gothic-a1-bold mb-2">Terms of Payment</label>
-                    <Row className="gx-2 gy-2 align-items-end payment-terms-row">
-                      
-                      <Col xs={12} sm={2}>
-                        <div className="d-flex align-items-center">
-                          <input 
-                            type="radio" 
-                            id="sixMonths" 
-                            name="paymentTerms" 
-                            value="sixMonths" 
-                            className="form-check-input me-2" 
-                            checked={formData.loanInfo.paymentTerms === 'sixMonths'}
-                            onChange={(e) => handleInputChange('paymentTerms', e.target.value, 'loanInfo')}
-                            required />
-                          <label htmlFor="sixMonths" className="form-check-label gothic-a1-bold mb-0">6 months</label>
-                        </div>
-                      </Col>
-
-                      <Col xs={12} sm={2}>
-                        <div className="d-flex align-items-center">
-                          <input 
-                            type="radio" 
-                            id="threeMonths" 
-                            name="paymentTerms" 
-                            value="threeMonths" 
-                            className="form-check-input me-2" 
-                            checked={formData.loanInfo.paymentTerms === 'threeMonths'}
-                            onChange={(e) => handleInputChange('paymentTerms', e.target.value, 'loanInfo')}
-                            required />
-                          <label htmlFor="threeMonths" className="form-check-label gothic-a1-bold mb-0">3 months</label>
-                        </div>
-                      </Col>
-
-                      <Col xs={12} sm={8}>
-                        <div className="d-flex align-items-center gap-2">
-                          <input 
-                            type="radio" 
-                            id="others" 
-                            name="paymentTerms" 
-                            value="others" 
-                            className="form-check-input" 
-                            checked={formData.loanInfo.paymentTerms === 'others'}
-                            onChange={(e) => handleInputChange('paymentTerms', e.target.value, 'loanInfo')}
-                            required />
-
-                          <label htmlFor="others" className="form-check-label gothic-a1-bold mb-0">Others:</label>
-                          <input 
-                            type="text" 
-                            className="form-control flex-grow-1" 
-                            id="otherPaymentTerms" 
-                            placeholder="Specify" 
-                            style={{maxWidth: '200px'}}
-                            value={formData.loanInfo.otherPaymentTerms || ''}
-                            onChange={(e) => handleInputChange('otherPaymentTerms', e.target.value, 'loanInfo')}
-                            disabled={formData.loanInfo.paymentTerms !== 'others'}
-                             />
-                        </div>
-                      </Col>
-
-                    </Row>
-                  </Col>
-                </Row>
-
-                {/* Row 6 */}
-                <Row className="mb-5">
-                  <Col xs={12} md={4} className="ms-auto">
-                    <label htmlFor="signDate" className="form-label gothic-a1-bold">Date Signed</label>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      id="signDate" 
-                      value={formData.loanInfo.dateSigned}
-                      onChange={(e) => handleInputChange('dateSigned', e.target.value, 'loanInfo')}
-                      required />
-                  </Col>
-                </Row>
-
-                {/* Co-Maker Section */}
-                <h5 className="card-title mb-4">Co-Makers: <span className="text-muted" style={{ fontSize: "0.9rem" }}>(optional)</span></h5>
-                <p className="card-text mb-4 gothic-a1-regular">
-                  We agreed and understand that if the borrower whose name appears above was unable to pay for three consecutive months, we will surrender our client ATM card (where we obtain our salary) to MHSTEMPC to deduct payments for the loan involved.
-                </p>
-
-                <Row className="mb-2">
-                  <Col xs={12} md={6}>
-                    <label htmlFor="comakerName" className="form-label gothic-a1-bold">Co-Makers Name:</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="comakerName" 
-                      style={{width: '450px', maxWidth: '500px', paddingBottom: '10px'}}
-                      value={formData.coMaker?.name || ''}
-                      onChange={(e) => handleInputChange('name', e.target.value, 'coMaker')}
+                  <Col xs={4} className="d-flex align-items-center">
+                    <input
+                      type="radio"
+                      name="paymentTerms"
+                      value="others"
+                      checked={formData.loanInfo.paymentTerms === 'others'}
+                      onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
+                    /> Other
+                    {formData.loanInfo.paymentTerms === 'others' && (
+                      <input
+                        type="text"
+                        className="form-control ms-2"
+                        placeholder="Specify"
+                        value={formData.loanInfo.otherPaymentTerms || ''}
+                        onChange={e => handleInputChange('loanInfo', 'otherPaymentTerms', e.target.value)}
                       />
-                  </Col>
-
-                  <Col xs={12} md={6}>
-                    <label htmlFor="comakerSignDate" className="form-label gothic-a1-bold">Date Signed</label>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      id="comakerSignDate" 
-                      style={{width: '430px', maxWidth: '500px'}} 
-                      value={formData.coMaker?.dateSigned || ''}
-                      onChange={(e) => handleInputChange('dateSigned', e.target.value, 'coMaker')}
-                      />
+                    )}
                   </Col>
                 </Row>
-                
-                <Row className="mb-2">
-                  <Col xs={12} md={6}>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="comakerName" 
-                      style={{width: '450px', maxWidth: '500px', paddingBottom: '10px'}}
-                      value={formData.coMaker?.name || ''}
-                      onChange={(e) => handleInputChange('name', e.target.value, 'coMaker')}
-                      />
-                  </Col>
+              </Col>
+            </Row>
 
-                  <Col xs={12} md={6}>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      id="comakerSignDate" 
-                      style={{width: '430px', maxWidth: '500px'}} 
-                      value={formData.coMaker?.dateSigned || ''}
-                      onChange={(e) => handleInputChange('dateSigned', e.target.value, 'coMaker')}
-                      />
-                  </Col>
-                </Row>
+            {/* Row 6 */}
+            <Row className="mb-4">
+              <Col xs={12} md={4} className="ms-auto">
+                <label htmlFor="dateSigned" className="form-label gothic-a1-bold">Date Signed</label>
+                <input
+                  type="date"
+                  id="dateSigned"
+                  className="form-control"
+                  value={formData.loanInfo.dateSigned}
+                  onChange={e => handleInputChange('loanInfo', 'dateSigned', e.target.value)}
+                  required
+                />
+              </Col>
+            </Row>
 
-                <Row className="mb-5">
-                  <Col xs={12} md={6}>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      id="comakerName" 
-                      style={{width: '450px', maxWidth: '500px', paddingBottom: '10px'}}
-                      value={formData.coMaker?.name || ''}
-                      onChange={(e) => handleInputChange('name', e.target.value, 'coMaker')}
-                      />
-                  </Col>
-
-                  <Col xs={12} md={6}>
-                    <input 
-                      type="date" 
-                      className="form-control" 
-                      id="comakerSignDate" 
-                      style={{width: '430px', maxWidth: '500px'}} 
-                      value={formData.coMaker?.dateSigned || ''}
-                      onChange={(e) => handleInputChange('dateSigned', e.target.value, 'coMaker')}
-                      />
-                  </Col>
-                </Row>
+            {/* Co-Maker Section */}
+            <h5 className="card-title mb-3 gothic-a1-bold">Co-Makers (optional)</h5>
+            {formData.coMakers.map((cm, idx) => (
+              <Row key={idx} className="mb-3">
+                <Col xs={12} md={6}>
+                  <label htmlFor={`coMakerName${idx}`} className="form-label">Name</label>
+                  <input
+                    type="text"
+                    id={`coMakerName${idx}`}
+                    className="form-control"
+                    value={cm.name}
+                    onChange={e => handleCoMakerChange(idx, 'name', e.target.value)}
+                  />
+                </Col>
+                <Col xs={12} md={6}>
+                  <label htmlFor={`coMakerDate${idx}`} className="form-label">Date Signed</label>
+                  <input
+                    type="date"
+                    id={`coMakerDate${idx}`}
+                    className="form-control"
+                    value={cm.dateSigned}
+                    onChange={e => handleCoMakerChange(idx, 'dateSigned', e.target.value)}
+                  />
+                </Col>
+              </Row>
+            ))}
                 
 
                 
 
                 {/* Officer Use Section */}
-                <h4 className="card-title mb-5 text-center gothic-a1-bold" style={{ fontSize: '20px' }}>
+                <h4 className="card-title mb-5 text-center gothic-a1-bold" style={{ fontSize: '20px', paddingTop: '40px' }}>
                   FOR MHSTEMPC OFFICERS' USE ONLY
                 </h4>
                 <h4 className="card-title mb-5 gothic-a1-bold" style={{ fontSize: '20px' }}>Approved By:</h4>

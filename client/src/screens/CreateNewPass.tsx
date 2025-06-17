@@ -58,7 +58,7 @@ const CreateNewPass = () => {
       <ColumnLayoutCard
         title="Create new password"
         description="Your new password must be different from your previously used password."
-        titleStyle={{ fontSize: '21px', paddingLeft: '15px' }}
+        titleStyle={{ fontSize: '21px', paddingLeft: '15px', paddingTop: '20px' }}
         descriptionStyle={{
           fontSize: '15px',
           color: '#1e1e1e',

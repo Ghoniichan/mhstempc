@@ -50,12 +50,12 @@ const ForgotPasswordScreen = () => {
       <ColumnLayoutCard
         title="Forgot Password"
         description="Enter your email address associated with your account."
-        titleStyle={{ fontSize: '20px', paddingLeft: '15px' }}
+        titleStyle={{ fontSize: '20px', paddingLeft: '15px', paddingTop: '20px' }}
         descriptionStyle={{
           fontSize: '15px',
           color: '#1e1e1e',
           textAlign: 'left',
-          paddingLeft: '15px'
+          paddingLeft: '15px',
         }}
       >
         <form>
