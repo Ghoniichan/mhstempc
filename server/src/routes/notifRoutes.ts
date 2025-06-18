@@ -1,9 +1,10 @@
 import express from 'express';
-import { bookAppointment, getMyAppointments } from '../controllers/notifications';
+import { bookAppointment, getMyAppointments, updateAppointmentStatus } from '../controllers/notifications';
 
 const router = express.Router();
 
 router.post('/book-appointment', bookAppointment);
 router.get('/get-my-appointments/:adminId', getMyAppointments);
+router.patch('/update/status/:id', updateAppointmentStatus);
 
 export default router;
