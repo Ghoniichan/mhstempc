@@ -13,7 +13,8 @@ dist-ssr
 *.local
 
 client\src\api
-src/api/apiInstance
+src/api/axiosInstance.ts
+
 
 # Editor directories and files
 .vscode/*
