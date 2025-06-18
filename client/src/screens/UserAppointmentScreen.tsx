@@ -3,58 +3,78 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { FaClock, FaCalendarAlt } from 'react-icons/fa';
+import axios from '../api/axiosInstance';
 
 const UserAppointmentScreen = () => {
-  const [time, setTime] = useState('10:00 am');
+  const [time, setTime] = useState('10:00');
   const [date, setDate] = useState('2025-03-22');
   const [subject, setSubject] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      //get account_id
+      const accountId = token ? JSON.parse(atob(token.split('.')[1])).user.id : null;
+      if (!accountId) {
+        throw new Error('No account ID found in token.');
+      }
+      
+      const appointmentPayload = {
+        // Single sender UUID
+        sender: accountId,
+        // Table columns mapping
+        appointment_date: date,
+        appointment_time: time,
+        message: subject
+      };
+
+      const response = await axios.post('/api/notifications/book-appointment', appointmentPayload);
+      if (response.status !== 201) {
+        throw new Error('Failed to book appointment.');
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div
-      className="mt-1"
-      style={{
-        marginLeft: '200px',
-        padding: '2rem 1rem',
-        boxSizing: 'border-box',
-      }}
-    >
-    <h1>Schedule Appointment</h1>
-      <div
-        className="card shadow-sm mt-3"
-        style={{
-          maxWidth: '500px',
-          margin: '0 auto',
-          borderRadius: '12px',
-        }}
-      >
+    <div className="mt-1" style={{ marginLeft: '200px', padding: '2rem 1rem' }}>
+      <h1>Schedule Appointment</h1>
+      <div className="card shadow-sm mt-3" style={{ maxWidth: '500px', margin: '0 auto', borderRadius: '12px' }}>
         <div className="card-body">
           <h5 className="card-title mb-3">Schedule Appointment</h5>
 
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Control type="text" value="Admin" readOnly />
             </Form.Group>
 
             <div className="d-flex mb-3 gap-2">
               <InputGroup>
-                <InputGroup.Text>
-                  <FaClock />
-                </InputGroup.Text>
+                <InputGroup.Text><FaClock /></InputGroup.Text>
                 <Form.Control
-                  type="text"
+                  type="time"
                   value={time}
-                  onChange={(e) => setTime(e.target.value)}
+                  onChange={e => setTime(e.target.value)}
+                  required
                 />
               </InputGroup>
 
               <InputGroup>
-                <InputGroup.Text>
-                  <FaCalendarAlt />
-                </InputGroup.Text>
+                <InputGroup.Text><FaCalendarAlt /></InputGroup.Text>
                 <Form.Control
                   type="date"
                   value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  onChange={e => setDate(e.target.value)}
+                  required
                 />
               </InputGroup>
             </div>
@@ -63,22 +83,23 @@ const UserAppointmentScreen = () => {
               <Form.Control
                 as="textarea"
                 rows={3}
-                placeholder="Subject"
+                placeholder="Message"
                 value={subject}
-                onChange={(e) => setSubject(e.target.value)}
+                onChange={e => setSubject(e.target.value)}
+                required
               />
             </Form.Group>
+
+            {error && <div className="alert alert-danger">{error}</div>}
 
             <Button
               variant="primary"
               type="submit"
               className="w-100"
-              style={{
-                borderRadius: '999px',
-                backgroundColor: '#002b5c', 
-              }}
+              style={{ borderRadius: '999px', backgroundColor: '#002b5c' }}
+              disabled={loading}
             >
-              Book Appointment
+              {loading ? 'Processing…' : 'Book Appointment'}
             </Button>
           </Form>
         </div>

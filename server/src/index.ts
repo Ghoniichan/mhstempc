@@ -6,6 +6,7 @@ import authRoutes from "./routes/jwtAuth"
 import sendEmail from "./routes/notificationRoutes";
 import infoRoutes from "./routes/infoRoutes";
 import loanRoutes from "./routes/loanRoutes";
+import notifRoutes from "./routes/notifRoutes";
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ app.use("/api/user", infoRoutes);
 app.use("/api/notification", sendEmail);
 
 app.use("/api/loans", loanRoutes);
+
+app.use("/api/notifications", notifRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
