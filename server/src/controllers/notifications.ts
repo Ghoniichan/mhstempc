@@ -92,7 +92,7 @@ export const getMyAppointments = async (req: Request, res: Response) => {
 
 export const updateAppointmentStatus = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    const { status } = req.body;  // expects 'accepted', 'declined', or 'pending'
+    const { status } = req.body; 
     const client = await pool.connect();
     
     try {
