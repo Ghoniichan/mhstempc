@@ -73,8 +73,9 @@ export const getMyAppointments = async (req: Request, res: Response) => {
   try {
     // example using ANY()
     const result = await client.query(
-      `SELECT *
-         FROM appointments
+      `SELECT CONCAT(m.last_name, ', ', m.first_name) AS sender, a.message, a.appointment_date, a. appointment_time, a.status
+        FROM appointments a
+        JOIN membership_applications m ON m.id = a.sender
         WHERE $1::uuid = ANY(receiver)
         ORDER BY appointment_date, appointment_time`,
       [adminId]
@@ -87,4 +88,39 @@ export const getMyAppointments = async (req: Request, res: Response) => {
   } finally {
     client.release();
   }
+};
+
+export const updateAppointmentStatus = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const { status } = req.body;  // expects 'accepted', 'declined', or 'pending'
+    const client = await pool.connect();
+    
+    try {
+        // Validate status
+        const validStatuses = ['accepted', 'declined', 'pending'];
+        if (!validStatuses.includes(status)) {
+            res.status(400).json({ error: 'Invalid status value' });
+            return;
+        }
+
+        const updateResult = await client.query(
+            `UPDATE appointments
+                 SET status = $1
+             WHERE id = $2
+         RETURNING *`,
+            [status, id]
+        );
+        
+        if (updateResult.rows.length === 0) {
+            res.status(404).json({ error: 'Appointment not found' });
+            return;
+        }
+
+        res.status(200).json({ appointment: updateResult.rows[0] });
+    } catch (error) {
+        console.error('Error updating appointment status:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        client.release();
+    }
 };
