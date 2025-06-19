@@ -15,10 +15,34 @@ type PolicyRecord = {
 
 const TableCard: React.FC = () => {
   const navigate = useNavigate();
+
+  // Controlled search query
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // Table data
   const [clients, setClients] = useState<React.ReactNode[][]>([]);
   const [originalClients, setOriginalClients] = useState<React.ReactNode[][]>([]);
+
+  // Sort state
   const [selectedSort, setSelectedSort] = useState<string>("Name");
 
+  // Fetch once on mount
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await axios.get<PolicyRecord[]>("/api/user/clients");
+        const rows = formatRows(response.data);
+        setOriginalClients(rows);
+        setClients(rows);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+      }
+    };
+
+    fetchClients();
+  }, []);
+
+  // Deduplicate and format into rows
   const formatRows = (data: PolicyRecord[]): React.ReactNode[][] => {
     const seen = new Set<string>();
     const rows: React.ReactNode[][] = [];
@@ -39,24 +63,11 @@ const TableCard: React.FC = () => {
     return rows;
   };
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await axios.get<PolicyRecord[]>("/api/user/clients");
-        const rows = formatRows(response.data);
-        setOriginalClients(rows);
-        setClients(rows);
-      } catch (error) {
-        console.error("Error fetching clients:", error);
-      }
-    };
-
-    fetchClients();
-  }, []);
-
+  // Controlled search handler
   const handleSearch = (query: string) => {
+    setSearchQuery(query);
     const trimmed = query.trim().toLowerCase();
-    if (trimmed === "") {
+    if (!trimmed) {
       setClients(originalClients);
       return;
     }
@@ -66,11 +77,13 @@ const TableCard: React.FC = () => {
     setClients(filtered);
   };
 
+  // Sort handler
   const handleSort = (type: string) => {
     setSelectedSort(type);
+
     const indexMap: Record<string, number> = {
       Name: 0,
-      "MHSTEMPC Policy Number": 1,
+      "MHSTEMPC Policy No.": 1,
       Email: 2,
       "Contact Number": 3,
     };
@@ -105,9 +118,12 @@ const TableCard: React.FC = () => {
         <div className="d-flex flex-column align-items-center w-100">
           <div className="w-100">
             <div className="d-flex flex-column flex-md-row mb-2 align-items-center justify-content-between">
+              {/* Controlled Search Bar */}
               <div className="mb-2 mb-md-0 flex-grow-1 w-100 me-md-2">
-                <SearchBar onSearch={handleSearch} />
+                <SearchBar value={searchQuery} onSearch={handleSearch} />
               </div>
+
+              {/* Buttons */}
               <div className="d-flex align-items-center" style={{ gap: "5px" }}>
                 <ButtonCustom
                   text="Sort"
@@ -169,15 +185,13 @@ const TableCard: React.FC = () => {
                   dropdownItems={[
                     { label: "All", onClick: () => alert("All clicked") },
                     { label: "Regular", onClick: () => alert("Regular clicked") },
-                    {
-                      label: "Non-Member",
-                      onClick: () => alert("Non-Member clicked"),
-                    },
+                    { label: "Non-Member", onClick: () => alert("Non-Member clicked") },
                   ]}
                 />
               </div>
             </div>
 
+            {/* Table */}
             <CustomTable
               columnHeadings={columnHeadings}
               rows={clients}

@@ -49,14 +49,18 @@ const UserAppointmentScreen = () => {
 
   return (
     <div className="mt-1" style={{ marginLeft: '200px', padding: '2rem 1rem' }}>
-      <h1>Schedule Appointment</h1>
+      <h3 className='mb-4'>Schedule Appointment</h3>
       <div className="card shadow-sm mt-3" style={{ maxWidth: '500px', margin: '0 auto', borderRadius: '12px' }}>
-        <div className="card-body">
-          <h5 className="card-title mb-3">Schedule Appointment</h5>
+        <div className="card-body" style={{ padding: '2rem' }}>
+          <h4 className="card-title mb-3">Schedule Appointment</h4>
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Control type="text" value="Admin" readOnly />
+              <Form.Control 
+                type="text" 
+                value="Admin" 
+                style={{height: '45px'}}
+                readOnly />
             </Form.Group>
 
             <div className="d-flex mb-3 gap-2">
@@ -66,6 +70,7 @@ const UserAppointmentScreen = () => {
                   type="time"
                   value={time}
                   onChange={e => setTime(e.target.value)}
+                  style={{height: '45px'}}
                   required
                 />
               </InputGroup>
@@ -97,8 +102,8 @@ const UserAppointmentScreen = () => {
             <Button
               variant="primary"
               type="submit"
-              className="w-100"
-              style={{ borderRadius: '999px', backgroundColor: '#002b5c' }}
+              className="w-100 gothic-a1-bold"
+              style={{ borderRadius: '999px', backgroundColor: '#002b5c', height: '45px' }}
               disabled={loading}
             >
               {loading ? 'Processing…' : 'Book Appointment'}

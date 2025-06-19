@@ -46,6 +46,7 @@ const Application = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     document.title = "MHSTEMPC | Applications";
@@ -75,9 +76,12 @@ const Application = () => {
   };
 
   const handleSearch = (query: string) => {
-    const q = query.toLowerCase();
+    setSearchQuery(query);
+    const trimmed = query.toLowerCase();
     const result = applications.filter(app =>
-      (app.name.toLowerCase().includes(q) || app.loanNo.toLowerCase().includes(q)) &&
+      Object.values(app).some(val =>
+        typeof val === "string" && val.toLowerCase().includes(trimmed)
+      ) &&
       (selectedStatus === "All" || app.status.toLowerCase() === selectedStatus.toLowerCase())
     );
     setFilteredApps(result);
@@ -85,11 +89,13 @@ const Application = () => {
 
   const filterByStatus = (status: string) => {
     setSelectedStatus(status);
-    if (status === "All") {
-      setFilteredApps(applications);
-    } else {
-      setFilteredApps(applications.filter(a => a.status.toLowerCase() === status.toLowerCase()));
-    }
+    const result = applications.filter(app =>
+      (status === "All" || app.status.toLowerCase() === status.toLowerCase()) &&
+      (searchQuery.trim() === "" || Object.values(app).some(val =>
+        typeof val === "string" && val.toLowerCase().includes(searchQuery.toLowerCase())
+      ))
+    );
+    setFilteredApps(result);
   };
 
   const handleSort = (columnLabel: string, order: 'asc' | 'desc') => {
@@ -109,7 +115,7 @@ const Application = () => {
 
     setFilteredApps(sorted);
     setSelectedColumn(columnLabel);
-    setSortOrder(order); // ✅ This ensures dropdown check mark and logic stay in sync
+    setSortOrder(order);
   };
 
   const handleUpdateStatus = async (newStatus: string) => {
@@ -183,9 +189,9 @@ const Application = () => {
           <h3 className="mb-0">Applications</h3>
         </div>
 
-        <div className="d-flex align-items-center mb-4" style={{ gap: '5px' }}>
+        <div className="d-flex align-items-center mb-4 w-100" style={{ gap: "5px" }}>
           <div style={{ flex: 1 }}>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar value={searchQuery} onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
@@ -245,7 +251,7 @@ const Application = () => {
             backgroundColor="#fff"
             textColor="#000"
             borderColor="#d9d9d9"
-            height="43px"
+            height="45px"
             isDropdown
             dropdownItems={[
               { label: "Export to Excel", onClick: exportToExcel },
@@ -256,20 +262,24 @@ const Application = () => {
           />
         </div>
 
-        <CustomTable
-          columnHeadings={[
-            "Name",
-            "MHSTEMPC Policy No.",
-            "Loan No.",
-            "Loan Amount",
-            "Date Release",
-            "Approve by",
-            "Due Date",
-            "Status",
-            "Update Status"
-          ]}
-          rows={rows}
-        />
+        {filteredApps.length > 0 ? (
+          <CustomTable
+            columnHeadings={[
+              "Name",
+              "MHSTEMPC Policy No.",
+              "Loan No.",
+              "Loan Amount",
+              "Date Release",
+              "Approve by",
+              "Due Date",
+              "Status",
+              "Update Status"
+            ]}
+            rows={rows}
+          />
+        ) : (
+          <div className="text-center w-100 mt-4 text-muted fs-5">No results found.</div>
+        )}
 
         {showEditModal && editingIndex !== null && (
           <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ background: "rgba(0,0,0,0.3)", zIndex: 1050 }}>
