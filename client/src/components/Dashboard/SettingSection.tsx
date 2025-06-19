@@ -51,10 +51,10 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
       <div className='small-setting-section'>
         <h6 className="custom-header">Account</h6>
         <div className="card shadow-sm mb-4 custom-card-setting">
-          <button type="button" className="btn text-nowrap text-start">
+          {/* <button type="button" className="btn text-nowrap text-start">
             <h6>Update Profile</h6>
             <p className="mb-0">Update your personal info</p>
-          </button>
+          </button> */}
 
           <button onClick={handleChangeNumberClick} type="button" className="btn text-nowrap text-start">
             <h6>Update Mobile Number</h6>
@@ -81,7 +81,7 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
 
         {role === 'User' && (
           <>
-            <h6 className="custom-header">Security</h6>
+            <h6 className="custom-header">Report</h6>
             <div className="card shadow-sm mb-4 custom-card-setting">
               <button onClick={handleBugReportClick} type="button" className="btn text-nowrap text-start">
                 <h6>Report a Bug</h6>
