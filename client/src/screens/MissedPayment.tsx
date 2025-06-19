@@ -5,6 +5,46 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
+// Quick sort function
+const quickSort = <T,>(arr: T[], key: keyof T, order: 'asc' | 'desc'): T[] => {
+  if (arr.length <= 1) return arr;
+  const pivot = arr[arr.length - 1];
+  const left: T[] = [];
+  const right: T[] = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    const a = arr[i][key];
+    const b = pivot[key];
+    const cond = order === 'asc' ? a < b : a > b;
+    if (cond) left.push(arr[i]);
+    else right.push(arr[i]);
+  }
+
+  return [...quickSort(left, key, order), pivot, ...quickSort(right, key, order)];
+};
+
+type MissedPaymentType = {
+  name: string;
+  id: string;
+  loanNo: string;
+  loanAmount: string;
+  dueDate: string;
+  penalty: string;
+  totalAmount: string;
+  contactNo: string;
+};
+
+const columnMap: Record<string, keyof MissedPaymentType> = {
+  "Name": "name",
+  "ID": "id",
+  "Loan No.": "loanNo",
+  "Loan Amount": "loanAmount",
+  "Due Date": "dueDate",
+  "Penalty": "penalty",
+  "Total Amount": "totalAmount",
+  "Contact No.": "contactNo",
+};
+
 const MissedPayment = () => {
   const [missedPayments] = useState([
     {
@@ -30,41 +70,74 @@ const MissedPayment = () => {
   ]);
 
   const [filteredData, setFilteredData] = useState(missedPayments);
+  const [selectedColumn, setSelectedColumn] = useState("Name");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  useEffect(() => {
+    document.title = "MHSTEMPC | Missed Payment";
+  }, []);
 
   const handleSearch = (query: string) => {
     const lowerQuery = query.trim().toLowerCase();
-
     if (!lowerQuery) {
       setFilteredData(missedPayments);
       return;
     }
 
-    const result = missedPayments.filter(
-      payment =>
-        payment.name.toLowerCase().includes(lowerQuery) ||
-        payment.loanNo.toLowerCase().includes(lowerQuery)
+    const result = missedPayments.filter(payment =>
+      payment.name.toLowerCase().includes(lowerQuery) ||
+      payment.loanNo.toLowerCase().includes(lowerQuery)
     );
 
     setFilteredData(result);
   };
 
-  const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      filteredData.map(payment => ({
-        Name: payment.name,
-        ID: payment.id,
-        "Loan No.": payment.loanNo,
-        "Loan Amount": payment.loanAmount,
-        "Due Date": payment.dueDate,
-        Penalty: payment.penalty,
-        "Total Amount": payment.totalAmount,
-        "Contact No.": payment.contactNo,
-      }))
-    );
+  const handleSort = (column: string, order: 'asc' | 'desc') => {
+    const key = columnMap[column];
+    if (!key) return;
 
+    const cleanedData = filteredData.map(item => ({
+      ...item,
+      [key]: typeof item[key] === "string" ? item[key].toString().replace(/[₱,]/g, "") : item[key]
+    }));
+
+    const sorted = quickSort(cleanedData, key, order);
+    setFilteredData(sorted);
+    setSelectedColumn(column);
+    setSortOrder(order);
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Missed Payments");
     XLSX.writeFile(workbook, "missed_payments.xlsx");
+  };
+
+  const exportToWord = () => {
+    let content = "Missed Payment Records\n\n";
+    filteredData.forEach(payment => {
+      content += `Name: ${payment.name}\nID: ${payment.id}\nLoan No.: ${payment.loanNo}\nLoan Amount: ${payment.loanAmount}\nDue Date: ${payment.dueDate}\nPenalty: ${payment.penalty}\nTotal Amount: ${payment.totalAmount}\nContact No.: ${payment.contactNo}\n\n`;
+    });
+
+    const blob = new Blob([content], { type: "application/msword;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "missed_payments.doc";
+    link.click();
+  };
+
+  const exportAsImage = async (format: "jpeg" | "png") => {
+    const table = document.querySelector("table");
+    if (!table) return;
+
+    const html2canvas = (await import("html2canvas")).default;
+    html2canvas(table).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `missed_payments.${format}`;
+      link.href = canvas.toDataURL(`image/${format}`);
+      link.click();
+    });
   };
 
   const rows = filteredData.map(payment => [
@@ -78,37 +151,60 @@ const MissedPayment = () => {
     payment.contactNo,
   ]);
 
-    useEffect(() => {
-      document.title = "MHSTEMPC | Missed Payment";
-    }, []);
-
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}></div>
-      <div
-        className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
-        style={{ padding: "40px 20px" }}
-      >
+      <div className="flex-grow-1 d-flex flex-column justify-content-start align-items-start" style={{ padding: "40px 20px" }}>
         <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
           <h3 className="mb-0">Missed Payments</h3>
         </div>
 
-        <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "16px" }}>
+        <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "5px" }}>
           <div style={{ flex: 1 }}>
             <SearchBar onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
-            text="Export Excel"
-            icon="bi bi-file-earmark-excel"
-            backgroundColor="#0d7239"
-            textColor="#fff"
-            borderColor="#0d7239"
-            iconSize="20px"
-            fontSize="15px"
+            text="Sort"
+            icon="bi bi-arrow-down-up"
+            backgroundColor="#ffffff"
+            textColor="#000"
+            borderColor="#d9d9d9"
+            height="45px"
+            isDropdown={true}
+            dropdownItems={[
+              { label: "Choose column to sort by:", onClick: () => {} },
+              ...Object.keys(columnMap).map(label => ({
+                label: label === selectedColumn ? `✓ ${label}` : label,
+                onClick: () => setSelectedColumn(label)
+              })),
+              { label: "────────────", onClick: () => {} },
+              {
+                label: sortOrder === "asc" ? "✓ Ascending" : "Ascending",
+                onClick: () => handleSort(selectedColumn, "asc")
+              },
+              {
+                label: sortOrder === "desc" ? "✓ Descending" : "Descending",
+                onClick: () => handleSort(selectedColumn, "desc")
+              }
+            ]}
+          />
+
+          <ButtonCustom
+            text="Download"
+            icon="bi bi-download"
+            backgroundColor="#ffffff"
+            textColor="#000"
+            borderColor="#d9d9d9"
             height="43px"
-            onClick={exportToExcel} 
+            isDropdown={true}
+            dropdownItems={[
+              { label: "Export to Excel", onClick: exportToExcel },
+              { label: "Export to Word", onClick: exportToWord },
+              { label: "Download as JPEG", onClick: () => exportAsImage("jpeg") },
+              { label: "Download as PNG", onClick: () => exportAsImage("png") },
+            ]}
           />
         </div>
 
