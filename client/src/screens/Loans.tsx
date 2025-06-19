@@ -53,6 +53,7 @@ const Loans = () => {
   const [selectedDropdown, setSelectedDropdown] = useState("Active Loans");
   const [selectedColumn, setSelectedColumn] = useState("Name");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [loanData] = useState<LoanData[]>([
     {
@@ -91,6 +92,7 @@ const Loans = () => {
   };
 
   const handleSearch = (query: string) => {
+    setSearchQuery(query);
     const trimmed = query.trim().toLowerCase();
 
     if (trimmed === "") {
@@ -98,11 +100,10 @@ const Loans = () => {
       return;
     }
 
-    const result = loanData.filter(
-      loan =>
-        loan.name.toLowerCase().includes(trimmed) ||
-        loan.loanNo.toLowerCase().includes(trimmed) ||
-        loan.id.toLowerCase().includes(trimmed)
+    const result = loanData.filter(loan =>
+      Object.values(loan).some(value =>
+        typeof value === "string" && value.toLowerCase().includes(trimmed)
+      )
     );
 
     setFilteredLoans(result);
@@ -110,7 +111,19 @@ const Loans = () => {
 
   const handleSort = (columnLabel: string, order: 'asc' | 'desc') => {
     const key = sortKeyMap[columnLabel];
-    const sorted = quickSort([...filteredLoans], key, order);
+    let sorted = [...filteredLoans];
+
+    // Handle ₱ values for numeric sort
+    if (["loanAmount", "capitalShare", "savings", "balance"].includes(key)) {
+      sorted.sort((a, b) => {
+        const aVal = parseFloat(a[key].replace(/[₱,]/g, ""));
+        const bVal = parseFloat(b[key].replace(/[₱,]/g, ""));
+        return order === "asc" ? aVal - bVal : bVal - aVal;
+      });
+    } else {
+      sorted = quickSort(sorted, key, order);
+    }
+
     setFilteredLoans(sorted);
     setSelectedColumn(columnLabel);
     setSortOrder(order);
@@ -181,7 +194,7 @@ const Loans = () => {
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}></div>
-      <div className="flex-grow-1 d-flex flex-column justify-content-start align-items-start" style={{ padding: "40px 20px" }}>
+      <div className="flex-grow-1 d-flex flex-column p-4">
         <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
           <h3 className="mb-0">Loans</h3>
@@ -189,7 +202,7 @@ const Loans = () => {
 
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "5px" }}>
           <div style={{ flex: 1 }}>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar value={searchQuery} onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
@@ -204,7 +217,7 @@ const Loans = () => {
               { label: "Choose column to sort by:", onClick: () => {} },
               ...Object.keys(sortKeyMap).map(label => ({
                 label: label === selectedColumn ? `✓ ${label}` : label,
-                onClick: () => setSelectedColumn(label),
+                onClick: () => handleSort(label, sortOrder),
               })),
               { label: "────────────", onClick: () => {} },
               {
@@ -258,20 +271,24 @@ const Loans = () => {
           />
         </div>
 
-        <CustomTable
-          columnHeadings={[
-            "Name",
-            "ID",
-            "Loan No.",
-            "Loan Amount",
-            "Terms of Payment",
-            "Capital Share",
-            "Savings",
-            "Due Date",
-            "Balance",
-          ]}
-          rows={rows}
-        />
+        {filteredLoans.length > 0 ? (
+          <CustomTable
+            columnHeadings={[
+              "Name",
+              "ID",
+              "Loan No.",
+              "Loan Amount",
+              "Terms of Payment",
+              "Capital Share",
+              "Savings",
+              "Due Date",
+              "Balance",
+            ]}
+            rows={rows}
+          />
+        ) : (
+          <div className="text-center w-100 mt-4 text-muted fs-5">No results found.</div>
+        )}
       </div>
     </div>
   );

@@ -46,7 +46,7 @@ const columnMap: Record<string, keyof MissedPaymentType> = {
 };
 
 const MissedPayment = () => {
-  const [missedPayments] = useState([
+  const [missedPayments] = useState<MissedPaymentType[]>([
     {
       name: "Micha Bandasan",
       id: "MHST12345",
@@ -69,15 +69,17 @@ const MissedPayment = () => {
     },
   ]);
 
-  const [filteredData, setFilteredData] = useState(missedPayments);
+  const [filteredData, setFilteredData] = useState<MissedPaymentType[]>(missedPayments);
   const [selectedColumn, setSelectedColumn] = useState("Name");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     document.title = "MHSTEMPC | Missed Payment";
   }, []);
 
   const handleSearch = (query: string) => {
+    setSearchQuery(query);
     const lowerQuery = query.trim().toLowerCase();
     if (!lowerQuery) {
       setFilteredData(missedPayments);
@@ -85,8 +87,9 @@ const MissedPayment = () => {
     }
 
     const result = missedPayments.filter(payment =>
-      payment.name.toLowerCase().includes(lowerQuery) ||
-      payment.loanNo.toLowerCase().includes(lowerQuery)
+      Object.values(payment).some(value =>
+        typeof value === "string" && value.toLowerCase().includes(lowerQuery)
+      )
     );
 
     setFilteredData(result);
@@ -96,12 +99,19 @@ const MissedPayment = () => {
     const key = columnMap[column];
     if (!key) return;
 
-    const cleanedData = filteredData.map(item => ({
-      ...item,
-      [key]: typeof item[key] === "string" ? item[key].toString().replace(/[₱,]/g, "") : item[key]
-    }));
+    const isCurrencyField = ["loanAmount", "penalty", "totalAmount"].includes(key);
+    let sorted = [...filteredData];
 
-    const sorted = quickSort(cleanedData, key, order);
+    if (isCurrencyField) {
+      sorted.sort((a, b) => {
+        const aVal = parseFloat(a[key].replace(/[₱,]/g, ""));
+        const bVal = parseFloat(b[key].replace(/[₱,]/g, ""));
+        return order === "asc" ? aVal - bVal : bVal - aVal;
+      });
+    } else {
+      sorted = quickSort(sorted, key, order);
+    }
+
     setFilteredData(sorted);
     setSelectedColumn(column);
     setSortOrder(order);
@@ -154,7 +164,7 @@ const MissedPayment = () => {
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}></div>
-      <div className="flex-grow-1 d-flex flex-column justify-content-start align-items-start" style={{ padding: "40px 20px" }}>
+      <div className="flex-grow-1 d-flex flex-column p-4">
         <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
           <h3 className="mb-0">Missed Payments</h3>
@@ -162,7 +172,7 @@ const MissedPayment = () => {
 
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "5px" }}>
           <div style={{ flex: 1 }}>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar value={searchQuery} onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
@@ -177,7 +187,7 @@ const MissedPayment = () => {
               { label: "Choose column to sort by:", onClick: () => {} },
               ...Object.keys(columnMap).map(label => ({
                 label: label === selectedColumn ? `✓ ${label}` : label,
-                onClick: () => setSelectedColumn(label)
+                onClick: () => handleSort(label, sortOrder),
               })),
               { label: "────────────", onClick: () => {} },
               {
@@ -208,19 +218,23 @@ const MissedPayment = () => {
           />
         </div>
 
-        <CustomTable
-          columnHeadings={[
-            "Name",
-            "ID",
-            "Loan No.",
-            "Loan Amount",
-            "Due Date",
-            "Penalty",
-            "Total Amount",
-            "Contact No.",
-          ]}
-          rows={rows}
-        />
+        {filteredData.length > 0 ? (
+          <CustomTable
+            columnHeadings={[
+              "Name",
+              "ID",
+              "Loan No.",
+              "Loan Amount",
+              "Due Date",
+              "Penalty",
+              "Total Amount",
+              "Contact No.",
+            ]}
+            rows={rows}
+          />
+        ) : (
+          <div className="text-center w-100 mt-4 text-muted fs-5">No results found.</div>
+        )}
       </div>
     </div>
   );

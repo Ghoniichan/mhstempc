@@ -12,7 +12,7 @@ const AppointmentRequestScreen = () => {
         className="flex-grow-1 d-flex flex-column justify-content-start align-items-start"
         style={{ padding: '40px 20px' }}
       >
-        <h1>Appointment Requests</h1>
+        <h3>Appointment Requests</h3>
         {showRemarks ? (
           <AppointmentRemarksCard onCancel={() => setShowRemarks(false)} />
         ) : (

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -6,7 +7,20 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
-const sortKeyMap: Record<string, string> = {
+interface Payment {
+  name: string;
+  id: string;
+  loanNo: string;
+  method: string;
+  dateRelease: string;
+  date: string;
+  collectedBy: string;
+  dueDate: string;
+  loanAmount: string;  // currency string
+}
+
+// Map from UI label to the actual Payment key
+const sortKeyMap: Record<string, keyof Payment> = {
   "Name": "name",
   "ID": "id",
   "Loan No.": "loanNo",
@@ -18,31 +32,34 @@ const sortKeyMap: Record<string, string> = {
   "Loan Amount": "loanAmount"
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc'): T[] => {
+// A generic quickSort that takes a `keyof T`
+const quickSort = <T,>(
+  arr: T[],
+  key: keyof T,
+  order: 'asc' | 'desc'
+): T[] => {
   if (arr.length <= 1) return arr;
   const pivot = arr[arr.length - 1];
   const left: T[] = [];
   const right: T[] = [];
-
   for (let i = 0; i < arr.length - 1; i++) {
-    const a = arr[i][key];
-    const b = pivot[key];
-    const cond = order === 'asc' ? a < b : a > b;
-    if (cond) left.push(arr[i]);
+    const a = (arr[i] as any)[key] as string | number;
+    const b = (pivot as any)[key] as string | number;
+    if (order === 'asc' ? a < b : a > b) left.push(arr[i]);
     else right.push(arr[i]);
   }
-
   return [...quickSort(left, key, order), pivot, ...quickSort(right, key, order)];
 };
 
 const PaymentScreen = () => {
   const navigate = useNavigate();
 
-  const [selectedColumn, setSelectedColumn] = useState("Name");
+  // 1) store the LABEL (e.g. "Name"), not the key
+  const [selectedColumnLabel, setSelectedColumnLabel] = useState("Name");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [payments] = useState([
+  const [payments] = useState<Payment[]>([
     {
       name: "Micha Bandasan",
       id: "MHST12345",
@@ -66,75 +83,86 @@ const PaymentScreen = () => {
       loanAmount: "₱30,000",
     },
   ]);
-
-  const [filteredPayments, setFilteredPayments] = useState(payments);
+  const [filteredPayments, setFilteredPayments] = useState<Payment[]>(payments);
 
   useEffect(() => {
     document.title = "MHSTEMPC | Payment";
   }, []);
 
   const handleSearch = (query: string) => {
-    const lowerQuery = query.trim().toLowerCase();
-    if (!lowerQuery) {
+    setSearchQuery(query);
+    const q = query.trim().toLowerCase();
+    if (!q) {
       setFilteredPayments(payments);
       return;
     }
-
-    const result = payments.filter(
-      payment =>
-        payment.name.toLowerCase().includes(lowerQuery) ||
-        payment.loanNo.toLowerCase().includes(lowerQuery)
+    setFilteredPayments(
+      payments.filter(p =>
+        Object.values(p).some(v =>
+          typeof v === 'string' && v.toLowerCase().includes(q)
+        )
+      )
     );
-
-    setFilteredPayments(result);
   };
 
   const handleSort = (columnLabel: string, order: 'asc' | 'desc') => {
+    // 2) look up the actual keyof Payment
     const key = sortKeyMap[columnLabel];
-    const sorted = quickSort([...filteredPayments], key, order);
+    const isCurrencyField = key === "loanAmount";
+
+    let sorted: Payment[];
+    if (isCurrencyField) {
+      // Numeric parse for currency
+      sorted = [...filteredPayments].sort((a, b) => {
+        const aVal = parseFloat(a.loanAmount.replace(/[₱,]/g, ""));
+        const bVal = parseFloat(b.loanAmount.replace(/[₱,]/g, ""));
+        return order === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+    } else {
+      // Generic sort
+      sorted = quickSort(filteredPayments, key, order);
+    }
+
     setFilteredPayments(sorted);
-    setSelectedColumn(columnLabel);
+    // 3) store the LABEL here
+    setSelectedColumnLabel(columnLabel);
     setSortOrder(order);
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      filteredPayments.map(payment => ({
-        Name: payment.name,
-        ID: payment.id,
-        "Loan No.": payment.loanNo,
-        Method: payment.method,
-        "Date Release": payment.dateRelease,
-        Date: payment.date,
-        "Collected By": payment.collectedBy,
-        "Due Date": payment.dueDate,
-        "Loan Amount": payment.loanAmount,
+    const ws = XLSX.utils.json_to_sheet(
+      filteredPayments.map(p => ({
+        Name: p.name,
+        ID: p.id,
+        "Loan No.": p.loanNo,
+        Method: p.method,
+        "Date Release": p.dateRelease,
+        Date: p.date,
+        "Collected by": p.collectedBy,
+        "Due Date": p.dueDate,
+        "Loan Amount": p.loanAmount,
       }))
     );
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Payments");
-    XLSX.writeFile(workbook, "payments.xlsx");
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Payments");
+    XLSX.writeFile(wb, "payments.xlsx");
   };
 
   const exportToWord = () => {
     let content = "Payment Records\n\n";
-    filteredPayments.forEach(payment => {
-      content += `Name: ${payment.name}\nID: ${payment.id}\nLoan No.: ${payment.loanNo}\nMethod: ${payment.method}\nDate Release: ${payment.dateRelease}\nPayment Date: ${payment.date}\nCollected By: ${payment.collectedBy}\nDue Date: ${payment.dueDate}\nLoan Amount: ${payment.loanAmount}\n\n`;
+    filteredPayments.forEach(p => {
+      content += `Name: ${p.name}\nID: ${p.id}\nLoan No.: ${p.loanNo}\nMethod: ${p.method}\nDate Release: ${p.dateRelease}\nPayment Date: ${p.date}\nCollected by: ${p.collectedBy}\nDue Date: ${p.dueDate}\nLoan Amount: ${p.loanAmount}\n\n`;
     });
-
     const blob = new Blob([content], { type: "application/msword;charset=utf-8" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "payments.doc";
-    document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
   };
 
   const exportAsImage = async (format: 'jpeg' | 'png') => {
     const table = document.querySelector("table");
     if (!table) return;
-
     const html2canvas = (await import("html2canvas")).default;
     html2canvas(table).then(canvas => {
       const link = document.createElement("a");
@@ -144,54 +172,54 @@ const PaymentScreen = () => {
     });
   };
 
-  const rows = filteredPayments.map(payment => [
-    payment.name,
-    payment.id,
-    payment.loanNo,
-    payment.method,
-    payment.dateRelease,
-    payment.date,
-    payment.collectedBy,
-    payment.dueDate,
-    payment.loanAmount,
+  const rows = filteredPayments.map(p => [
+    p.name,
+    p.id,
+    p.loanNo,
+    p.method,
+    p.dateRelease,
+    p.date,
+    p.collectedBy,
+    p.dueDate,
+    p.loanAmount,
   ]);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
-      <div style={{ width: "200px", flexShrink: 0 }}></div>
-      <div className="flex-grow-1 d-flex flex-column justify-content-start align-items-start" style={{ padding: "40px 20px" }}>
-        <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
+      <div style={{ width: 200, flexShrink: 0 }} />
+      <div className="flex-grow-1 d-flex flex-column p-4">
+        <div className="d-flex align-items-center mb-3" style={{ gap: 12 }}>
           <Backbutton />
           <h3 className="mb-0">Payments</h3>
         </div>
 
-        <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "5px" }}>
+        <div className="d-flex align-items-center mb-4 w-100" style={{ gap: 12 }}>
           <div style={{ flex: 1 }}>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar value={searchQuery} onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
             text="Sort"
             icon="bi bi-arrow-down-up"
-            backgroundColor="#ffffff"
+            backgroundColor="#fff"
             textColor="#000"
             borderColor="#d9d9d9"
             height="45px"
-            isDropdown={true}
+            isDropdown
             dropdownItems={[
               { label: "Choose column to sort by:", onClick: () => {} },
               ...Object.keys(sortKeyMap).map(label => ({
-                label: label === selectedColumn ? `✓ ${label}` : label,
-                onClick: () => setSelectedColumn(label),
+                label: label === selectedColumnLabel ? `✓ ${label}` : label,
+                onClick: () => handleSort(label, sortOrder),
               })),
               { label: "────────────", onClick: () => {} },
               {
                 label: sortOrder === "asc" ? "✓ Ascending" : "Ascending",
-                onClick: () => handleSort(selectedColumn, "asc"),
+                onClick: () => handleSort(selectedColumnLabel, "asc"),
               },
               {
                 label: sortOrder === "desc" ? "✓ Descending" : "Descending",
-                onClick: () => handleSort(selectedColumn, "desc"),
+                onClick: () => handleSort(selectedColumnLabel, "desc"),
               },
             ]}
           />
@@ -199,25 +227,20 @@ const PaymentScreen = () => {
           <ButtonCustom
             text="Add Payment"
             icon="bi bi-cash-stack"
-            backgroundColor="#ffffff"
+            backgroundColor="#fff"
             textColor="#000"
             borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="15px"
-            height="45px"
             onClick={() => navigate("/addPayment")}
           />
 
           <ButtonCustom
             text="Download"
             icon="bi bi-download"
-            backgroundColor="#ffffff"
+            backgroundColor="#fff"
             textColor="#000"
             borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="15px"
-            height="43px"
-            isDropdown={true}
+            height="45px"
+            isDropdown
             dropdownItems={[
               { label: "Export to Excel", onClick: exportToExcel },
               { label: "Export to Word", onClick: exportToWord },
@@ -227,20 +250,26 @@ const PaymentScreen = () => {
           />
         </div>
 
-        <CustomTable
-          columnHeadings={[
-            "Name",
-            "ID",
-            "Loan No.",
-            "Method",
-            "Date Release",
-            "Date",
-            "Collected by",
-            "Due Date",
-            "Loan Amount",
-          ]}
-          rows={rows}
-        />
+        {filteredPayments.length > 0 ? (
+          <CustomTable
+            columnHeadings={[
+              "Name",
+              "ID",
+              "Loan No.",
+              "Method",
+              "Date Release",
+              "Date",
+              "Collected by",
+              "Due Date",
+              "Loan Amount",
+            ]}
+            rows={rows}
+          />
+        ) : (
+          <div className="text-center w-100 mt-4 text-muted fs-5">
+            No results found.
+          </div>
+        )}
       </div>
     </div>
   );
