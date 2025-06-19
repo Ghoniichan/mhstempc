@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
@@ -8,112 +9,78 @@ import Backbutton from "../components/Dashboard/Backbutton";
 import EditStatus from "../components/Dashboard/EditStatus";
 import axios from '../api/axiosInstance';
 
+const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
+  if (arr.length <= 1) return arr;
+  const pivot = arr[arr.length - 1];
+  const left: T[] = [];
+  const right: T[] = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    const a = arr[i][key];
+    const b = pivot[key];
+    const cond = order === 'asc' ? a < b : a > b;
+    if (cond) left.push(arr[i]);
+    else right.push(arr[i]);
+  }
+
+  return [...quickSort(left, key, order), pivot, ...quickSort(right, key, order)];
+};
+
+const sortKeyMap: Record<string, string> = {
+  "Name": "name",
+  "MHSTEMPC Policy No.": "id",
+  "Loan No.": "loanNo",
+  "Loan Amount": "loanAmount",
+  "Date Release": "dateRelease",
+  "Approve by": "approvedBy",
+  "Due Date": "dueDate",
+  "Status": "status"
+};
+
 const Application = () => {
   const navigate = useNavigate();
+  const [applications, setApplications] = useState<any[]>([]);
+  const [filteredApps, setFilteredApps] = useState<any[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [selectedColumn, setSelectedColumn] = useState<string>("Name");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState("All");
-
-  const [applications, setApplications] = useState([
-    {
-      name: "Micha Bandasan",
-      id: "MHST12345",
-      loanNo: "LN20240601",
-      loanAmount: "₱50,000",
-      dateRelease: "2025-06-01",
-      approvedBy: "Admin",
-      dueDate: "2025-12-01",
-      status: "Pending",
-    },
-  ]);
-
-  const [filteredApps, setFilteredApps] = useState(applications);
 
   useEffect(() => {
     document.title = "MHSTEMPC | Applications";
+    fetchData();
   }, []);
 
-  const openEditModal = (index: number) => {
-    setEditingIndex(index);
-    setShowEditModal(true);
-  };
-
-  const handleUpdateStatus = async (newStatus: string) => {
-    if (editingIndex === null) return;
-
-    const editedApp = filteredApps[editingIndex];
-    const loanIdentifier = editedApp.loanNo;
-    const previousStatus = editedApp.status;
-
-    const optimisticApp = { ...editedApp, status: newStatus };
-    setFilteredApps(prev => {
-      const arr = [...prev];
-      arr[editingIndex] = optimisticApp;
-      return arr;
-    });
-    setApplications(prev => {
-      const arr = [...prev];
-      const idx = prev.findIndex(app => app.id === loanIdentifier);
-      if (idx !== -1) arr[idx] = optimisticApp;
-      return arr;
-    });
-    setShowEditModal(false);
-    setEditingIndex(null);
-
+  const fetchData = async () => {
     try {
-      const response = await axios.patch(`/api/loans/${loanIdentifier}/status`, {
-        status: newStatus.toLowerCase(),
-      });
-      console.log("Server response:", response.data);
-    } catch (error) {
-      console.error("Failed to update status on server:", error);
-      setFilteredApps(prev => {
-        const arr = [...prev];
-        const idx = prev.findIndex(app => app.id === loanIdentifier);
-        if (idx !== -1) arr[idx] = { ...arr[idx], status: previousStatus };
-        return arr;
-      });
-      setApplications(prev => {
-        const arr = [...prev];
-        const idx = prev.findIndex(app => app.id === loanIdentifier);
-        if (idx !== -1) arr[idx] = { ...arr[idx], status: previousStatus };
-        return arr;
-      });
-      alert("Failed to update status. Please try again.");
+      const response = await axios.get('/api/loans/all');
+      if (response.data && Array.isArray(response.data)) {
+        const transformed = response.data.map((item: any) => ({
+          name: item.name,
+          id: item.policy_number,
+          loanNo: item.id,
+          loanAmount: `₱${Number(item.requested_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}`,
+          dateRelease: item.application_date.slice(0, 10),
+          approvedBy: "Admin",
+          dueDate: item.due_date.slice(0, 10),
+          status: item.status.charAt(0).toUpperCase() + item.status.slice(1)
+        }));
+        setApplications(transformed);
+        setFilteredApps(transformed);
+      }
+    } catch (err) {
+      console.error("Error fetching data", err);
     }
   };
 
   const handleSearch = (query: string) => {
-    const lowerQuery = query.trim().toLowerCase();
-    if (lowerQuery === "") {
-      filterByStatus(selectedStatus);
-      return;
-    }
-    const result = applications.filter(
-      app =>
-        (app.name.toLowerCase().includes(lowerQuery) ||
-          app.loanNo.toLowerCase().includes(lowerQuery)) &&
-        (selectedStatus === "All" || app.status.toLowerCase() === selectedStatus.toLowerCase())
+    const q = query.toLowerCase();
+    const result = applications.filter(app =>
+      (app.name.toLowerCase().includes(q) || app.loanNo.toLowerCase().includes(q)) &&
+      (selectedStatus === "All" || app.status.toLowerCase() === selectedStatus.toLowerCase())
     );
     setFilteredApps(result);
-  };
-
-  const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(
-      filteredApps.map(app => ({
-        Name: app.name,
-        "MHSTEMPC Policy No.": app.id,
-        "Loan No.": app.loanNo,
-        "Loan Amount": app.loanAmount,
-        "Date Release": app.dateRelease,
-        "Approved By": app.approvedBy,
-        "Due Date": app.dueDate,
-        "Approval Status": app.status,
-      }))
-    );
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Applications");
-    XLSX.writeFile(workbook, "applications.xlsx");
   };
 
   const filterByStatus = (status: string) => {
@@ -121,115 +88,171 @@ const Application = () => {
     if (status === "All") {
       setFilteredApps(applications);
     } else {
-      const filtered = applications.filter(
-        app => app.status.toLowerCase() === status.toLowerCase()
-      );
-      setFilteredApps(filtered);
+      setFilteredApps(applications.filter(a => a.status.toLowerCase() === status.toLowerCase()));
     }
   };
 
-  const rows = filteredApps.map((app, index) => [
-    app.name,
-    app.id,
-    app.loanNo,
-    app.loanAmount,
-    app.dateRelease,
-    app.approvedBy,
-    app.dueDate,
-    app.status,
-    <button
-      key={index}
-      className="btn btn-sm btn-outline-primary"
-      onClick={() => openEditModal(index)}
-    >
-      Update
-    </button>,
+  const handleSort = (columnLabel: string, order: 'asc' | 'desc') => {
+    const key = sortKeyMap[columnLabel];
+    if (!key) return;
+    let sorted = [...filteredApps];
+
+    if (key === "loanAmount") {
+      sorted.sort((a, b) => {
+        const aVal = parseFloat(a[key].replace(/[₱,]/g, ""));
+        const bVal = parseFloat(b[key].replace(/[₱,]/g, ""));
+        return order === "asc" ? aVal - bVal : bVal - aVal;
+      });
+    } else {
+      sorted = quickSort(sorted, key, order);
+    }
+
+    setFilteredApps(sorted);
+    setSelectedColumn(columnLabel);
+    setSortOrder(order); // ✅ This ensures dropdown check mark and logic stay in sync
+  };
+
+  const handleUpdateStatus = async (newStatus: string) => {
+    if (editingIndex === null) return;
+    const app = filteredApps[editingIndex];
+    const prevStatus = app.status;
+    const loanNo = app.loanNo;
+
+    const optimistic = { ...app, status: newStatus };
+    const updatedList = [...filteredApps];
+    updatedList[editingIndex] = optimistic;
+    setFilteredApps(updatedList);
+
+    try {
+      await axios.patch(`/api/loans/${loanNo}/status`, { status: newStatus.toLowerCase() });
+    } catch {
+      alert("Failed to update status");
+      updatedList[editingIndex] = { ...app, status: prevStatus };
+      setFilteredApps(updatedList);
+    }
+
+    setShowEditModal(false);
+    setEditingIndex(null);
+  };
+
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(filteredApps);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Applications");
+    XLSX.writeFile(wb, "applications.xlsx");
+  };
+
+  const exportToWord = () => {
+    const content = filteredApps.map(app =>
+      `Name: ${app.name}\nPolicy No: ${app.id}\nLoan No: ${app.loanNo}\nLoan Amount: ${app.loanAmount}\nDate Release: ${app.dateRelease}\nApproved By: ${app.approvedBy}\nDue Date: ${app.dueDate}\nStatus: ${app.status}\n`
+    ).join("\n");
+    const blob = new Blob([content], { type: "application/msword;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "applications.doc";
+    link.click();
+  };
+
+  const exportAsImage = async (format: 'jpeg' | 'png') => {
+    const table = document.querySelector("table");
+    if (!table) return;
+    const html2canvas = (await import('html2canvas')).default;
+    html2canvas(table).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `applications.${format}`;
+      link.href = canvas.toDataURL(`image/${format}`);
+      link.click();
+    });
+  };
+
+  const rows = filteredApps.map((app, idx) => [
+    app.name, app.id, app.loanNo, app.loanAmount,
+    app.dateRelease, app.approvedBy, app.dueDate, app.status,
+    <button key={idx} className="btn btn-sm btn-outline-primary" onClick={() => {
+      setEditingIndex(idx);
+      setShowEditModal(true);
+    }}>Update</button>
   ]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/loans/all');
-        if (response.data && Array.isArray(response.data)) {
-          const transformedData = response.data.map((item) => ({
-            name: item.name,
-            id: item.policy_number,
-            loanNo: item.id,
-            loanAmount: `₱${Number(item.requested_amount).toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}`,
-            dateRelease: item.application_date.slice(0, 10),
-            approvedBy: "Admin",
-            dueDate: item.due_date.slice(0, 10),
-            status: item.status.charAt(0).toUpperCase() + item.status.slice(1),
-          }));
-          setApplications(transformedData);
-          setFilteredApps(transformedData);
-        } else {
-          console.error("Unexpected response format:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching applications:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
   return (
-    <div className="d-flex" style={{ minHeight: "100vh", position: "relative" }}>
-      <div style={{ width: "200px", flexShrink: 0 }}></div>
-
+    <div className="d-flex" style={{ minHeight: "100vh" }}>
+      <div style={{ width: "200px", flexShrink: 0 }} />
       <div className="flex-grow-1 d-flex flex-column p-4">
-        <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
+        <div className="d-flex align-items-center mb-3" style={{ gap: 12 }}>
           <Backbutton />
           <h3 className="mb-0">Applications</h3>
         </div>
 
-        <div className="d-flex align-items-center mb-4" style={{ gap: "16px" }}>
+        <div className="d-flex align-items-center mb-4" style={{ gap: '5px' }}>
           <div style={{ flex: 1 }}>
             <SearchBar onSearch={handleSearch} />
           </div>
 
           <ButtonCustom
-            text={`Status: ${selectedStatus}`}
-            backgroundColor="#ffffff"
+            text="Sort"
+            icon="bi bi-arrow-down-up"
+            backgroundColor="#fff"
             textColor="#000"
             borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="14px"
             height="45px"
-            isDropdown={true}
+            isDropdown
+            dropdownItems={[
+              { label: "Choose column to sort by:", onClick: () => {} },
+              ...Object.keys(sortKeyMap).map(label => ({
+                label: label === selectedColumn ? `✓ ${label}` : label,
+                onClick: () => handleSort(label, sortOrder),
+              })),
+              { label: "────────────", onClick: () => {} },
+              {
+                label: sortOrder === "asc" ? "✓ Ascending" : "Ascending",
+                onClick: () => handleSort(selectedColumn, "asc")
+              },
+              {
+                label: sortOrder === "desc" ? "✓ Descending" : "Descending",
+                onClick: () => handleSort(selectedColumn, "desc")
+              }
+            ]}
+          />
+
+          <ButtonCustom
+            text={`Status: ${selectedStatus}`}
+            backgroundColor="#fff"
+            textColor="#000"
+            borderColor="#d9d9d9"
+            height="45px"
+            isDropdown
             dropdownItems={[
               { label: "All", onClick: () => filterByStatus("All") },
               { label: "Approved", onClick: () => filterByStatus("Approved") },
               { label: "Disapproved", onClick: () => filterByStatus("Disapproved") },
-              { label: "Pending", onClick: () => filterByStatus("Pending") },
+              { label: "Pending", onClick: () => filterByStatus("Pending") }
             ]}
           />
 
           <ButtonCustom
             text="Application"
             icon="bi bi-file-earmark-text"
-            backgroundColor="#ffffff"
+            backgroundColor="#fff"
             textColor="#000"
             borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="15px"
             height="45px"
             onClick={() => navigate("/applicationForm")}
           />
 
           <ButtonCustom
-            text="Export Excel"
-            icon="bi bi-file-earmark-excel"
-            backgroundColor="#0d7239"
-            textColor="#fff"
-            borderColor="#0d7239"
-            iconSize="20px"
-            fontSize="15px"
+            text="Download"
+            icon="bi bi-download"
+            backgroundColor="#fff"
+            textColor="#000"
+            borderColor="#d9d9d9"
             height="43px"
-            onClick={exportToExcel}
+            isDropdown
+            dropdownItems={[
+              { label: "Export to Excel", onClick: exportToExcel },
+              { label: "Export to Word", onClick: exportToWord },
+              { label: "Download as JPEG", onClick: () => exportAsImage("jpeg") },
+              { label: "Download as PNG", onClick: () => exportAsImage("png") }
+            ]}
           />
         </div>
 
@@ -242,17 +265,14 @@ const Application = () => {
             "Date Release",
             "Approve by",
             "Due Date",
-            "Approval Status",
-            "Update Status",
+            "Status",
+            "Update Status"
           ]}
           rows={rows}
         />
 
         {showEditModal && editingIndex !== null && (
-          <div
-            className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-            style={{ background: "rgba(0,0,0,0.3)", zIndex: 1050 }}
-          >
+          <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style={{ background: "rgba(0,0,0,0.3)", zIndex: 1050 }}>
             <EditStatus
               currentStatus={filteredApps[editingIndex].status}
               onClose={() => setShowEditModal(false)}
