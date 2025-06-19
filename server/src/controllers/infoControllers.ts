@@ -61,6 +61,8 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
     const salt = await bcrypt.genSalt(10);
     const pass = getRandomPassword(5);
     const bcryptPassword = await bcrypt.hash(pass, salt);
+
+    console.log(`Generated password for ${userInfo.fbAccEmailAddress}: ${pass}`);
     
     // 1) Insert into accounts_credential
     const accountInsert = await client.query(
