@@ -30,6 +30,7 @@ import ClientSendSmsScreen from './screens/ClientSendSmsScreen';
 import AuditLogScreen from './screens/AuditLogScreen';
 import AboutSettingScreen from './screens/AboutSettingScreen';
 import AppointmentRequestScreen from './screens/AppointmentRequestScreen'; 
+import AdminBugReportListScreen from './screens/AdminBugReportListScreen';
 
 
 // User
@@ -120,6 +121,8 @@ function App() {
           <Route path="/aboutSetting" element={<AboutSettingScreen />} />
           <Route path='/appointment' element={<Appointment/>}/>
           <Route path="/appointmentRequest" element={<AppointmentRequestScreen />} />
+          <Route path="/adminBugReportList" element={<AdminBugReportListScreen />} />
+        
 
           //user
           <Route path="/userLoan" element={<UserLoanScreen />} />

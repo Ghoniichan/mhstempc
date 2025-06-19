@@ -38,6 +38,8 @@ const UserAppointmentScreen = () => {
       if (response.status !== 201) {
         throw new Error('Failed to book appointment.');
       }
+
+      alert('Appointment booked successfully!');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
     } finally {
