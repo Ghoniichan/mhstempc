@@ -13,7 +13,6 @@ dist-ssr
 *.local
 
 client\src\api
-src/api/axiosInstance.ts
 
 
 # Editor directories and files
