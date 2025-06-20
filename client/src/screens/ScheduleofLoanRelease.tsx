@@ -8,6 +8,7 @@ import Backbutton from "../components/Dashboard/Backbutton";
 const SchedofLoanRelease = () => {
   const navigate = useNavigate();
   const [selectedDropdown, setSelectedDropdown] = useState("Schedule of Loan Release");
+  const [searchValue, setSearchValue] = useState("");
 
   const handleDropdownClick = (label: string, path: string) => {
     setSelectedDropdown(label);
@@ -15,6 +16,7 @@ const SchedofLoanRelease = () => {
   };
 
   const handleSearch = (query: string): void => {
+    setSearchValue(query);
     console.log("Search query:", query);
   };
 
@@ -33,9 +35,8 @@ const SchedofLoanRelease = () => {
         </div>
 
         {/* row for search + buttons */}
-        <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "16px" }}>
             <div style={{ flex: 1 }}>
-            <SearchBar onSearch={handleSearch} />
+            <SearchBar value={searchValue} onSearch={handleSearch} />
             </div>
 
           <ButtonCustom
@@ -88,7 +89,6 @@ const SchedofLoanRelease = () => {
           ]}
           rows={[]}
         />
-      </div>
     </div>
   );
 };
