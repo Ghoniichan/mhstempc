@@ -406,16 +406,24 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                   </Col>
                 </Row>
 
-                {/* Submit Button */}
-                <div className="mt-4 d-flex">
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary px-5 ms-auto gothic-a1-bold" 
+                {/* Cancel & Submit Button */}
+                <div className="mt-4 d-flex justify-content-end gap-2">
+                  <button
+                    type="button"
+                    className="btn btn-secondary px-5 gothic-a1-bold"
+                    onClick={() => navigate(-1)} 
+                    style={{color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62'}}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary px-5 gothic-a1-bold"
                     style={{ backgroundColor: '#002d62' }}
                   >
                     Next
                   </button>
-
                 </div>
               </form>
             </div>

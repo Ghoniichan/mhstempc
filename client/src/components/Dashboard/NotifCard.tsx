@@ -1,36 +1,32 @@
-import { Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './Notifcard.css';
 
-const NotifCard = () => {
+const NotifCard: React.FC = () => {
   const navigate = useNavigate();
-
-  const handleCardClick = () => {
-    navigate('/appointmentRequest'); 
-  };
+  const handleCardClick = () => navigate('/appointmentRequest');
 
   return (
-    <Card className='container notif-card' onClick={handleCardClick}>
-      <Card.Body>
-        {/* Title */}
-        <Card.Title className='header gothic-a1-bold'>
-          <i className="bi bi-bell"></i> Account Changes
-        </Card.Title>
-
-        {/* Date below title */}
-        <Card.Subtitle className="date text-muted gothic-a1-regular mb-2">
+    <div className="notif-card-container" onClick={handleCardClick}>
+      <div className="notif-card-header">
+        <div className="notif-card-header-left">
+          <i className="bi bi-bell" />
+          <span className="notif-card-title gothic-a1-bold">Account Changes</span>
+        </div>
+        <div className="notif-card-header-date gothic-a1-regular">
           July 15
-        </Card.Subtitle>
+        </div>
+      </div>
 
-        {/* Message */}
-        <Card.Text>
-          Carlos changed his phone number
-        </Card.Text>
+      {/* Message */}
+      <p className="notif-card-text">
+        Carlos changed his phone number
+      </p>
 
-        {/* Action Link */}
-        <Card.Link onClick={(e) => e.preventDefault()}>View</Card.Link>
-      </Card.Body>
-    </Card>
+      {/* View link */}
+      <button className="notif-card-link gothic-a1-bold" onClick={e => e.stopPropagation()}>
+        View
+      </button>
+    </div>
   );
 };
 

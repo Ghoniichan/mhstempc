@@ -1,10 +1,27 @@
-.table-container {
-  overflow-x: auto;   /* Horizontal scroll */
-  overflow-y: auto;   /* Vertical scroll if needed */
-  max-height: 60vh;   /* Limit height, adjust as needed */
-  -webkit-overflow-scrolling: touch;  /* smooth scrolling on iOS */
+.table-card {
+  width: 100%;
 }
-.dropdown-menu {
-  width: 100% !important; /* make dropdown menu full width of its container */
-  min-width: 0 !important; /* override bootstrap's default min-width */
+
+.table-card .table-card__container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 60vh;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-card .table-card__container table,
+.table-card .table-card__container th,
+.table-card .table-card__container td {
+  text-align: left !important;
+}
+
+.table-card .dropdown-menu {
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: left !important;
+}
+
+.table-card .dropdown-menu .dropdown-item {
+  text-align: left !important;
+  white-space: normal;
 }
