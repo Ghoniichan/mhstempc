@@ -1,6 +1,5 @@
 
 import NotifCard from './NotifCard';
-import AppointmentNotif from './AppointmentNotif';
 
 const NotificationSection = () => {
   return (
@@ -8,8 +7,6 @@ const NotificationSection = () => {
       <NotifCard />
       <NotifCard />
       <NotifCard />
-      <AppointmentNotif />
-      <AppointmentNotif />
     </div>
   );
 };
