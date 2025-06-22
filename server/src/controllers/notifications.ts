@@ -73,7 +73,7 @@ export const getMyAppointments = async (req: Request, res: Response) => {
   try {
     // example using ANY()
     const result = await client.query(
-      `SELECT CONCAT(m.last_name, ', ', m.first_name) AS sender, a.message, a.appointment_date, a. appointment_time, a.status
+      `SELECT a.id, CONCAT(m.last_name, ', ', m.first_name) AS name, a.message, a.appointment_date, a. appointment_time, a.status
         FROM appointments a
         JOIN membership_applications m ON m.id = a.sender
         WHERE $1::uuid = ANY(receiver)
@@ -92,7 +92,7 @@ export const getMyAppointments = async (req: Request, res: Response) => {
 
 export const updateAppointmentStatus = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    const { status } = req.body;  // expects 'accepted', 'declined', or 'pending'
+    const { status } = req.body; 
     const client = await pool.connect();
     
     try {
@@ -124,3 +124,4 @@ export const updateAppointmentStatus = async (req: Request, res: Response): Prom
         client.release();
     }
 };
+
