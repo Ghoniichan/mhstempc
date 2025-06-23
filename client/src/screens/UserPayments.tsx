@@ -1,37 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
-interface LoanData {
+interface PaymentData {
   name: string;
-  id: string;
-  loanNo: string;
+  policyNo: string;
+  amountPaid: string;
   loanAmount: string;
-  terms: string;
-  capitalShare: string;
-  savings: string;
-  dueDate: string;
-  balance: string;
+  datePaid: string;
 }
 
-const sortKeyMap: Record<string, keyof LoanData> = {
+const sortKeyMap: Record<string, keyof PaymentData> = {
   "Name": "name",
-  "ID": "id",
-  "Loan No.": "loanNo",
+  "MHSTEMPC Policy No.": "policyNo",
+  "Amount Paid": "amountPaid",
   "Loan Amount": "loanAmount",
-  "Terms of Payment": "terms",
-  "Capital Share": "capitalShare",
-  "Savings": "savings",
-  "Due Date": "dueDate",
-  "Balance": "balance"
+  "Date Paid": "datePaid"
 };
 
-// Generic quicksort function
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc'): T[] => {
   if (arr.length <= 1) return arr;
   const pivot = arr[arr.length - 1];
@@ -49,65 +39,50 @@ const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 
   return [...quickSort(left, key, order), pivot, ...quickSort(right, key, order)];
 };
 
-const Loans = () => {
-  const navigate = useNavigate();
-  const [selectedDropdown, setSelectedDropdown] = useState("Active Loans");
+const UserPayments = () => {
   const [selectedColumn, setSelectedColumn] = useState("Name");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [loanData] = useState<LoanData[]>([
+  const [paymentData] = useState<PaymentData[]>([
     {
       name: "Micha Bandasan",
-      id: "MHST12345",
-      loanNo: "LN20240601",
+      policyNo: "MHST12345",
+      amountPaid: "₱5,000",
       loanAmount: "₱50,000",
-      terms: "6 months",
-      capitalShare: "₱5,000",
-      savings: "₱3,000",
-      dueDate: "2025-12-01",
-      balance: "₱20,000",
+      datePaid: "2025-06-15",
     },
     {
       name: "Jane Doe",
-      id: "MHST54321",
-      loanNo: "LN20240522",
+      policyNo: "MHST54321",
+      amountPaid: "₱3,000",
       loanAmount: "₱30,000",
-      terms: "12 months",
-      capitalShare: "₱4,000",
-      savings: "₱2,000",
-      dueDate: "2026-05-22",
-      balance: "₱18,000",
+      datePaid: "2025-06-10",
     },
   ]);
 
-  const [filteredLoans, setFilteredLoans] = useState<LoanData[]>(loanData);
+  const [filteredPayments, setFilteredPayments] = useState<PaymentData[]>(paymentData);
 
   useEffect(() => {
-    document.title = "MHSTEMPC | Loans";
+    document.title = "MHSTEMPC | User Payments";
   }, []);
-
-  const handleDropdownClick = (label: string, path: string) => {
-    setSelectedDropdown(label);
-    navigate(path);
-  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const trimmed = query.trim().toLowerCase();
 
-    if (trimmed === "") {
-      setFilteredLoans(loanData);
+    if (!trimmed) {
+      setFilteredPayments(paymentData);
       return;
     }
 
-    const result = loanData.filter(loan =>
-      Object.values(loan).some(value =>
+    const result = paymentData.filter(payment =>
+      Object.values(payment).some(value =>
         typeof value === "string" && value.toLowerCase().includes(trimmed)
       )
     );
 
-    setFilteredLoans(result);
+    setFilteredPayments(result);
   };
 
   const handleSort = (columnLabel: string, order?: 'asc' | 'desc') => {
@@ -115,9 +90,9 @@ const Loans = () => {
     const newOrder: 'asc' | 'desc' =
       order ?? (selectedColumn === columnLabel && sortOrder === 'asc' ? 'desc' : 'asc');
 
-    let sorted = [...filteredLoans];
+    let sorted = [...filteredPayments];
 
-    if (["loanAmount", "capitalShare", "savings", "balance"].includes(key)) {
+    if (["amountPaid", "loanAmount"].includes(key)) {
       sorted.sort((a, b) => {
         const aVal = parseFloat(a[key].replace(/[₱,]/g, ""));
         const bVal = parseFloat(b[key].replace(/[₱,]/g, ""));
@@ -127,35 +102,30 @@ const Loans = () => {
       sorted = quickSort(sorted, key, newOrder);
     }
 
-    setFilteredLoans(sorted);
+    setFilteredPayments(sorted);
     setSelectedColumn(columnLabel);
     setSortOrder(newOrder);
   };
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
-      filteredLoans.map(loan => ({
-        Name: loan.name,
-        ID: loan.id,
-        "Loan No.": loan.loanNo,
-        "Loan Amount": loan.loanAmount,
-        "Terms of Payment": loan.terms,
-        "Capital Share": loan.capitalShare,
-        Savings: loan.savings,
-        "Due Date": loan.dueDate,
-        Balance: loan.balance,
+      filteredPayments.map(payment => ({
+        Name: payment.name,
+        "MHSTEMPC Policy No.": payment.policyNo,
+        "Amount Paid": payment.amountPaid,
+        "Loan Amount": payment.loanAmount,
+        "Date Paid": payment.datePaid,
       }))
     );
-
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Loans");
-    XLSX.writeFile(workbook, "loans.xlsx");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "UserPayments");
+    XLSX.writeFile(workbook, "user_payments.xlsx");
   };
 
   const exportToWord = () => {
-    let content = "Active Loans\n\n";
-    filteredLoans.forEach(loan => {
-      content += `Name: ${loan.name}\nPolicy No.: ${loan.id}\nLoan No.: ${loan.loanNo}\nLoan Amount: ${loan.loanAmount}\nTerms: ${loan.terms}\nCapital Share: ${loan.capitalShare}\nSavings: ${loan.savings}\nDue Date: ${loan.dueDate}\nBalance: ${loan.balance}\n\n`;
+    let content = "User Payments\n\n";
+    filteredPayments.forEach(payment => {
+      content += `Name: ${payment.name}\nMHSTEMPC Policy No.: ${payment.policyNo}\nAmount Paid: ${payment.amountPaid}\nLoan Amount: ${payment.loanAmount}\nDate Paid: ${payment.datePaid}\n\n`;
     });
 
     const blob = new Blob([content], {
@@ -163,7 +133,7 @@ const Loans = () => {
     });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "loans.doc";
+    link.download = "user_payments.doc";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -176,22 +146,18 @@ const Loans = () => {
     const html2canvas = (await import("html2canvas")).default;
     html2canvas(tableWrapper as HTMLElement).then(canvas => {
       const link = document.createElement("a");
-      link.download = `loans.${format}`;
+      link.download = `user_payments.${format}`;
       link.href = canvas.toDataURL(`image/${format}`);
       link.click();
     });
   };
 
-  const rows = filteredLoans.map(loan => [
-    loan.name,
-    loan.id,
-    loan.loanNo,
-    loan.loanAmount,
-    loan.terms,
-    loan.capitalShare,
-    loan.savings,
-    loan.dueDate,
-    loan.balance,
+  const rows = filteredPayments.map(payment => [
+    payment.name,
+    payment.policyNo,
+    payment.amountPaid,
+    payment.loanAmount,
+    payment.datePaid,
   ]);
 
   return (
@@ -200,7 +166,7 @@ const Loans = () => {
       <div className="flex-grow-1 d-flex flex-column p-4">
         <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
-          <h3 className="mb-0">Loans</h3>
+          <h3 className="mb-0">User Payments</h3>
         </div>
 
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "5px" }}>
@@ -215,7 +181,7 @@ const Loans = () => {
             textColor="#000"
             borderColor="#d9d9d9"
             height="45px"
-            isDropdown={true}
+            isDropdown
             dropdownItems={[
               { label: "Choose column to sort by:", onClick: () => {} },
               ...Object.keys(sortKeyMap).map(label => ({
@@ -235,57 +201,30 @@ const Loans = () => {
           />
 
           <ButtonCustom
-            text={selectedDropdown}
-            backgroundColor="#ffffff"
-            textColor="#000"
-            borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="14px"
-            height="45px"
-            isDropdown={true}
-            dropdownItems={[
-              {
-                label: "Active Loans",
-                onClick: () => handleDropdownClick("Active Loans", "/loans"),
-              },
-              {
-                label: "Schedule of Loan Release",
-                onClick: () => handleDropdownClick("Schedule of Loan Release", "/loanRelease"),
-              },
-            ]}
-          />
-
-          <ButtonCustom
             text="Download"
             icon="bi bi-download"
             backgroundColor="#ffffff"
             textColor="#000"
             borderColor="#d9d9d9"
-            iconSize="20px"
-            fontSize="15px"
             height="43px"
-            isDropdown={true}
+            isDropdown
             dropdownItems={[
               { label: "Export to Excel", onClick: exportToExcel },
               { label: "Export to Word", onClick: exportToWord },
-              { label: "Download as JPEG", onClick: () => exportAsImage('jpeg') },
-              { label: "Download as PNG", onClick: () => exportAsImage('png') },
+              { label: "Download as JPEG", onClick: () => exportAsImage("jpeg") },
+              { label: "Download as PNG", onClick: () => exportAsImage("png") },
             ]}
           />
         </div>
 
-        {filteredLoans.length > 0 ? (
+        {filteredPayments.length > 0 ? (
           <CustomTable
             columnHeadings={[
               "Name",
-              "ID",
-              "Loan No.",
+              "MHSTEMPC Policy No.",
+              "Amount Paid",
               "Loan Amount",
-              "Terms of Payment",
-              "Capital Share",
-              "Savings",
-              "Due Date",
-              "Balance",
+              "Date Paid",
             ]}
             rows={rows}
           />
@@ -297,4 +236,4 @@ const Loans = () => {
   );
 };
 
-export default Loans;
+export default UserPayments;
