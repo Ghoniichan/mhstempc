@@ -7,6 +7,8 @@ import sendEmail from "./routes/notificationRoutes";
 import infoRoutes from "./routes/infoRoutes";
 import loanRoutes from "./routes/loanRoutes";
 import notifRoutes from "./routes/notifRoutes";
+import capitalRoutes from "./routes/capitalRoutes";
+import savingsRoutes from "./routes/savingsRoutes";
 
 dotenv.config();
 
@@ -27,6 +29,10 @@ app.use("/api/notification", sendEmail);
 app.use("/api/loans", loanRoutes);
 
 app.use("/api/notifications", notifRoutes);
+
+app.use("/api/capital", capitalRoutes);
+
+app.use("/api/savings", savingsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
