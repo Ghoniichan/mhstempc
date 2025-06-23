@@ -1,75 +1,93 @@
-.top-bar {
-    background-color: #002D62;
-    height: 50px;
-    width: 1200px;
-    max-width: 970px !important;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    display: flex;
-    align-items: center;
-    color: white;
-    font-size: 14px;
-    padding-left: 15px ;
+/* Top bar */
+.af-top-bar {
+  background-color: #002D62;
+  height: 50px;
+  width: 100%;
+  max-width: 970px !important;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  align-items: center;
+  margin: 0 auto 0 auto
 }
-
-.top-bar-text {
+.af-top-bar-text {
   font-weight: 600;
   text-align: center;
+  padding-left: 15px;
 }
 
-.formcard {
-    /* border-top-left-radius: 0 !important; 
-    border-top-right-radius: 0 !important;      */
-    margin-left: 135px;    
-    flex-grow: 1;
-    background-color: #000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-
+.af-form label,
+.af-form .form-label {
+  text-align: left !important;
+  display: block;  
 }
 
-.scrollable-form::-webkit-scrollbar {
+.af-form-card {
+  margin-left: 135px;
+  flex-grow: 1;
+  background-color: #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Scrollable form area */
+.af-card-body.scrollable-form::-webkit-scrollbar {
   width: 8px;
 }
-
-.scrollable-form::-webkit-scrollbar-thumb {
+.af-card-body.scrollable-form::-webkit-scrollbar-thumb {
   background-color: #c1c1c1;
   border-radius: 4px;
 }
-
-.scrollable-form::-webkit-scrollbar-track {
+.af-card-body.scrollable-form::-webkit-scrollbar-track {
   background-color: #f1f1f1;
 }
 
-.form-control {
+/* Inputs */
+.af-input {
   border: 1px solid #002D62 !important;
   border-radius: 4px;
 }
 
-input[type="radio"] {
-  transform: scale(1.1);
-  margin-right: .25rem;
+.af-static-field {
+  border: 1px solid #002D62 !important;
+  border-radius: 4px;
 }
 
+/* Radio buttons */
+.af-form input[type="radio"] {
+  transform: scale(1.1);
+  margin-right: 0.25rem;
+}
 
-
+/* Media queries to keep responsive width */
 @media (min-width: 768px) {
-  .top-bar,
-  .af-card {
-    width: calc(100vw - 400px); 
+  .af-top-bar,
+  .af-form-card {
+    width: calc(100vw - 400px);
     max-width: 100%;
   }
 }
 
-.form-check-input {
+/* If you still need form-check-input elsewhere */
+.af-form input.form-check-input {
   margin-top: 0 !important;
 }
 
-.payment-terms-row .col {
+/* Other-terms sub-section styling */
+.af-other-terms .af-input.ms-2 {
+  width: auto;
+  display: inline-block;
+}
+
+/* Payment-terms columns spacing */
+.af-subrow .af-col {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }

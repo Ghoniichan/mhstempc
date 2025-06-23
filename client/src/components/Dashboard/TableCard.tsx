@@ -1,4 +1,3 @@
-// TableCard.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomTable from "./CustomTable";
@@ -17,17 +16,12 @@ type PolicyRecord = {
 const TableCard: React.FC = () => {
   const navigate = useNavigate();
 
-  // Controlled search query
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  // Table data
   const [clients, setClients] = useState<React.ReactNode[][]>([]);
   const [originalClients, setOriginalClients] = useState<React.ReactNode[][]>([]);
+  const [selectedSort, setSelectedSort] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  // Sort state
-  const [selectedSort, setSelectedSort] = useState<string>("Name");
-
-  // Fetch once on mount
   useEffect(() => {
     const fetchClients = async () => {
       try {
@@ -43,7 +37,6 @@ const TableCard: React.FC = () => {
     fetchClients();
   }, []);
 
-  // Deduplicate and format into rows
   const formatRows = (data: PolicyRecord[]): React.ReactNode[][] => {
     const seen = new Set<string>();
     const rows: React.ReactNode[][] = [];
@@ -64,7 +57,6 @@ const TableCard: React.FC = () => {
     return rows;
   };
 
-  // Controlled search handler
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     const trimmed = query.trim().toLowerCase();
@@ -78,9 +70,9 @@ const TableCard: React.FC = () => {
     setClients(filtered);
   };
 
-  // Sort handler
-  const handleSort = (type: string) => {
+  const handleSort = (type: string, order: 'asc' | 'desc') => {
     setSelectedSort(type);
+    setSortOrder(order);
 
     const indexMap: Record<string, number> = {
       Name: 0,
@@ -89,10 +81,13 @@ const TableCard: React.FC = () => {
       "Contact Number": 3,
     };
     const columnIndex = indexMap[type];
+
     const sorted = [...clients].sort((a, b) => {
-      const valA = a[columnIndex] as string;
-      const valB = b[columnIndex] as string;
-      return valA.localeCompare(valB);
+      const valA = (a[columnIndex] ?? "").toString();
+      const valB = (b[columnIndex] ?? "").toString();
+      return order === 'asc' 
+        ? valA.localeCompare(valB)
+        : valB.localeCompare(valA);
     });
     setClients(sorted);
   };
@@ -113,6 +108,41 @@ const TableCard: React.FC = () => {
     "Contact Number",
   ];
 
+  const dropdownItems = [
+    {
+      label: `${selectedSort === "Name" && sortOrder === 'asc' ? "✓ " : ""}Name (A-Z)`,
+      onClick: () => handleSort("Name", "asc"),
+    },
+    {
+      label: `${selectedSort === "Name" && sortOrder === 'desc' ? "✓ " : ""}Name (Z-A)`,
+      onClick: () => handleSort("Name", "desc"),
+    },
+    {
+      label: `${selectedSort === "MHSTEMPC Policy No." && sortOrder === 'asc' ? "✓ " : ""}Policy No. (Asc)`,
+      onClick: () => handleSort("MHSTEMPC Policy No.", "asc"),
+    },
+    {
+      label: `${selectedSort === "MHSTEMPC Policy No." && sortOrder === 'desc' ? "✓ " : ""}Policy No. (Desc)`,
+      onClick: () => handleSort("MHSTEMPC Policy No.", "desc"),
+    },
+    {
+      label: `${selectedSort === "Email" && sortOrder === 'asc' ? "✓ " : ""}Email (A-Z)`,
+      onClick: () => handleSort("Email", "asc"),
+    },
+    {
+      label: `${selectedSort === "Email" && sortOrder === 'desc' ? "✓ " : ""}Email (Z-A)`,
+      onClick: () => handleSort("Email", "desc"),
+    },
+    {
+      label: `${selectedSort === "Contact Number" && sortOrder === 'asc' ? "✓ " : ""}Contact (Asc)`,
+      onClick: () => handleSort("Contact Number", "asc"),
+    },
+    {
+      label: `${selectedSort === "Contact Number" && sortOrder === 'desc' ? "✓ " : ""}Contact (Desc)`,
+      onClick: () => handleSort("Contact Number", "desc"),
+    },
+  ];
+
   return (
     <div className="table-card">
       <div className="card mb-4 mt-3 shadow-sm rounded" style={{ width: "100%" }}>
@@ -120,12 +150,10 @@ const TableCard: React.FC = () => {
           <div className="d-flex flex-column align-items-center w-100">
             <div className="w-100">
               <div className="d-flex flex-column flex-md-row mb-2 align-items-center justify-content-between">
-                {/* Controlled Search Bar */}
                 <div className="mb-2 mb-md-0 flex-grow-1 w-100 me-md-2">
                   <SearchBar value={searchQuery} onSearch={handleSearch} />
                 </div>
 
-                {/* Buttons */}
                 <div className="table-card__button-group d-flex align-items-center" style={{ gap: "5px" }}>
                   <ButtonCustom
                     text="Sort"
@@ -137,30 +165,7 @@ const TableCard: React.FC = () => {
                     fontSize="14px"
                     height="43px"
                     isDropdown
-                    dropdownItems={[
-                      {
-                        label: selectedSort === "Name" ? "✓ Name" : "Name",
-                        onClick: () => handleSort("Name"),
-                      },
-                      {
-                        label:
-                          selectedSort === "MHSTEMPC Policy No."
-                            ? "✓ MHSTEMPC Policy No."
-                            : "MHSTEMPC Policy No.",
-                        onClick: () => handleSort("MHSTEMPC Policy No."),
-                      },
-                      {
-                        label: selectedSort === "Email" ? "✓ Email" : "Email",
-                        onClick: () => handleSort("Email"),
-                      },
-                      {
-                        label:
-                          selectedSort === "Contact Number"
-                            ? "✓ Contact Number"
-                            : "Contact Number",
-                        onClick: () => handleSort("Contact Number"),
-                      },
-                    ]}
+                    dropdownItems={dropdownItems}
                   />
 
                   <ButtonCustom
@@ -193,7 +198,6 @@ const TableCard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Table */}
               <div className="table-card__container">
                 <CustomTable
                   columnHeadings={columnHeadings}

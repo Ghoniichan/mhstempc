@@ -53,6 +53,7 @@ import LoanApplicationFormScreen from './screens/LoanApplicationFormScreen';
 import LoanAppFormTwo from './screens/LoanAppFormTwo';
 import SchedofLoanRelease from './screens/ScheduleofLoanRelease';
 import Appointment from './screens/Appointment';
+import UserPayments from './screens/UserPayments';
 
 
 
@@ -129,6 +130,7 @@ function App() {
           <Route path="/userCapitalShare" element={<UserCapitalShare />} />
           <Route path="/userSavings" element={<UserSavings/>} />
           <Route path="/userProfile" element={<UserProfile/>}/>
+          <Route path="/userPayments" element={<UserPayments/>} />
           <Route path="/userAppointment" element={<UserAppointmentScreen />} />
           <Route path="/userBugReport" element={<UserBugReportScreen />} />
         </Route>

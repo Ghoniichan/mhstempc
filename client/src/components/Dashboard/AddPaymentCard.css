@@ -1,222 +1,181 @@
 /* AddPaymentCard.css – scoped to .add-payment-card-wrapper */
 
+/* Overall wrapper & page background */
+.mpn-card {
+    width: 100%;
+    max-width: 970px;
+}
+
+.add-payment-card-wrapper {
+  min-height: 100vh;
+  padding: 1rem 1rem 0;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.add-payment-card-wrapper .nameform-lable {
+    font-size:35px;
+    font-weight: 600;
+    color: #000;
+    text-align: left;
+} 
 .add-payment-card-wrapper .add-payment-container {
-    margin-left: 0;
-    padding-top: 4rem;
-    padding-right: 20rem;
-    padding-left: 1rem;
-    min-height: 100vh;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.add-payment-card-wrapper .paymenttop-bar {
-    background-color: #002D62;
-    height: 50px;
-    width: 100%;
-    max-width: 800px;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;  
-    margin-bottom: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 1;
+.inline-form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
+.inline-form-group .form-label {
+  text-align: left;
+  padding-right: 0;
+}
+
+.inline-form-group .form-control,
+.inline-form-group .form-select {
+  width: 100%;
+}
+
+/* Policy Number Form card */
+.add-payment-card-wrapper .apc-pnf-card {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: rem;
+  width: 100%;
+  max-width: 970px;
+}
+.add-payment-card-wrapper .apc-pnf-card .card-body {
+  padding: 24px;
+}
+
+/* Payment Card */
 .add-payment-card-wrapper .apc-card {
-    background-color: white;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 0;
-    border: none;
-    position: relative;
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 3rem;
 }
-
 .add-payment-card-wrapper .apc-card .card-body {
-    padding: 24px;
-    margin-top: 0;
-    border-top: none;
-    background-color: white;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+  padding: 24px;
 }
 
-.add-payment-card-wrapper .custom-dropdown {
-    padding-right: 2.5rem;
+/* Top bar */
+.add-payment-card-wrapper .paymenttop-bar {
+  background-color: #002D62;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
-
-.add-payment-card-wrapper .dropdown-icon {
-    position: absolute; 
-    right: 1rem; 
-    top: 50%; 
-    transform: translateY(-50%);
-    pointer-events: none; 
-    font-size: 1.2rem; 
-    color: #6c757d; 
-}
-
-/* Dropdowns row for Date Issued */
-.add-payment-card-wrapper .date-select {
-    display: flex;
-    gap: 8px;
-}
-
-.add-payment-card-wrapper .date-select .form-select {
-    min-width: 70px;
-    text-align: center;
-    font-size: 15px;
-    height: 40px;
-    border: 1.5px solid #002D62;
-}
-
-.add-payment-card-wrapper .date-select .form-select:focus {
-    border-color: #002D62;
-    box-shadow: 0 0 0 0.2rem rgba(0, 45, 98, 0.25);
-}
-
-/* Input styling */
-.add-payment-card-wrapper .form-control {
-    width: 100%;
-    height: 40px;
-    border: 1.5px solid #002D62;
-}
-
-.add-payment-card-wrapper .form-control:focus {
-    border-color: #002D62;
-    box-shadow: 0 0 0 0.2rem rgba(0, 45, 98, 0.25);
-    outline: none;
-}
-
-.add-payment-card-wrapper .form-select {
-    font-size: 15px;
-    height: 40px;
-}
-
-/* Wrapper to center the form and limit its width */
-.add-payment-card-wrapper .form-wrapper {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding-top: 0;
-}
-
-/* Top-bar text styling */
 .add-payment-card-wrapper .top-bar-text {
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0;
-    padding: 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-/* Gothic font */
-.add-payment-card-wrapper .gothic-a1-bold {
-    font-weight: 600;
+/* Date selects row */
+.add-payment-card-wrapper .date-select {
+  display: flex;
+  gap: 8px;
+}
+.add-payment-card-wrapper .date-select .form-select {
+  min-width: 70px;
+  height: 40px;
+  border: 1.5px solid #002D62;
+  font-size: 15px;
+}
+.add-payment-card-wrapper .date-select .form-select:focus {
+  border-color: #002D62;
+  box-shadow: 0 0 0 0.2rem rgba(0,45,98,0.25);
 }
 
-/* Bootstrap overrides */
-.add-payment-card-wrapper .apc-card.card {
-    border: none;
-    border-radius: 12px;
+/* Form-control overrides */
+.add-payment-card-wrapper .form-control {
+  width: 100%;
+  height: 40px;
+  border: 1.5px solid #002D62;
+}
+.add-payment-card-wrapper .form-control:focus {
+  border-color: #002D62;
+  box-shadow: 0 0 0 0.2rem rgba(0,45,98,0.25);
+  outline: none;
 }
 
-.add-payment-card-wrapper .apc-card .card-header {
-    display: none;
+/* Labels */
+.add-payment-card-wrapper .form-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+  text-align: left;
 }
 
-/* Button styles */
+/* Buttons */
 .add-payment-card-wrapper .btn-primary {
-    background-color: #002D62;
-    border-color: #002D62;
+  background-color: #002D62;
+  border-color: #002D62;
 }
-
 .add-payment-card-wrapper .btn-primary:hover {
-    background-color: #001a3d;
-    border-color: #001a3d;
+  background-color: #001a3d;
+  border-color: #001a3d;
 }
-
 .add-payment-card-wrapper .btn-secondary {
-    background-color: white;
-    border-color: #002D62;
-    color: #002D62;
+  background-color: #fff;
+  border-color: #002D62;
+  color: #002D62;
 }
-
 .add-payment-card-wrapper .btn-secondary:hover {
-    background-color: #f8f9fa;
-    border-color: #001a3d;
-    color: #001a3d;
+  background-color: #f8f9fa;
+  border-color: #001a3d;
+  color: #001a3d;
 }
 
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    .add-payment-card-wrapper .add-payment-container {
-        padding-right: 1rem;
-        padding-left: 1rem;
-    }
-    
-    .add-payment-card-wrapper .top-bar {
-        font-size: 14px;
-        height: 50px;
-        padding-left: 16px;
-        max-width: 100%;
-    }
-    
-    .add-payment-card-wrapper .apc-card {
-        max-width: 100%;
-    }
-    
-    .add-payment-card-wrapper .apc-card .card-body {
-        padding: 24px 16px;
-    }
-    
-    .add-payment-card-wrapper .date-select {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .add-payment-card-wrapper .date-select .form-select {
-        min-width: auto;
-        max-width: 100%;
-    }
-    
-    .add-payment-card-wrapper .form-control {
-        max-width: 100%;
-    }
-}
-
-/* Page background */
-.add-payment-card-wrapper body {
-    background-color: #f5f5f5;
-}
-
-/* Container overrides */
-.add-payment-card-wrapper .container-fluid {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-/* Error styling */
+/* Validation feedback */
 .add-payment-card-wrapper .invalid-feedback {
-    display: block;
-    width: 100%;
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: #dc3545;
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc3545;
 }
-
 .add-payment-card-wrapper .is-invalid {
-    border-color: #dc3545;
+  border-color: #dc3545;
+}
+.add-payment-card-wrapper .is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.25);
 }
 
-.add-payment-card-wrapper .is-invalid:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+/* Responsive */
+@media (max-width: 768px) {
+  .inline-form-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .inline-form-group .form-label {
+    margin-bottom: 0.5rem;
+    padding-right: 0;
+  }
+  .add-payment-card-wrapper .paymenttop-bar,
+  .add-payment-card-wrapper .apc-pnf-card,
+  .add-payment-card-wrapper .apc-card {
+    max-width: 100%;
+  }
+  .add-payment-card-wrapper .date-select {
+    flex-direction: column;
+    gap: 12px;
+  }
 }

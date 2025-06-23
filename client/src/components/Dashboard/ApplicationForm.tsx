@@ -153,45 +153,46 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <Container fluid className="py-1 main-content">
-      <div className="top-bar">
-        <span className="top-bar-text gothic-a1-bold">
+    <Container fluid className="af-container main-content">
+      <div className="af-top-bar" >
+        <span className="af-top-bar-text gothic-a1-bold">
           MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
         </span>
       </div>
 
-      <div className="formcard shadow-lg p-4 mb-5 bg-white rounded" style={{ width: '1200px', maxWidth: '970px' }}>
-        <div className="card-body scrollable-form">
-          <form onSubmit={handleSubmit}>
+      <div className="af-form-card formcard shadow-lg p-4 mb-5 bg-white rounded" style={{ width: '1200px', maxWidth: '970px' }}>
+        <div className="af-card-body card-body scrollable-form">
+          <form onSubmit={handleSubmit} className="af-form">
+
             {/* Row 1 */}
-            <Row className="mb-3">
-              <Col xs={12} md={4}>
-                <label htmlFor="firstName" className="form-label gothic-a1-bold">First Name</label>
+            <Row className="af-row mb-3">
+              <Col xs={12} md={4} className="af-col">
+                <label htmlFor="firstName" className="form-label gothic-a1-bold" style={{textAlign: 'left'}}>First Name</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control af-input"
                   id="firstName"
                   value={formData.personalInfo.firstName}
                   onChange={e => handleInputChange('personalInfo', 'firstName', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="middleName" className="form-label gothic-a1-bold">Middle Name</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control af-input"
                   id="middleName"
                   value={formData.personalInfo.middleName}
                   onChange={e => handleInputChange('personalInfo', 'middleName', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="lastName" className="form-label gothic-a1-bold">Last Name</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control af-input"
                   id="lastName"
                   value={formData.personalInfo.lastName}
                   onChange={e => handleInputChange('personalInfo', 'lastName', e.target.value)}
@@ -201,55 +202,55 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
             </Row>
 
             {/* Row 2 */}
-            <Row className="mb-3">
-              <Col xs={12} md={8}>
+            <Row className="af-row mb-3">
+              <Col xs={12} md={8} className="af-col">
                 <label htmlFor="address" className="form-label gothic-a1-bold">Address</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control af-input"
                   id="address"
                   value={formData.personalInfo.address}
                   onChange={e => handleInputChange('personalInfo', 'address', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label className="form-label gothic-a1-bold">Policy Number</label>
-                <div className="form-control" style={{ backgroundColor: '#e9ecef', height: '38px' }}>
+                <div className="form-control af-static-field" style={{ backgroundColor: '#e9ecef', height: '38px' }}>
                   {formData.membershipInfo.policyNumber}
                 </div>
               </Col>
             </Row>
 
             {/* Row 3 */}
-            <Row className="mb-3">
-              <Col xs={12} md={4}>
+            <Row className="af-row mb-3">
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="contactNumber" className="form-label gothic-a1-bold">Contact Number</label>
                 <input
                   type="tel"
-                  className="form-control"
+                  className="form-control af-input"
                   id="contactNumber"
                   value={formData.personalInfo.contactNumber}
                   onChange={e => handleInputChange('personalInfo', 'contactNumber', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="membershipType" className="form-label gothic-a1-bold">Membership Type</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control af-input"
                   id="membershipType"
                   value={formData.membershipInfo.membershipType}
                   onChange={e => handleInputChange('membershipInfo', 'membershipType', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="membershipDate" className="form-label gothic-a1-bold">Membership Date</label>
                 <input
                   type="date"
-                  className="form-control"
+                  className="form-control af-input"
                   id="membershipDate"
                   value={formData.membershipInfo.membershipDate}
                   onChange={e => handleInputChange('membershipInfo', 'membershipDate', e.target.value)}
@@ -259,34 +260,34 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
             </Row>
 
             {/* Row 4 */}
-            <Row className="mb-3">
-              <Col xs={12} md={4}>
+            <Row className="af-row mb-3">
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="numberOfShares" className="form-label gothic-a1-bold">Number of Shares</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className="form-control af-input"
                   id="numberOfShares"
                   value={formData.membershipInfo.numberOfShares}
                   onChange={e => handleInputChange('membershipInfo', 'numberOfShares', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="purpose" className="form-label gothic-a1-bold">Loan Purpose</label>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control af-input"
                   id="purpose"
                   value={formData.loanInfo.purpose}
-                    onChange={e => handleInputChange('loanInfo', 'purpose', e.target.value)}
+                  onChange={e => handleInputChange('loanInfo', 'purpose', e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col xs={12} md={4} className="af-col">
                 <label htmlFor="amount" className="form-label gothic-a1-bold">Loan Amount</label>
                 <input
                   type="number"
-                  className="form-control"
+                  className="form-control af-input"
                   id="amount"
                   value={formData.loanInfo.amount}
                   onChange={e => handleInputChange('loanInfo', 'amount', e.target.value)}
@@ -295,12 +296,12 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
               </Col>
             </Row>
 
-            {/* Row 5 */}
-            <Row className="mb-3">
-              <Col>
+            {/* Row 5: Payment Terms */}
+            <Row className="af-row mb-3">
+              <Col className="af-col">
                 <label className="form-label gothic-a1-bold">Payment Terms</label>
-                <Row className="align-items-center">
-                  <Col xs={4}>
+                <Row className="af-subrow align-items-center">
+                  <Col xs={4} className="af-col">
                     <input
                       type="radio"
                       name="paymentTerms"
@@ -309,7 +310,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                       onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
                     /> 6 months
                   </Col>
-                  <Col xs={4}>
+                  <Col xs={4} className="af-col">
                     <input
                       type="radio"
                       name="paymentTerms"
@@ -318,7 +319,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                       onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
                     /> 3 months
                   </Col>
-                  <Col xs={4} className="d-flex align-items-center">
+                  <Col xs={4} className="af-col af-other-terms">
                     <input
                       type="radio"
                       name="paymentTerms"
@@ -329,7 +330,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                     {formData.loanInfo.paymentTerms === 'others' && (
                       <input
                         type="text"
-                        className="form-control ms-2"
+                        className="form-control af-input ms-2"
                         placeholder="Specify"
                         value={formData.loanInfo.otherPaymentTerms || ''}
                         onChange={e => handleInputChange('loanInfo', 'otherPaymentTerms', e.target.value)}
@@ -340,14 +341,14 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
               </Col>
             </Row>
 
-            {/* Row 6 */}
-            <Row className="mb-4">
-              <Col xs={12} md={4} className="ms-auto">
+            {/* Row 6: Date Signed */}
+            <Row className="af-row mb-4 af-date-signed-row">
+              <Col xs={12} md={4} className="af-col ms-auto">
                 <label htmlFor="dateSigned" className="form-label gothic-a1-bold">Date Signed</label>
                 <input
                   type="date"
                   id="dateSigned"
-                  className="form-control"
+                  className="form-control af-input"
                   value={formData.loanInfo.dateSigned}
                   onChange={e => handleInputChange('loanInfo', 'dateSigned', e.target.value)}
                   required
@@ -355,80 +356,132 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
               </Col>
             </Row>
 
-            {/* Co-Maker Section */}
-            <h5 className="card-title mb-3 gothic-a1-bold">Co-Makers (optional)</h5>
+            {/* Co-Makers Section */}
+            <h5 className="af-heading co-maker-heading mb-3 gothic-a1-bold">Co-Makers (optional)</h5>
             {formData.coMakers.map((cm, idx) => (
-              <Row key={idx} className="mb-3">
-                <Col xs={12} md={6}>
-                  <label htmlFor={`coMakerName${idx}`} className="form-label">Name</label>
+              <Row key={idx} className="af-row mb-3 co-maker-row">
+                <Col xs={12} md={6} className="af-col">
+                  <label htmlFor={`coMakerName${idx}`} className="form-label af-label">Name</label>
                   <input
                     type="text"
                     id={`coMakerName${idx}`}
-                    className="form-control"
+                    className="form-control af-input"
                     value={cm.name}
                     onChange={e => handleCoMakerChange(idx, 'name', e.target.value)}
                   />
                 </Col>
-                <Col xs={12} md={6}>
-                  <label htmlFor={`coMakerDate${idx}`} className="form-label">Date Signed</label>
+                <Col xs={12} md={6} className="af-col">
+                  <label htmlFor={`coMakerDate${idx}`} className="form-label af-label">Date Signed</label>
                   <input
                     type="date"
                     id={`coMakerDate${idx}`}
-                    className="form-control"
+                    className="form-control af-input"
                     value={cm.dateSigned}
                     onChange={e => handleCoMakerChange(idx, 'dateSigned', e.target.value)}
                   />
                 </Col>
               </Row>
             ))}
-                
 
-                
+            {/* Officers Use Only */}
+            <h4 className="af-heading officers-use-heading text-center gothic-a1-bold" style={{ fontSize: '20px', paddingTop: '40px' }}>
+              FOR MHSTEMPC OFFICERS' USE ONLY
+            </h4>
+            <h4 className="af-heading approved-by-heading mb-5 gothic-a1-bold" style={{ fontSize: '20px', textAlign: 'left' }}>Approved By:</h4>
+            <Row className="af-row officers-row mb-4">
+                {/* Credit Committee Chairperson */}
+                <Col xs={12} md={6} className="af-col officer-col mb-4">
+                  <div className="text-center">
+                    <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                      Credit Committee Chairperson
+                    </label>
+                    <div className="gothic-a1-bold"
+                      style={{ 
+                      border: '2px solid #002d62', 
+                      minHeight: '50px', 
+                      backgroundColor: 'white',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '16px',
+                    }}>
+                      RIZALYN S. SANTOS
+                    </div>
+                  </div>
+                </Col>
 
-                {/* Officer Use Section */}
-                <h4 className="card-title mb-5 text-center gothic-a1-bold" style={{ fontSize: '20px', paddingTop: '40px' }}>
-                  FOR MHSTEMPC OFFICERS' USE ONLY
-                </h4>
-                <h4 className="card-title mb-5 gothic-a1-bold" style={{ fontSize: '20px' }}>Approved By:</h4>
+                {/* Treasurer */}
+                <Col xs={12} md={6} className="af-col officer-col mb-4">
+                  <div className="text-center">
+                    <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold', color: 'black' }}>
+                      Treasurer
+                    </label>
+                    <div className="gothic-a1-bold"
+                      style={{ 
+                      border: '2px solid #002d62', 
+                      minHeight: '50px', 
+                      backgroundColor: 'white',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '16px',
+                      fontWeight: 'bold'
+                    }}>
+                      TERESITA M. VILLARUEL
+                    </div>
+                  </div>
+                </Col>
+              </Row>
 
-                <Row className="mb-5 text-center">
-                  <Col xs={12} md={4}>
-                    <h5 className="gothic-a1-bold">RIZALYN S. SANTOS</h5>
-                    <p className="officer-title">Credit Committee Chairperson</p>
-                  </Col>
-                  <Col xs={12} md={4}>
-                    <h5 className="gothic-a1-bold">TERESITA M. VILLARUEL</h5>
-                    <p className="officer-title">Treasurer</p>
-                  </Col>
-                  <Col xs={12} md={4}>
-                    <h5 className="gothic-a1-bold">HELEN M. AQUINO</h5>
-                    <p className="officer-title">Chairman</p>
-                  </Col>
-                </Row>
+              {/* Chairman */}
+              <Row className="af-row officers-row mb-4">
+                <Col xs={12} md={6} className="af-col officer-col mx-auto">
+                  <div className="text-center">
+                    <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                      Chairman
+                    </label>
+                    <div className="gothic-a1-bold"
+                      style={{ 
+                      border: '2px solid #002d62', 
+                      minHeight: '50px', 
+                      backgroundColor: 'white',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '16px',
+                      fontWeight: 'bold'
+                    }}>
+                      HELEN M. AQUINO
+                    </div>
+                  </div>
+                </Col>
+              </Row>
 
-                {/* Cancel & Submit Button */}
-                <div className="mt-4 d-flex justify-content-end gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-secondary px-5 gothic-a1-bold"
-                    onClick={() => navigate(-1)} 
-                    style={{color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62'}}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary px-5 gothic-a1-bold"
-                    style={{ backgroundColor: '#002d62' }}
-                  >
-                    Next
-                  </button>
-                </div>
-              </form>
+            {/* Cancel & Next Buttons */}
+            <div className="af-actions mt-4 d-flex justify-content-end gap-2">
+              <button
+                type="button"
+                className="savebtn btn-secondary af-btn-cancel gothic-a1-bold"
+                onClick={() => navigate(-1)}
+                style={{ color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62', borderRadius: '20px', height: '45px', width: '100px'  }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="cancelbtn btn-primary af-btn-next gothic-a1-bold"
+                style={{ backgroundColor: '#002d62', color: '#ffffff', borderRadius: '20px', height: '45px', width: '100px' }}
+              >
+                Next
+              </button>
             </div>
-          </div>
-        
+
+          </form>
+        </div>
+      </div>
     </Container>
   );
 };
