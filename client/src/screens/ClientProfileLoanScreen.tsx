@@ -1,5 +1,4 @@
 import InformationCard from "../components/Dashboard/InformationCard";
-import { useLocation } from 'react-router-dom';
 import axios from '../api/axiosInstance';
 import { useState, useEffect } from "react";
 
@@ -30,9 +29,7 @@ const ClientProfileLoanScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const location = useLocation();
-  const { state } = location;
-  const p = state?.policy_no || '';
+  const p = localStorage.getItem('selectedPolicyNumber');
 
   useEffect(() => {
     if (!p) {
@@ -111,7 +108,7 @@ const ClientProfileLoanScreen = () => {
             name={`${data.first_name || ""} ${data.middle_name || ""} ${data.last_name || ""}`.trim() || "—"}
             title="Client Loan Profile"
             department="Finance"
-            policyNumber={data.policy_number || p}
+            policyNumber={p || "—"}
             address={data.present_address || "—"}
             contactNumber={data.tel_cel_no || "—"}
             loanStatus="Active"           // or derive from data if available
