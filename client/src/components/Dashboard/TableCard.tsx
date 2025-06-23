@@ -98,7 +98,8 @@ const TableCard: React.FC = () => {
 
   const handleRowClick = (row: React.ReactNode[]) => {
     const policyNumber = row[1] as string;
-    navigate("/clientLoan", { state: { policy_no: policyNumber } });
+    localStorage.setItem("selectedPolicyNumber", policyNumber);
+    navigate("/clientLoan");
   };
 
   const columnHeadings = [
