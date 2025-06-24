@@ -140,7 +140,7 @@ const ClientProfileSavingsScreen = () => {
               <input
                 type="text"
                 name="receivedAmount"
-                value={newRow.receivedAmount || '0'}
+                value={newRow.receivedAmount || ''}
                 placeholder="₱ Received"
                 onChange={handleInputChange}
                 className="form-control"
@@ -150,7 +150,7 @@ const ClientProfileSavingsScreen = () => {
               <input
                 type="text"
                 name="withdrawal"
-                value={newRow.withdrawal || '0'}
+                value={newRow.withdrawal || ''}
                 placeholder="₱ Withdrawal"
                 onChange={handleInputChange}
                 className="form-control"
