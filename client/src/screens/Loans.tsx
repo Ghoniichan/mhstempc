@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Button } from 'react-bootstrap';
 import { useRef } from "react";
 import * as XLSX from "xlsx";
-// import html2pdf from "html2pdf.js";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
@@ -196,28 +195,29 @@ const Loans = () => {
     });
   };
 
-  const downloadModalAsPDF = async () => {
-    if (!modalRef.current || !selectedLoanRow) return;
+    const downloadModalAsPDF = async () => {
+      if (typeof window === 'undefined' || !modalRef.current || !selectedLoanRow) return;
 
-    const html2pdf = (await import("html2pdf.js")).default;
+      const html2pdf = (await import('html2pdf.js')).default;
 
-    const borrowerName = (selectedLoanRow[0] as string)
-      .toLowerCase()
-      .replace(/\s+/g, '-')     
-      .replace(/[^\w\-]+/g, '');   
+      const borrowerName = (selectedLoanRow[0] as string)
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '');
 
-    const opt = {
-      margin: 0.3,
-      filename: `${borrowerName}-loan-details.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      const opt = {
+        margin: 0.3,
+        filename: `${borrowerName}-loan-details.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+      };
+
+      setTimeout(() => {
+        html2pdf().set(opt).from(modalRef.current!).save();
+      }, 300);
     };
 
-    setTimeout(() => {
-      html2pdf().set(opt).from(modalRef.current!).save();
-    }, 300);
-  };
 
 
 
