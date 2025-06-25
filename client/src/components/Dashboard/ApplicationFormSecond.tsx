@@ -86,6 +86,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
     }
 
     try {
+        console.log(cleanedData)
         const response = await axios.post('/api/loans/new', cleanedData);
         if (response.status === 201) {
           console.log('Form submitted successfully');
@@ -95,17 +96,17 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
           return;
         }
 
-        const data = {
-          loan_id: response.data.loan_id,
-          loan_amount: formData.computations.loanAmount,
-          interest: formData.computations.interest,
-          paid_up_capital: formData.computations.paidUpCapital,
-          service_fee: formData.computations.serviceFee,
-          savings: formData.computations.savings,
-          net_loan_proceeds: formData.computations.netLoanProceeds,
-        }
+        // const data = {
+        //   loan_id: response.data.loan_id,
+        //   loan_amount: formData.computations.loanAmount,
+        //   interest: formData.computations.interest,
+        //   paid_up_capital: formData.computations.paidUpCapital,
+        //   service_fee: formData.computations.serviceFee,
+        //   savings: formData.computations.savings,
+        //   net_loan_proceeds: formData.computations.netLoanProceeds,
+        // }
 
-        await axios.post('/api/loans/new/computations', data);
+        // await axios.post('/api/loans/new/computations', data);
 
     } catch (error) {
       console.error('Error submitting form:', error);
