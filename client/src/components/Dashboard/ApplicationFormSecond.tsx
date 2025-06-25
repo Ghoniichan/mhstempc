@@ -85,35 +85,33 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
       return;
     }
 
-    // Add submission timestamp
-    const finalFormData: FormData = {
-      ...formData,
-      submissionTimestamp: new Date().toISOString()
-    };
-
-    // Generate JSON output
-    const jsonOutput = JSON.stringify(finalFormData, null, 2);
-
     try {
         const response = await axios.post('/api/loans/new', cleanedData);
         if (response.status === 201) {
-          console.log('Form submitted successfully:', response.data);
+          console.log('Form submitted successfully');
         } else {
           console.error('Failed to submit form:', response.data);
           alert('Failed to submit form. Please try again later.');
           return;
         }
 
+        const data = {
+          loan_id: response.data.loan_id,
+          loan_amount: formData.computations.loanAmount,
+          interest: formData.computations.interest,
+          paid_up_capital: formData.computations.paidUpCapital,
+          service_fee: formData.computations.serviceFee,
+          savings: formData.computations.savings,
+          net_loan_proceeds: formData.computations.netLoanProceeds,
+        }
+
+        await axios.post('/api/loans/new/computations', data);
+
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('An error occurred while submitting the form. Please try again later.');
       return;
-      
     }
-    
-    // Log JSON to console (for development)
-    console.log('Form Data JSON:', jsonOutput);
-    console.log('Cleaned Data:', cleanedData);
     
     // Show JSON in alert (you can remove this in production)
     alert(`Form submitted successfully!`);
