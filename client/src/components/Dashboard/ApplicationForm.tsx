@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../api/axiosInstance';
 
 interface FormData {
   personalInfo: {
@@ -123,8 +122,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
     );
 
     try {
-      await axios.post('/api/loans/new', cleanedData);
-      navigate('/applicationFormTwo');
+      navigate('/applicationFormTwo', { state: { formData: cleanedData } });
     } catch {
       alert('Failed to submit loan application. Please try again.');
     }
