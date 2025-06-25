@@ -164,6 +164,7 @@ export const updateLoanStatus: RequestHandler = async (req: Request, res: Respon
                     [loanRow.membership_application_id, savings, new Date()]
                 )
             }
+            
 
             // Commit transaction
             await client.query('COMMIT');
@@ -219,3 +220,23 @@ export const newComputations: RequestHandler = async (req: Request, res: Respons
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+export const getActiveLoans: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            `SELECT CONCAT(m.last_name, ', ', m.first_name) name, m.policy_number AS id, la.id AS loan_no, c.amount_of_loan AS amount, la.payment_terms, c.paid_up_capital, c.savings, la.due_date, c.net_loan_fee_proceeds
+            FROM loan_applications la
+            JOIN membership_applications m ON m.id = la.membership_application_id
+            JOIN computations c ON c.loan_application_id = la.id
+            WHERE status = 'approved'
+            `
+        );
+        res.status(200).json(result.rows);
+    } catch (error: any) {
+        console.error('Error in getActiveLoans:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    } finally {
+        client.release();
+    }
+};
