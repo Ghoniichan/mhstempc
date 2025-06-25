@@ -1,5 +1,6 @@
 import { Request, Response, RequestHandler } from 'express';
 import pool from '../config/db.config'; 
+import { stat } from 'fs';
 
 export const loans: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const {
@@ -82,54 +83,118 @@ export const getloans: RequestHandler = async (req: Request, res: Response): Pro
 
 
 export const updateLoanStatus: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-    const ALLOWED_STATUSES = ['pending', 'approved', 'rejected', 'processing'];
+    const ALLOWED_STATUSES = ['pending', 'approved', 'disapproved', 'processing'];
     const client = await pool.connect();
+
     try {
-    const { id } = req.params;
-    const { status } = req.body;
+        await client.query('BEGIN');
 
-    // Validate presence
-    if (!status) {
-        res.status(400).json({ error: "Missing 'status' in request body" });
-        return;
-    }
-    // Optionally validate allowed values
-    if (!ALLOWED_STATUSES.includes(status)) {
-        res.status(400).json({ error: `Invalid status value. Allowed: ${ALLOWED_STATUSES.join(', ')}` });
-        return;
-    }
+        const { id } = req.params;
+        const { status } = req.body;
 
-    // Check if loan exists
-    const findRes = await client.query(
-        'SELECT id, status FROM loan_applications WHERE id = $1',
-        [id]
-    );
-    if (findRes.rows.length === 0) {
-        res.status(404).json({ error: 'Loan application not found' });
-        return;
-    }
+        // Validate presence
+        if (!status) {
+            await client.query('ROLLBACK');
+            res.status(400).json({ error: "Missing 'status' in request body" });
+            return;
+        }
+        // Validate allowed values
+        if (!ALLOWED_STATUSES.includes(status)) {
+            await client.query('ROLLBACK');
+            res.status(400).json({ error: `Invalid status value. Allowed: ${ALLOWED_STATUSES.join(', ')}` });
+            return;
+        }
 
-    // Update status
-    const updateRes = await client.query(
-        `UPDATE loan_applications
-            SET status = $1
-        WHERE id = $2
-        RETURNING id, membership_application_id, requested_amount, application_date, due_date, status`
-        ,
-        [status, id]
-    );
-    const updatedLoan = updateRes.rows[0];
+        // Check if loan exists
+        const findRes = await client.query(
+            'SELECT id, status, membership_application_id, requested_amount, application_date, due_date FROM loan_applications WHERE id = $1',
+            [id]
+        );
+        if (findRes.rows.length === 0) {
+            await client.query('ROLLBACK');
+            res.status(404).json({ error: 'Loan application not found' });
+            return;
+        }
+        const loanRow = findRes.rows[0];
 
-    res.status(200).json({
-        message: "Status updated successfully",
-        loan: updatedLoan,
-    });
+        // Update status
+        const updateRes = await client.query(
+            `UPDATE loan_applications
+             SET status = $1
+             WHERE id = $2
+             RETURNING id, membership_application_id, requested_amount, application_date, due_date, status`,
+            [status, id]
+        );
+        if (updateRes.rows.length === 0) {
+            // This should not normally happen since we already checked existence, but handle defensively
+            await client.query('ROLLBACK');
+            res.status(404).json({ error: 'Loan application not found after update' });
+            return;
+        }
+        const updatedLoan = updateRes.rows[0];
+
+        // If approved, insert into capital_share (after checking computations)
+        if (status === 'approved') {
+            // Fetch computations for this loan
+            const compRes = await client.query(
+                `SELECT savings, paid_up_capital FROM computations WHERE loan_application_id = $1`,
+                [id]
+            );
+            if (compRes.rows.length === 0) {
+                // No computations found: rollback and error
+                await client.query('ROLLBACK');
+                res.status(500).json({ error: 'No computations found for approved loan' });
+                return;
+            }
+            const { paid_up_capital } = compRes.rows[0];
+            const { savings } = compRes.rows[0];
+
+            // Insert into capital_share
+            await client.query(
+                `INSERT INTO capital_share (membership_id, amount, entry_date)
+                VALUES ($1, $2, $3)`,
+                [loanRow.membership_application_id, paid_up_capital, new Date()]
+            );
+
+            const savingsNum = Number(savings);
+            if ( savingsNum !== 0){
+                await client.query(
+                    `INSERT INTO savings (membership_id, received_amount, entry_date)
+                    VALUES ($1, $2, $3)`,
+                    [loanRow.membership_application_id, savings, new Date()]
+                )
+            }
+
+            // Commit transaction
+            await client.query('COMMIT');
+
+            // Respond with both updated loan and new capital_share info
+            res.status(200).json({
+                message: 'Loan approved and capital share updated',
+            });
+            return;
+        }
+
+        // For other statuses: just commit and respond
+        await client.query('COMMIT');
+        res.status(200).json({
+            message: `Loan status updated to '${status}'`,
+            loan: updatedLoan
+        });
+
     } catch (err: any) {
-    console.error('Error in updateLoanStatus:', err);
-    // If you had a transaction here, you might roll back; but since it's a single UPDATE, no explicit BEGIN/COMMIT needed.
-    res.status(500).json({ error: 'Internal server error' });
+        console.error('Error in updateLoanStatus:', err);
+        try {
+            await client.query('ROLLBACK');
+        } catch (rollbackErr) {
+            console.error('Error rolling back transaction:', rollbackErr);
+        }
+        // If headers not sent yet, send 500
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Internal server error' });
+        }
     } finally {
-    client.release();
+        client.release();
     }
 };
 
