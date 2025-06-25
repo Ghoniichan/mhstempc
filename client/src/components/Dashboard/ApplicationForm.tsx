@@ -46,6 +46,7 @@ interface ApplicationFormProps {
     tel_cel_no?: string;
     policy_number?: string;
     membership_date?: string;
+    capital?: string;
   };
 }
 
@@ -66,7 +67,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
       membershipDate: user.membership_date
         ? new Date(user.membership_date).toISOString().split('T')[0]
         : '',
-      numberOfShares: ''
+      numberOfShares: user.capital || ''
     },
     loanInfo: {
       purpose: '',
@@ -83,6 +84,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
     submissionDate: new Date().toISOString()
   });
 
+  const [warning, setWarning] = useState<string>("");
+
   useEffect(() => {
     document.title = 'MHSTEMPC | Loan Application';
   }, []);
@@ -92,6 +95,16 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
     field: string,
     value: string
   ) => {
+    // Special check for loan amount
+    if (section === 'loanInfo' && field === 'amount') {
+      const numShares = Number(formData.membershipInfo.numberOfShares);
+      const amount = Number(value);
+      if (!isNaN(numShares) && !isNaN(amount) && amount > numShares) {
+        setWarning('Warning: Loan amount exceeds number of shares.');
+      } else {
+        setWarning("");
+      }
+    }
     setFormData(prev => ({
       ...prev,
       [section]: {
@@ -116,11 +129,18 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Prevent submit if warning is set
+    if (warning) {
+      alert('Please correct the loan amount before proceeding.');
+      // Optionally, focus the amount input
+      const amountInput = document.getElementById('amount');
+      if (amountInput) amountInput.focus();
+      return;
+    }
     const cleanedData = { ...formData };
     cleanedData.coMakers = cleanedData.coMakers.filter(
       cm => cm.name || cm.dateSigned
     );
-
     try {
       navigate('/applicationFormTwo', { state: { formData: cleanedData } });
     } catch {
@@ -144,7 +164,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
           policyNumber: user.policy_number || '',
           membershipDate: user.membership_date
             ? new Date(user.membership_date).toISOString().split('T')[0]
-            : ''
+            : '',
+          numberOfShares: user.capital || ''
         }
       }));
     }
@@ -165,7 +186,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
             {/* Row 1 */}
             <Row className="af-row mb-3">
               <Col xs={12} md={4} className="af-col">
-                <label htmlFor="firstName" className="form-label gothic-a1-bold" style={{textAlign: 'left'}}>First Name</label>
+                <label htmlFor="firstName" className="form-label gothic-a1-bold" style={{ textAlign: 'left' }}>First Name</label>
                 <input
                   type="text"
                   className="form-control af-input"
@@ -291,6 +312,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                   onChange={e => handleInputChange('loanInfo', 'amount', e.target.value)}
                   required
                 />
+                {warning && (
+                  <div style={{ color: 'red', fontWeight: 'bold', marginTop: '5px' }}>{warning}</div>
+                )}
               </Col>
             </Row>
 
@@ -305,7 +329,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                 >
                   <option value="">Select Payment Term</option>
                   {[...Array(12)].map((_, i) => {
-                    const month = (i + 1).toString(); 
+                    const month = (i + 1).toString();
                     return (
                       <option key={month} value={month}>
                         {month} {month === "1" ? 'month' : 'months'}
@@ -366,16 +390,16 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
             </h4>
             <h4 className="af-heading approved-by-heading mb-5 gothic-a1-bold" style={{ fontSize: '20px', textAlign: 'left' }}>Approved By:</h4>
             <Row className="af-row officers-row mb-4">
-                {/* Credit Committee Chairperson */}
-                <Col xs={12} md={6} className="af-col officer-col mb-4">
-                  <div className="text-center">
-                    <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                      Credit Committee Chairperson
-                    </label>
-                    <div className="gothic-a1-bold"
-                      style={{ 
-                      border: '2px solid #002d62', 
-                      minHeight: '50px', 
+              {/* Credit Committee Chairperson */}
+              <Col xs={12} md={6} className="af-col officer-col mb-4">
+                <div className="text-center">
+                  <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                    Credit Committee Chairperson
+                  </label>
+                  <div className="gothic-a1-bold"
+                    style={{
+                      border: '2px solid #002d62',
+                      minHeight: '50px',
                       backgroundColor: 'white',
                       borderRadius: '8px',
                       display: 'flex',
@@ -383,21 +407,21 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                       justifyContent: 'center',
                       fontSize: '16px',
                     }}>
-                      RIZALYN S. SANTOS
-                    </div>
+                    RIZALYN S. SANTOS
                   </div>
-                </Col>
+                </div>
+              </Col>
 
-                {/* Treasurer */}
-                <Col xs={12} md={6} className="af-col officer-col mb-4">
-                  <div className="text-center">
-                    <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold', color: 'black' }}>
-                      Treasurer
-                    </label>
-                    <div className="gothic-a1-bold"
-                      style={{ 
-                      border: '2px solid #002d62', 
-                      minHeight: '50px', 
+              {/* Treasurer */}
+              <Col xs={12} md={6} className="af-col officer-col mb-4">
+                <div className="text-center">
+                  <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold', color: 'black' }}>
+                    Treasurer
+                  </label>
+                  <div className="gothic-a1-bold"
+                    style={{
+                      border: '2px solid #002d62',
+                      minHeight: '50px',
                       backgroundColor: 'white',
                       borderRadius: '8px',
                       display: 'flex',
@@ -406,23 +430,23 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                       fontSize: '16px',
                       fontWeight: 'bold'
                     }}>
-                      TERESITA M. VILLARUEL
-                    </div>
+                    TERESITA M. VILLARUEL
                   </div>
-                </Col>
-              </Row>
+                </div>
+              </Col>
+            </Row>
 
-              {/* Chairman */}
-              <Row className="af-row officers-row mb-4">
-                <Col xs={12} md={6} className="af-col officer-col mx-auto">
-                  <div className="text-center">
-                    <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold' }}>
-                      Chairman
-                    </label>
-                    <div className="gothic-a1-bold"
-                      style={{ 
-                      border: '2px solid #002d62', 
-                      minHeight: '50px', 
+            {/* Chairman */}
+            <Row className="af-row officers-row mb-4">
+              <Col xs={12} md={6} className="af-col officer-col mx-auto">
+                <div className="text-center">
+                  <label className="ccform-label gothic-a1-bold mb-3" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                    Chairman
+                  </label>
+                  <div className="gothic-a1-bold"
+                    style={{
+                      border: '2px solid #002d62',
+                      minHeight: '50px',
                       backgroundColor: 'white',
                       borderRadius: '8px',
                       display: 'flex',
@@ -431,11 +455,11 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                       fontSize: '16px',
                       fontWeight: 'bold'
                     }}>
-                      HELEN M. AQUINO
-                    </div>
+                    HELEN M. AQUINO
                   </div>
-                </Col>
-              </Row>
+                </div>
+              </Col>
+            </Row>
 
             {/* Cancel & Next Buttons */}
             <div className="af-actions mt-4 d-flex justify-content-end gap-2">
@@ -443,7 +467,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
                 type="button"
                 className="savebtn btn-secondary af-btn-cancel gothic-a1-bold"
                 onClick={() => navigate(-1)}
-                style={{ color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62', borderRadius: '20px', height: '45px', width: '100px'  }}
+                style={{ color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62', borderRadius: '20px', height: '45px', width: '100px' }}
               >
                 Cancel
               </button>
