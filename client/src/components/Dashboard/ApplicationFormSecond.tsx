@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './ApplicationFormSecond.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from '../../api/axiosInstance';
+import calculateComputations from '../../utils/computations';
 
 interface ApplicationFormSecondProps {
   onCancel: () => void;
@@ -25,12 +27,16 @@ interface FormData {
 
 const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel }) => {
   const navigate = useNavigate();
-  
+
+  // Get cleanedData passed from ApplicationForm (via location state)
+  const location = useLocation();
+  const cleanedData = location.state?.formData || {};
+
   const [formData, setFormData] = useState<FormData>({
     termsAccepted: false,
     signedDate: '',
     computations: {
-      loanAmount: '',
+      loanAmount: cleanedData.loanInfo?.amount || '',
       interest: '',
       paidUpCapital: '',
       serviceFee: '',
@@ -65,7 +71,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
       }));
     };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate required fields
@@ -87,16 +93,69 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
 
     // Generate JSON output
     const jsonOutput = JSON.stringify(finalFormData, null, 2);
+
+    try {
+        const response = await axios.post('/api/loans/new', cleanedData);
+        if (response.status === 201) {
+          console.log('Form submitted successfully:', response.data);
+        } else {
+          console.error('Failed to submit form:', response.data);
+          alert('Failed to submit form. Please try again later.');
+          return;
+        }
+
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('An error occurred while submitting the form. Please try again later.');
+      return;
+      
+    }
     
     // Log JSON to console (for development)
     console.log('Form Data JSON:', jsonOutput);
+    console.log('Cleaned Data:', cleanedData);
     
     // Show JSON in alert (you can remove this in production)
-    alert(`Form submitted successfully!\n\nJSON Output:\n${jsonOutput}`);
-    
+    alert(`Form submitted successfully!`);
+
     // Navigate to next page
     navigate('/application');
   };
+
+  useEffect(() => {
+    // Parse the user-typed loan amount
+    const loanAmount = parseFloat(formData.computations.loanAmount);
+    const paymentTerm = cleanedData.loanInfo.paymentTerms;
+
+    if (!isNaN(loanAmount) && paymentTerm) {
+      const {
+        interest,
+        paidUpCapital,
+        serviceFee,
+        savings,
+        netAmount
+      } = calculateComputations(loanAmount, paymentTerm);
+
+      setFormData(prev => ({
+        ...prev,
+        computations: {
+          // preserve whatever the user just typed:
+          loanAmount: prev.computations.loanAmount,
+
+          // overwrite only the computed outputs:
+          interest:        interest.toFixed(2),
+          paidUpCapital:   paidUpCapital.toFixed(2),
+          serviceFee:      serviceFee.toFixed(2),
+          savings:         savings.toFixed(2),
+          netLoanProceeds: netAmount.toFixed(2),
+        }
+      }));
+    }
+
+  }, [
+    formData.computations.loanAmount,
+    cleanedData.loanInfo.paymentTerms
+  ]);
 
   return (
     <Container fluid className="py-3 main-content">

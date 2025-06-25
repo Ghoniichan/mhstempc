@@ -1,9 +1,11 @@
-import {loans, getloans, updateLoanStatus} from '../controllers/loanControllers';
+import {loans, getloans, updateLoanStatus, getComputations} from '../controllers/loanControllers';
 import { Router } from 'express';
 
 const router = Router();
 router.post('/new', loans);
 router.get('/all', getloans);
 router.patch('/:id/status', updateLoanStatus);
+
+router.get('/computations/:loan_id', getComputations);
 
 export default router;
