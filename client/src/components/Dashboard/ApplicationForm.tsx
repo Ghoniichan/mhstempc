@@ -298,46 +298,25 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
             <Row className="af-row mb-3">
               <Col className="af-col">
                 <label className="form-label gothic-a1-bold">Payment Terms</label>
-                <Row className="af-subrow align-items-center">
-                  <Col xs={4} className="af-col">
-                    <input
-                      type="radio"
-                      name="paymentTerms"
-                      value="sixMonths"
-                      checked={formData.loanInfo.paymentTerms === 'sixMonths'}
-                      onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
-                    /> 6 months
-                  </Col>
-                  <Col xs={4} className="af-col">
-                    <input
-                      type="radio"
-                      name="paymentTerms"
-                      value="threeMonths"
-                      checked={formData.loanInfo.paymentTerms === 'threeMonths'}
-                      onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
-                    /> 3 months
-                  </Col>
-                  <Col xs={4} className="af-col af-other-terms">
-                    <input
-                      type="radio"
-                      name="paymentTerms"
-                      value="others"
-                      checked={formData.loanInfo.paymentTerms === 'others'}
-                      onChange={e => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
-                    /> Other
-                    {formData.loanInfo.paymentTerms === 'others' && (
-                      <input
-                        type="text"
-                        className="form-control af-input ms-2"
-                        placeholder="Specify"
-                        value={formData.loanInfo.otherPaymentTerms || ''}
-                        onChange={e => handleInputChange('loanInfo', 'otherPaymentTerms', e.target.value)}
-                      />
-                    )}
-                  </Col>
-                </Row>
+                <select
+                  className="form-select af-input"
+                  value={formData.loanInfo.paymentTerms}
+                  onChange={(e) => handleInputChange('loanInfo', 'paymentTerms', e.target.value)}
+                >
+                  <option value="">Select Payment Term</option>
+                  {[...Array(12)].map((_, i) => {
+                    const month = (i + 1).toString(); 
+                    return (
+                      <option key={month} value={month}>
+                        {month} {month === "1" ? 'month' : 'months'}
+                      </option>
+                    );
+                  })}
+                </select>
               </Col>
             </Row>
+
+
 
             {/* Row 6: Date Signed */}
             <Row className="af-row mb-4 af-date-signed-row">

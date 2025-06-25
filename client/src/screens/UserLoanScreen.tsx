@@ -5,6 +5,7 @@ import CustomTable from "../components/Dashboard/CustomTable";
 import Backbutton from "../components/Dashboard/Backbutton";
 import SearchBar from "../components/Dashboard/SearchBar";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
+import LoanDetailModal from "../components/Dashboard/LoanDetailModal";
 
 // QuickSort Function
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
@@ -41,6 +42,9 @@ const UserLoanScreen = () => {
   const [filteredLoans, setFilteredLoans] = useState<any[]>([]);
   const [selectedColumn, setSelectedColumn] = useState<string>("Date");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const [selectedLoan, setSelectedLoan] = useState<any | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     document.title = "MHSTEMPC | Loans";
@@ -123,6 +127,14 @@ const UserLoanScreen = () => {
     link.click();
   };
 
+  const handleRowClick = (row: any[]) => {
+    const loan = filteredLoans.find(item => item.or === row[1]); // OR number as unique key
+    if (loan) {
+      setSelectedLoan(loan);
+      setShowModal(true);
+    }
+  };
+
   const rows = filteredLoans.map(loan => [
     loan.date,
     loan.or,
@@ -203,6 +215,7 @@ const UserLoanScreen = () => {
               "Received Amount",
             ]}
             rows={rows}
+            onRowClick={handleRowClick}
           />
         ) : (
           <div className="text-center w-100 mt-4 text-muted fs-5">
@@ -210,6 +223,13 @@ const UserLoanScreen = () => {
           </div>
         )}
       </div>
+
+      {/* Loan Detail Modal */}
+      <LoanDetailModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        loan={selectedLoan}
+      />
     </div>
   );
 };

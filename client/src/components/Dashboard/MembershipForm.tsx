@@ -83,7 +83,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
             // 'userInfo.inclusiveDateOperation': 'Inclusive Dates of Operation is required',
             // 'userInfo.businessAddress': 'Address of Business is required',
             // 'userInfo.businessTelNo': 'Business Telephone No. is required',
-            // 'userInfo.fbAccEmailAddress': 'Facebook Account/E-mail Address is required'
+            'userInfo.fbAccEmailAddress': 'Facebook Account/E-mail Address is required'
         };
 
         // Check required fields
@@ -573,7 +573,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
 
                                     {/* Row 7 */}
                                     <Row className="mb-3">
-                                        <Col xs={12} md={8}>
+                                        <Col xs={12} md={4}>
                                             <label htmlFor="religion" className="form-label gothic-a1-bold">
                                                 Religion <span className="text-danger">*</span>
                                             </label>
@@ -587,6 +587,20 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             />
                                             {hasFieldError('userInfo.religion') && (
                                                 <div className="invalid-feedback">{getFieldError('userInfo.religion')}</div>
+                                            )}
+                                        </Col>
+                                        <Col xs={12} md={4} xl={4}>
+                                            <label htmlFor="fbAccEmailAddress" className="form-label gothic-a1-bold">Facebook Account/E-mail Address</label>
+                                            <input
+                                                type="text"
+                                                className="form-control custom-address-input"
+                                                id="fbAccEmailAddress"
+                                                value={formData.userInfo.fbAccEmailAddress}
+                                                onChange={e => handleInputChange('userInfo', 'fbAccEmailAddress', e.target.value)}
+                                                required
+                                            />
+                                            {hasFieldError('userInfo.fbAccEmailAddress') && (
+                                                <div className="invalid-feedback">{getFieldError('userInfo.fbAccEmailAddress')}</div>
                                             )}
                                         </Col>
                                         <Col xs={12} md={4}>
@@ -833,7 +847,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
 
                                     {/* Row 16 */}
                                     <Row className="mb-3">
-                                        <Col xs={12} md={12} xl={4}>
+                                        <Col xs={12} md={12} xl={12}>
                                             <label htmlFor="businessTelNo" className="form-label gothic-a1-bold">Business Telephone No.</label>
                                             <input
                                                 type="text"
@@ -846,7 +860,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 <div className="invalid-feedback">{getFieldError('userInfo.businessTelNo')}</div>
                                             )}
                                         </Col>
-                                        <Col xs={12} md={12} xl={8}>
+                                        {/* <Col xs={12} md={12} xl={8}>
                                             <label htmlFor="fbAccEmailAddress" className="form-label gothic-a1-bold">Facebook Account/E-mail Address</label>
                                             <input
                                                 type="text"
@@ -858,7 +872,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             {hasFieldError('userInfo.fbAccEmailAddress') && (
                                                 <div className="invalid-feedback">{getFieldError('userInfo.fbAccEmailAddress')}</div>
                                             )}
-                                        </Col>
+                                        </Col> */}
                                     </Row>
 
                                     {/* Submit */}
