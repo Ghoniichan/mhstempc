@@ -141,6 +141,14 @@
     opacity: 0.9;
 }
 
+.map-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .about-us-title {
