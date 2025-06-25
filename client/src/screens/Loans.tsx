@@ -203,7 +203,7 @@ const Loans = () => {
       const borrowerName = (selectedLoanRow[0] as string)
         .toLowerCase()
         .replace(/\s+/g, '-')
-        .replace(/[^\w\-]+/g, '');
+        .replace(/[^\w-]+/g, '');
 
       const opt = {
         margin: 0.3,

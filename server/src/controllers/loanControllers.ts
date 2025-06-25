@@ -133,99 +133,24 @@ export const updateLoanStatus: RequestHandler = async (req: Request, res: Respon
     }
 };
 
-export const getComputations = async (req: Request, res: Response): Promise<void> => {
-    const { loan_id } = req.params;
-    const { amount_loan, paymentTerms } = req.body;
-
-    function termToMonths(term: string): number {
-        const map: Record<string, number> = {
-            oneMonth:       1,
-            twoMonths:      2,
-            threeMonths:    3,
-            fourMonths:     4,
-            fiveMonths:     5,
-            sixMonths:      6,
-            sevenMonths:    7,
-            eightMonths:    8,
-            nineMonths:     9,
-            tenMonths:     10,
-            elevenMonths:   11,
-            twelveMonths:   12,
-        };
-
-        const months = map[term];
-        if (months == null) {
-            throw new Error(`Unrecognized payment term: "${term}"`);
-        }
-        return months;
-    }
+export const newComputations: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    const { loan_id, loan_amount, interest, paid_up_capital, service_fee, savings, net_loan_proceeds } = req.body;
 
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
-        // Check if loan exists
-        const loanCheck = await client.query(
-            'SELECT id FROM loan_applications WHERE id = $1',
-            [loan_id]
+        // Insert new computations
+        await client.query(
+            `INSERT INTO computations (loan_application_id, amount_of_loan, interest, paid_up_capital, service_fee, savings, net_loan_fee_proceeds)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [loan_id, loan_amount, interest, paid_up_capital, service_fee, savings, net_loan_proceeds]
         );
-        if (loanCheck.rows.length === 0) {
-            res.status(404).json({ error: 'Loan application not found' });
-            return;
-        }
-
-        if (!amount_loan || !paymentTerms) {
-            res.status(400).json({ error: "Missing 'amount_loan' or 'paymentTerms' in request body" });
-            return;
-        }
-        
-        function getInterestRate(termKey: string): number {
-            const months = termToMonths(termKey);
-
-            if (months >= 1 && months <= 3)  return 0.02;
-            if (months >= 4 && months <= 6)  return 0.03;
-            if (months >= 7 && months <= 12) return 0.05;
-
-            throw new Error(`No interest rate defined for ${months} months`);
-        }
-
-        const interestRate = getInterestRate(paymentTerms);
-        const interest = amount_loan * interestRate;
-        const paid_up = amount_loan * 0.02;
-        const paid_up_capital = Math.floor(paid_up / 50) * 50;
-        const savings = paid_up - paid_up_capital;
-
-        function getServiceFee(loan: number): number {
-            if (loan >= 3000 && loan <= 5000) return 100;
-            if (loan > 5000 && loan <= 10000) return 150;
-            if (loan > 10000 && loan <= 15000) return 200;
-            if (loan > 15000 && loan <= 20000) return 250;
-            if (loan > 20000 && loan <= 25000) return 300;
-            if (loan > 25000 && loan <= 30000) return 400;
-
-            return 0; // Default to 0 if no conditions met
-        }
-
-        const service_fee = getServiceFee(amount_loan);
-        const net_amount = amount_loan - service_fee - interest;
-
-        // const capital = await client.query('SELECT public.get_capital_share_balance($1)', [loan_id]);
-
-        res.status(200).json({
-            message: "Computations",
-            amount_loan: amount_loan,
-            interest: interest,
-            paid_up_capital: paid_up_capital,
-            savings: savings,
-            service_fee: service_fee,
-            net_amount: net_amount
-        });
 
         await client.query('COMMIT');
-    } catch (err: any) {
-        console.error(err.message);
-        res.status(500).send("Server error");
-    } finally {
-        client.release();
+        res.status(201).json({ message: "New computations created successfully" });
+    } catch (error: any) {
+        console.error('Error in newComputations:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
