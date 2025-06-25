@@ -8,30 +8,8 @@ export interface LoanComputations {
   netAmount: number;
 }
 
-const termToMonths = (term: string): number => {
-  const map: Record<string, number> = {
-    oneMonth:     1,
-    twoMonths:    2,
-    threeMonths:  3,
-    fourMonths:   4,
-    fiveMonths:   5,
-    sixMonths:    6,
-    sevenMonths:  7,
-    eightMonths:  8,
-    nineMonths:   9,
-    tenMonths:   10,
-    elevenMonths:11,
-    twelveMonths:12,
-  };
-  const months = map[term];
-  if (months == null) {
-    throw new Error(`Unrecognized payment term: "${term}"`);
-  }
-  return months;
-};
-
 const getInterestRate = (termKey: string): number => {
-  const m = termToMonths(termKey);
+  const m = Number(termKey);
   if (m >= 1 && m <= 3)  return 0.02;
   if (m >= 4 && m <= 6)  return 0.03;
   if (m >= 7 && m <= 12) return 0.05;

@@ -29,7 +29,7 @@ export const loans: RequestHandler = async (req: Request, res: Response): Promis
             mem_id,
             loanInfo.amount,
             loanInfo.purpose,
-            loanInfo.paymentTerms || loanInfo.otherPaymentTerms,
+            loanInfo.paymentTerms,
             loanInfo.dateSigned || new Date(),
             submissionDate || new Date()
         ]
