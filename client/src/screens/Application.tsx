@@ -8,6 +8,7 @@ import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 import EditStatus from "../components/Dashboard/EditStatus";
 import axios from '../api/axiosInstance';
+import { JSX } from "react";
 
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
   if (arr.length <= 1) return arr;
@@ -124,7 +125,9 @@ const Application = () => {
     const prevStatus = app.status;
     const loanNo = app.loanNo;
 
-    const optimistic = { ...app, status: newStatus };
+    const capitalizedStatus = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+
+    const optimistic = { ...app, status: capitalizedStatus };
     const updatedList = [...filteredApps];
     updatedList[editingIndex] = optimistic;
     setFilteredApps(updatedList);
@@ -132,7 +135,6 @@ const Application = () => {
     try {
       await axios.patch(`/api/loans/${loanNo}/status`, { status: newStatus.toLowerCase() });
     } catch {
-      alert("Failed to update status");
       updatedList[editingIndex] = { ...app, status: prevStatus };
       setFilteredApps(updatedList);
     }
@@ -171,14 +173,42 @@ const Application = () => {
     });
   };
 
-  const rows = filteredApps.map((app, idx) => [
-    app.name, app.id, app.loanNo, app.loanAmount,
-    app.dateRelease, app.approvedBy, app.dueDate, app.status,
-    <button key={idx} className="btn btn-sm btn-outline-primary" onClick={() => {
-      setEditingIndex(idx);
-      setShowEditModal(true);
-    }}>Update</button>
-  ]);
+  const rows = filteredApps.map((app, idx) => {
+    const status = app.status.toLowerCase();
+
+    let actionColumn: JSX.Element;
+
+    if (status === "pending") {
+      actionColumn = (
+        <button
+          key={idx}
+          className="btn btn-sm btn-outline-primary"
+          onClick={() => {
+            setEditingIndex(idx);
+            setShowEditModal(true);
+          }}
+        >
+          Update
+        </button>
+      );
+    } else if (status === "disapproved") {
+      actionColumn = <span className="text-danger">Disapproved</span>;
+    } else {
+      actionColumn = <span className="text-success">Approved</span>;
+    }
+
+    return [
+      app.name,
+      app.id,
+      app.loanNo,
+      app.loanAmount,
+      app.dateRelease,
+      app.approvedBy,
+      app.dueDate,
+      app.status,
+      actionColumn
+    ];
+  });
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
