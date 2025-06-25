@@ -19,7 +19,12 @@ interface LoanData {
   capitalShare: string;
   savings: string;
   dueDate: string;
-  balance: string;  // now maps from net_loan_fee_proceeds
+  balance: string;  // from net_loan_fee_proceeds
+  
+  // Extra fields for modal, not shown in table:
+  interest: string;     // formatted currency or "-" 
+  serviceFee: string;   // formatted currency or "-"
+  // (loan_no is present in loanNo but we won't display it in modal)
 }
 
 const sortKeyMap: Record<string, keyof LoanData> = {
@@ -50,7 +55,7 @@ const formatDate = (isoString: string): string => {
   if (isNaN(date.getTime())) return "-";
   const year = date.getUTCFullYear();
   if (year < 1900) {
-    // Show as YYYY-MM-DD if very old year, or adjust per your needs
+    // Show as YYYY-MM-DD if very old year
     return date.toISOString().split('T')[0];
   }
   const month = String(date.getUTCMonth() + 1).padStart(2, '0');
@@ -71,30 +76,35 @@ const formatTerms = (term: string): string => {
     .join(' ');
 };
 
-// Map API item to LoanData
+// Map API item to LoanData, including extra fields interest & service_fee
 const mapApiToLoanData = (item: any): LoanData => {
   const amountNum = parseFloat(item.amount);
   const paidUpNum = parseFloat(item.paid_up_capital);
   const savingsNum = parseFloat(item.savings);
   const netLoanFeeNum = parseFloat(item.net_loan_fee_proceeds);
+  const interestNum = parseFloat(item.interest);
+  const serviceFeeNum = parseFloat(item.service_fee);
 
   const loanAmount = isNaN(amountNum) ? "-" : formatCurrency(amountNum);
   const capitalShare = isNaN(paidUpNum) ? "-" : formatCurrency(paidUpNum);
   const savings = isNaN(savingsNum) ? "-" : formatCurrency(savingsNum);
   const dueDate = formatDate(item.due_date);
-
   const balance = isNaN(netLoanFeeNum) ? "-" : formatCurrency(netLoanFeeNum);
+  const interest = isNaN(interestNum) ? "-" : formatCurrency(interestNum);
+  const serviceFee = isNaN(serviceFeeNum) ? "-" : formatCurrency(serviceFeeNum);
 
   return {
     name: item.name || "-",
     id: item.id || "-",
-    loanNo: item.loan_no || "-",
+    loanNo: item.loan_no || "-",  // we keep it in data but won't show in modal
     loanAmount,
     terms: formatTerms(item.payment_terms),
     capitalShare,
     savings,
     dueDate,
     balance,
+    interest,
+    serviceFee,
   };
 };
 
@@ -118,11 +128,15 @@ const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 
 const Loans = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [selectedLoanRow, setSelectedLoanRow] = useState<React.ReactNode[] | null>(null);
+  // Keep both the row-array for table and the full item for modal
+  const [selectedLoanItem, setSelectedLoanItem] = useState<LoanData | null>(null);
+
   const handleRowClick = (row: React.ReactNode[]) => {
-    setSelectedLoanRow(row);
+    const found = filteredLoans.find(loan => loan.id === String(row[1]));
+    setSelectedLoanItem(found || null);
     setShowModal(true);
   };
+
   const [selectedDropdown, setSelectedDropdown] = useState("Active Loans");
   const [selectedColumn, setSelectedColumn] = useState("Name");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -230,9 +244,9 @@ const Loans = () => {
   };
 
   const downloadModalAsPDF = async () => {
-    if (typeof window === 'undefined' || !modalRef.current || !selectedLoanRow) return;
+    if (typeof window === 'undefined' || !modalRef.current || !selectedLoanItem) return;
     const html2pdf = (await import('html2pdf.js')).default;
-    const borrowerName = (selectedLoanRow[0] as string)
+    const borrowerName = selectedLoanItem.name
       .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^\w-]+/g, '');
@@ -248,6 +262,7 @@ const Loans = () => {
     }, 300);
   };
 
+  // Build the rows for the table (no change here)
   const rows = filteredLoans.map(loan => [
     loan.name,
     loan.id,
@@ -285,6 +300,7 @@ const Loans = () => {
         contentClassName="p-3 rounded-4"
       >
         <Modal.Body>
+          {/* Top bar with close */}
           <div className="d-flex align-items-center mb-0">
             <div className="flex-grow-1 text-center"></div>
             <button
@@ -297,12 +313,17 @@ const Loans = () => {
             </button>
           </div>
           <div ref={modalRef}>
+            {/* Logo */}
             <div className="pdf-only mb-3 text-center">
               <img src={companyLogo} alt="Company Logo" style={{ width: "100px" }} />
             </div>
+            {/* Main details */}
             <div className="text-center">
-              <h5 className="mb-0 fw-bold">{selectedLoanRow?.[0]}</h5>
-              <div className="text-muted mb-3">{selectedLoanRow?.[1]}</div>
+              {/* Name */}
+              <h5 className="mb-0 fw-bold">{selectedLoanItem?.name}</h5>
+              {/* ID */}
+              <div className="text-muted mb-3">{selectedLoanItem?.id}</div>
+              {/* Check icon */}
               <div className="mb-3">
                 <div
                   className="mx-auto bg-success d-flex justify-content-center align-items-center"
@@ -316,18 +337,37 @@ const Loans = () => {
                 </div>
               </div>
               <hr />
+              {/* Computation section with all fields except loan_no */}
               <h6 className="text-muted mb-3">Computation</h6>
+              {/* Loan Amount */}
               <div className="d-flex justify-content-between mb-1">
-                <span>Loan Amount</span> <span>{selectedLoanRow?.[3]}</span>
+                <span>Loan Amount</span> <span>{selectedLoanItem?.loanAmount}</span>
               </div>
-              {/* Add other fields from API if available */}
+              {/* Interest */}
+              <div className="d-flex justify-content-between mb-1">
+                <span>Interest</span> <span>{selectedLoanItem?.interest}</span>
+              </div>
+              {/* Service Fee */}
+              <div className="d-flex justify-content-between mb-1">
+                <span>Service Fee</span> <span>{selectedLoanItem?.serviceFee}</span>
+              </div>
+              {/* Paid-Up Capital */}
+              <div className="d-flex justify-content-between mb-1">
+                <span>Paid–Up Capital</span> <span>{selectedLoanItem?.capitalShare}</span>
+              </div>
+              {/* Savings */}
+              <div className="d-flex justify-content-between mb-3">
+                <span>Savings</span> <span>{selectedLoanItem?.savings}</span>
+              </div>
               <hr />
+              {/* Net Loan Fee Proceeds */}
               <div className="d-flex justify-content-between fw-bold mb-5">
-                <span>Net Loan Fee Proceeds</span> <span>{selectedLoanRow?.[8]}</span>
+                <span>Net Loan Fee Proceeds</span> <span>{selectedLoanItem?.balance}</span>
               </div>
               <div className="mb-4 text-muted">Signature</div>
             </div>
           </div>
+          {/* Download button */}
           <Button
             className="w-100 mt-3 text-white"
             style={{ backgroundColor: "#002d62", border: "none" }}
@@ -338,16 +378,19 @@ const Loans = () => {
         </Modal.Body>
       </Modal>
 
+      {/* ... rest of your layout (sidebar, search, table, etc.) ... */}
       <div style={{ width: "200px", flexShrink: 0 }}></div>
       <div className="flex-grow-1 d-flex flex-column p-4">
         <div className="d-flex align-items-center mb-3" style={{ gap: "12px" }}>
           <Backbutton />
           <h3 className="mb-0">Loans</h3>
         </div>
+
         <div className="d-flex align-items-center w-100 mb-4" style={{ gap: "5px" }}>
           <div style={{ flex: 1 }}>
             <SearchBar value={searchQuery} onSearch={handleSearch} />
           </div>
+          {/* Sort button */}
           <ButtonCustom
             text="Sort"
             icon="bi bi-arrow-down-up"
@@ -373,6 +416,7 @@ const Loans = () => {
               },
             ]}
           />
+          {/* Dropdowns and download as before */}
           <ButtonCustom
             text={selectedDropdown}
             backgroundColor="#ffffff"
@@ -411,6 +455,7 @@ const Loans = () => {
             ]}
           />
         </div>
+
         {filteredLoans.length > 0 ? (
           <CustomTable
             columnHeadings={[
