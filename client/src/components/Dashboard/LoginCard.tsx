@@ -1,87 +1,126 @@
+import React, { useState, useEffect } from 'react';
 import '../../../src/styles/custom-bootsrap.scss';
 import logo from '../../../src/assets/Images/mhstempc_logo.png';
 import InputField from './InputField';
 import PasswordField from './PasswordField';
 import CustomButton from './CustomButton';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import axios from '../../api/axiosInstance.ts';
+import axios from '../../api/axiosInstance';
 import { AxiosError } from 'axios';
 import './LoginCard.css';
 
-const LoginCard = () => {
+const LOCKOUT_KEY = 'lockoutExpiresAt';
+
+const LoginCard: React.FC = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [lockoutSeconds, setLockoutSeconds] = useState<number | null>(null);
 
-  const validateEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // On mount, restore any lockout expiry
+  useEffect(() => {
+    const raw = localStorage.getItem(LOCKOUT_KEY);
+    if (raw) {
+      const expiry = parseInt(raw, 10);
+      const msLeft = expiry - Date.now();
+      if (msLeft > 0) {
+        setLockoutSeconds(Math.ceil(msLeft / 1000));
+      } else {
+        localStorage.removeItem(LOCKOUT_KEY);
+      }
+    }
+  }, []);
+
+  // Countdown timer
+  useEffect(() => {
+    if (lockoutSeconds == null) return;
+
+    if (lockoutSeconds <= 0) {
+      localStorage.removeItem(LOCKOUT_KEY);
+      setLockoutSeconds(null);
+      setErrors({});
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setLockoutSeconds(lockoutSeconds - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [lockoutSeconds]);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const validateEmail = (e: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
   const handleLogin = async () => {
-    const newErrors: typeof errors = {};
+    // client-side validation
+    const validationErrors: typeof errors = {};
+    if (!email) validationErrors.email = 'Email is required';
+    else if (!validateEmail(email)) validationErrors.email = 'Enter a valid email';
+    if (!password) validationErrors.password = 'Password is required';
 
-    if (!email) {
-      newErrors.email = 'Email is required';
-    } else if (!validateEmail(email)) {
-      newErrors.email = 'Enter a valid email';
-    }
-
-    if (!password) {
-      newErrors.password = 'Password is required';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) {
+    if (Object.keys(validationErrors).length) {
+      setErrors(validationErrors);
       return;
     }
 
     setErrors({});
     setIsLoading(true);
-    
+
     try {
+      const { data } = await axios.post('/api/auth/login', { email, password });
+      const { jwtToken } = data;
 
-      const data = {
-        email: email,
-        password: password
+      // decode and store token
+      type JwtPayload = {
+        user?: {
+          isAdmin?: boolean;
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      };
+      let payload: JwtPayload;
+      try {
+        payload = JSON.parse(atob(jwtToken.split('.')[1]));
+      } catch {
+        setErrors({ general: 'Invalid token received.' });
+        return;
       }
-      const response = await axios.post('/api/auth/login', data);
-      
-      console.log('Login response:', response.data);
-      const { jwtToken} = response.data;
-      
+      const isAdmin = payload.user?.isAdmin ?? false;
       localStorage.setItem('token', jwtToken);
+      localStorage.setItem('role', isAdmin ? 'admin' : 'user');
 
-      //check token body
-      const decodedToken = JSON.parse(atob(jwtToken.split('.')[1]));
+      // clear any lockout
+      localStorage.removeItem(LOCKOUT_KEY);
+      setLockoutSeconds(null);
 
-      //get isAdmin in payload
-      const isAdmin = decodedToken.user.isAdmin;
-      const role = isAdmin ? 'admin' : 'user';
-      localStorage.setItem('token', jwtToken);
-      localStorage.setItem('role', role);
-
-      if (isAdmin) {
-        navigate('/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      navigate('/dashboard');
     } catch (err) {
-      if (err instanceof AxiosError) {
-        console.error('Login error:', err.response?.data || err.message);
-        
-        // Show user-friendly error messages
-        if (err.response?.status === 401) {
+      if (err instanceof AxiosError && err.response) {
+        const { status, headers } = err.response;
+
+        if (status === 429) {
+          // read Retry-After header
+          const ra = parseInt(headers['retry-after'] as string, 10) || 5 * 60;
+          const expiresAt = Date.now() + ra * 1000;
+          localStorage.setItem(LOCKOUT_KEY, expiresAt.toString());
+          setLockoutSeconds(ra);
+          setErrors({ general: `Too many attempts. Try again in ${formatTime(ra)}.` });
+        } else if (status === 401) {
           setErrors({ general: 'Invalid email or password' });
-        } else if (err.response?.status === 403) {
+        } else if (status === 403) {
           setErrors({ general: 'Access denied. Please contact administrator.' });
-        } else if (err.response?.status === 500) {
-          setErrors({ general: 'Server error. Please try again later.' });
         } else {
-          setErrors({ general: 'An error occurred. Please try again.' });
+          setErrors({ general: 'Server error. Please try again later.' });
         }
       } else {
         setErrors({ general: 'Network error. Please check your connection.' });
@@ -92,66 +131,70 @@ const LoginCard = () => {
   };
 
   return (
-    <div className='login-container'>
-      <div className='row border rounded-3 p-3 bg-white shadow login-box-area' style={{ maxWidth: '850px', height: '600px', margin: '0 auto', width: '100%' }}>
-        {/* Left box */}
-        <div className='col-lg-6 col-12 rounded-3 d-flex justify-content-center align-items-center flex-column left-box'
-          style={{ background: '#f7f7f7', height: '550px', padding: '25px 10px' }}>
-          <div className='text-center'>
-            <img src={logo} alt='mhstempcLogo' className='img-fluid'
-              width="400px"
-              style={{
-                marginBottom: '30px',
-                paddingTop: '25px',
-                maxWidth: '270px',
-                width: '100%',
-                alignItems: 'center',
-                paddingLeft: '20px'
-              }} />
-          </div>
-            <div className="text-center px-1">
-              <small className='fs-responsive-company fw-normal alegreya-sans-regular d-block'>MARIKINA HIGH SCHOOL TEACHERS EMPLOYEE</small>
-              <p className='mb-0 fs-responsive-title fw-bold alegreya-sans-bold'>MHSTEMPC</p>
-              <small className='d-block mb-5 mb-lg-5 fs-responsive-company fw-normal alegreya-sans-regular'>MULTI-PURPOSE COOPERATIVE</small>
-            </div>
+    <div className="login-container">
+      <div
+        className="row border rounded-3 p-3 bg-white shadow login-box-area"
+        style={{ maxWidth: 850, height: 600, margin: '0 auto' }}
+      >
+        {/* Left Column */}
+        <div
+          className="col-lg-6 col-12 rounded-3 d-flex justify-content-center align-items-center flex-column left-box"
+          style={{ background: '#f7f7f7', padding: '25px 10px' }}
+        >
+          <img src={logo} alt="MHSTEMPC Logo" className="img-fluid mb-4" style={{ maxWidth: 270 }} />
+          <small className="fs-responsive-company d-block">
+            MARIKINA HIGH SCHOOL TEACHERS EMPLOYEE
+          </small>
+          <p className="fs-responsive-title fw-bold mb-0">MHSTEMPC</p>
+          <small className="fs-responsive-company d-block">
+            MULTI-PURPOSE COOPERATIVE
+          </small>
         </div>
 
-        {/* Right box */}
-        <div className="col-md-6 col-12 right-box" style={{ paddingBottom: '20px' }}>
-          <div>
-            <div className="header text-center text-lg-start">
-              <p className="mb-0 fw-bold gothic-a1-bold login-header-title" style={{ fontSize: '25px', paddingLeft: '10px', paddingBottom: '30px', paddingTop: '80px' }}>Log In to your Account</p>
-              {/* <small className="mb-3 gothic-a1-regular" style={{ paddingLeft: '10px', display: 'block' }}>Welcome back!</small> */}
+        {/* Right Column */}
+        <div className="col-md-6 col-12 right-box" style={{ padding: 20 }}>
+          {errors.general && (
+            <div className="alert alert-danger login-error-alert mb-3">
+              {errors.general}
             </div>
-          </div>
-          <div className="px-3 login-form-container">
-            {errors.general && (
-              <div className="alert alert-danger login-error-alert" style={{ marginLeft: '13px', marginBottom: '16px' }}>
-                {errors.general}
-              </div>
-            )}
-         <form
+          )}
+
+          <form
             onSubmit={(e) => {
               e.preventDefault();
               handleLogin();
             }}
           >
-            <div className="login-form-field" style={{ paddingLeft: '13px', marginBottom: '4px' }}>
-              <InputField value={email} onChange={setEmail} error={errors.email} />
-            </div>
-            <div className="login-form-field password-field" style={{ paddingLeft: '13px', marginBottom: '16px' }}>
-              <PasswordField value={password} onChange={setPassword} error={errors.password} />
-            </div>
-            <div  className="login-form-button mb-2" style={{ paddingLeft: '13px' }}>
-              <CustomButton 
-                label={isLoading ? 'Logging in...' : 'Log in'} 
-                type="submit" 
-                disabled={isLoading}
+            <div className="login-form-field mb-3">
+              <InputField
+                value={email}
+                onChange={setEmail}
+                error={errors.email}
+                placeholder="Email"
               />
             </div>
-          </form>
 
-          </div>
+            <div className="login-form-field mb-4">
+              <PasswordField
+                value={password}
+                onChange={setPassword}
+                error={errors.password}
+                placeholder="Password"
+              />
+            </div>
+
+            <CustomButton
+              label={
+                lockoutSeconds != null
+                  ? `Try again in ${formatTime(lockoutSeconds)}`
+                  : isLoading
+                  ? 'Logging in...'
+                  : 'Log in'
+              }
+              type="submit"
+              disabled={isLoading || lockoutSeconds != null}
+            />
+          </form>
         </div>
       </div>
     </div>
