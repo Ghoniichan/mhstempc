@@ -116,9 +116,9 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={logout}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-        <span className="description" onClick={logout}>Log Out</span>
+        <span className="description">Log Out</span>
       </NavLink>
     </>
   );
@@ -145,9 +145,9 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={logout}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-        <span className="description" onClick={logout}>Log Out</span>
+        <span className="description">Log Out</span>
       </NavLink>
     </>
   );

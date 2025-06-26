@@ -5,6 +5,8 @@ import Backbutton from "../components/Dashboard/Backbutton";
 import SearchBar from "../components/Dashboard/SearchBar";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import * as XLSX from "xlsx";
+import axios from "../api/axiosInstance";
+import { getUserIdFromJwt } from "../utils/tokenDecoder";
 
 // QuickSort Function
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
@@ -127,6 +129,29 @@ const UserSavings = () => {
     entry.withdrawal,
     entry.balance
   ]);
+
+  useEffect(() => {
+    const fetchSavings = async () => {
+      const userId = getUserIdFromJwt(localStorage.getItem('token') || '');
+      
+      try {
+        const response = await axios.get(`/api/user/profile/${userId}`);
+        const policy_no = response.data?.policy_number;
+        if (!policy_no) {
+          console.error('No policy number found in user profile');
+          return;
+        }
+        const savingsResponse = await axios.get(`/api/savings/${policy_no}`);
+
+        setSavings(savingsResponse.data);
+        setFilteredSavings(savingsResponse.data);
+      } catch (error) {
+        console.error("Error fetching savings data:", error);
+      }
+    };
+
+    fetchSavings();
+  }, []);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>

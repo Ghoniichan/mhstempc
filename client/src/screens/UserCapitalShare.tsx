@@ -5,6 +5,8 @@ import Backbutton from "../components/Dashboard/Backbutton";
 import SearchBar from "../components/Dashboard/SearchBar";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import * as XLSX from "xlsx";
+import axios from "../api/axiosInstance";
+import { getUserIdFromJwt } from "../utils/tokenDecoder";
 
 // QuickSort Function
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
@@ -114,6 +116,39 @@ const UserCapitalShare = () => {
     row.received,
     row.balance
   ]);
+
+  useEffect(() => {
+
+    const fetchCapitalShare = async () => {
+      const userId = getUserIdFromJwt(localStorage.getItem('token') || '');
+      
+      try {
+        const response = await axios.get(`/api/user/profile/${userId}`);
+        const policy_no = response.data?.policy_number;
+        if (!policy_no) {
+          console.error('No policy number found in user profile');
+          return;
+        }
+
+        const capitalResponse = await axios.get(`/api/capital/${policy_no}`);
+        const transformed: any[] = capitalResponse.data.map((entry: Record<string, unknown>) => ({
+          date: typeof entry.entry_date === 'string' ? entry.entry_date.slice(0, 10) : '',
+          or: typeof entry.or_code_generated === 'string' ? entry.or_code_generated : '',
+          ref: typeof entry.ref_code === 'string' ? entry.ref_code : '',
+          received: typeof entry.amount === 'string' ? `₱${parseFloat(entry.amount).toFixed(2)}` : '₱0.00',
+          balance: typeof entry.balance === 'string' ? `₱${parseFloat(entry.balance).toFixed(2)}` : '₱0.00',
+        }));
+
+        setCapitalShares(transformed);
+        setFilteredShares(transformed);
+      } catch (error) {
+        console.error('Error initializing client profile:', error);
+        // Handle error, e.g., show a notification or alert
+      }
+    };
+
+    fetchCapitalShare();
+  }, []);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
