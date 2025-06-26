@@ -6,6 +6,8 @@ import './ApplicationFormSecond.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import calculateComputations from '../../utils/computations';
+import log from '../../api/log';
+import { getUserIdFromJwt } from '../../utils/tokenDecoder';
 
 interface ApplicationFormSecondProps {
   onCancel: () => void;
@@ -90,6 +92,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
         const response = await axios.post('/api/loans/new', cleanedData);
         if (response.status === 201) {
           console.log('Form submitted successfully');
+          log(getUserIdFromJwt(response.data.jwtToken) || '', 'submitted loan application', 'Loan application submitted');
         } else {
           console.error('Failed to submit form:', response.data);
           alert('Failed to submit form. Please try again later.');

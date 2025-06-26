@@ -4,6 +4,8 @@ import navlogo from '../../../src/assets/Images/mhstempc_logo.png';
 import SettingSection from './SettingSection';
 import NotificationSection from './NotificationSection';
 import './Sidebar.css';
+import log from '../../api/log';
+import { getUserIdFromJwt } from '../../utils/tokenDecoder';
 
 const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -12,6 +14,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const logout = () => {
+    log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'logged out', 'User logged out');
     localStorage.clear();
 };
 
