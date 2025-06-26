@@ -1,13 +1,14 @@
 import { useState } from "react";
 import './PasswordField.css'
 
-type PasswordFieldProps = {
+export interface PasswordFieldProps {
   value: string;
-  onChange: (val: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-};
+  placeholder?: string;
+}
 
-const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error }) => {
+const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error, placeholder }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -21,7 +22,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error })
             type={showPassword ? 'text' : 'password'}
             id="password"
             className={`inputBox form-control ps-5 pe-5 ${error ? 'is-invalid' : ''}`}
-            placeholder="Password"
+            placeholder={placeholder || "Password"}
             style={{ border: '1px solid #002d62', height: '55px', maxWidth: '100%' }}
             value={value}
             onChange={(e) => onChange(e.target.value)}

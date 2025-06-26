@@ -21,9 +21,30 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const validPassword = await bcrypt.compare(password, user.rows[0].password_hash);
   
     if (!validPassword) {
-      res.status(401).json("Invalid Credentials");
-      return;
-    }
+      // bump the counter, get new count back
+      const { rows } = await pool.query<{ attempt_count: number }>(`
+        INSERT INTO attempt (account_id, attempt_count)
+        VALUES ($1, 1)
+        ON CONFLICT (account_id)
+        DO UPDATE SET attempt_count = attempt.attempt_count + 1
+        RETURNING attempt_count;
+      `, [user.rows[0].account_id]);
+      const count = rows[0].attempt_count;
+
+      // optional lockout after 3 failures
+      if (count >= 3) {
+         res
+          .status(429)
+          .set('Retry-After', String(5 * 60))
+          .json('Too many attempts. Try again later.');
+         return;
+      }
+
+       res.status(401).json("Invalid Credentials");
+       return;
+    }     
+
+    await pool.query(`DELETE FROM attempt WHERE account_id = $1`, [user.rows[0].account_id]);
     
     // Generate JWT token
     const jwtToken = jwtGenerator(user.rows[0].account_id, user.rows[0].is_admin);

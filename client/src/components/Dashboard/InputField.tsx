@@ -1,12 +1,13 @@
 import './InputField.css'
 
-type InputFieldProps = {
+export interface InputFieldProps {
   value: string;
-  onChange: (val: string) => void;
+  onChange: (value: string) => void;
   error?: string;
-};
+  placeholder?: string;
+}
 
-const InputField: React.FC<InputFieldProps> = ({ value, onChange, error }) => {
+const InputField: React.FC<InputFieldProps> = ({ value, onChange, error, placeholder }) => {
   return (
     <div className="MainContainer mb-1">
       <div className='subCont'>
@@ -16,7 +17,7 @@ const InputField: React.FC<InputFieldProps> = ({ value, onChange, error }) => {
             type="email"
             id="email"
             className={`inputBox form-control ps-5 ${error ? 'is-invalid' : ''}`}
-            placeholder="Email"
+            placeholder={placeholder || "Email"}
             style={{ border: '1px solid #002d62', height: '55px', maxWidth: '100%'}}
             value={value}
             onChange={(e) => onChange(e.target.value)}
