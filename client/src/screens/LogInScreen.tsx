@@ -6,8 +6,7 @@ const LogInScreen = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 width: '100vw',
-                height: '100vh',
-                overflow: 'hidden'}}>
+                height: '100vh',}}>
             <LoginCard/>
             
         </div>

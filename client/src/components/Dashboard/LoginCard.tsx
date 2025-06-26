@@ -131,74 +131,78 @@ const LoginCard: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
+  <div className="login-card-wrapper">
+    <div
+      className="row border rounded-3 p-3 bg-white shadow login-box-area"
+      style={{ maxWidth: 800, height: 570, margin: '0 auto' }}
+    >
+      {/* Left Column */}
       <div
-        className="row border rounded-3 p-3 bg-white shadow login-box-area"
-        style={{ maxWidth: 850, height: 600, margin: '0 auto' }}
+        className="col-lg-6 col-12 rounded-3 d-flex justify-content-center align-items-center flex-column left-box"
+        style={{ background: '#f7f7f7', padding: '25px 10px' }}
       >
-        {/* Left Column */}
-        <div
-          className="col-lg-6 col-12 rounded-3 d-flex justify-content-center align-items-center flex-column left-box"
-          style={{ background: '#f7f7f7', padding: '25px 10px' }}
+        <img src={logo} alt="MHSTEMPC Logo" className="img-fluid mb-4" style={{ maxWidth: 250 }} />
+        <small className="fs-responsive-company d-block alegreya-sans-regular" style={{textAlign: 'center'}}>
+          MARIKINA HIGH SCHOOL TEACHERS EMPLOYEE
+        </small>
+        <p className="fs-responsive-title fw-bold mb-0 alegreya-sans-bold">MHSTEMPC</p>
+        <small className="fs-responsive-company d-block alegreya-sans-regular">
+          MULTI-PURPOSE COOPERATIVE
+        </small>
+      </div>
+
+      {/* Right Column */}
+      <div className="col-md-6 col-12 right-box" style={{ paddingTop: '80px' }}>
+        {errors.general && (
+          <div className="alert alert-danger login-error-alert mb-3">
+            {errors.general}
+          </div>
+        )}
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
         >
-          <img src={logo} alt="MHSTEMPC Logo" className="img-fluid mb-4" style={{ maxWidth: 270 }} />
-          <small className="fs-responsive-company d-block">
-            MARIKINA HIGH SCHOOL TEACHERS EMPLOYEE
-          </small>
-          <p className="fs-responsive-title fw-bold mb-0">MHSTEMPC</p>
-          <small className="fs-responsive-company d-block">
-            MULTI-PURPOSE COOPERATIVE
-          </small>
-        </div>
-
-        {/* Right Column */}
-        <div className="col-md-6 col-12 right-box" style={{ padding: 20 }}>
-          {errors.general && (
-            <div className="alert alert-danger login-error-alert mb-3">
-              {errors.general}
-            </div>
-          )}
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin();
-            }}
-          >
-            <div className="login-form-field mb-3">
-              <InputField
-                value={email}
-                onChange={setEmail}
-                error={errors.email}
-                placeholder="Email"
-              />
-            </div>
-
-            <div className="login-form-field mb-4">
-              <PasswordField
-                value={password}
-                onChange={setPassword}
-                error={errors.password}
-                placeholder="Password"
-              />
-            </div>
-
-            <CustomButton
-              label={
-                lockoutSeconds != null
-                  ? `Try again in ${formatTime(lockoutSeconds)}`
-                  : isLoading
-                  ? 'Logging in...'
-                  : 'Log in'
-              }
-              type="submit"
-              disabled={isLoading || lockoutSeconds != null}
+          <div className="login-form-field mb-3">
+            <small className="LogInText gothic-a1-bold" style={{textAlign: 'left', fontSize: '25px', paddingBottom: '10px'}}>
+              Log in to your account
+            </small>
+            <InputField
+              value={email}
+              onChange={setEmail}
+              error={errors.email}
+              placeholder="Email"
             />
-          </form>
-        </div>
+          </div>
+
+          <div className="login-form-field mb-4">
+            <PasswordField
+              value={password}
+              onChange={setPassword}
+              error={errors.password}
+              placeholder="Password"
+            />
+          </div>
+
+          <CustomButton
+            label={
+              lockoutSeconds != null
+                ? `Try again in ${formatTime(lockoutSeconds)}`
+                : isLoading
+                ? 'Logging in...'
+                : 'Log in'
+            }
+            type="submit"
+            disabled={isLoading || lockoutSeconds != null}
+          />
+        </form>
       </div>
     </div>
-  );
+  </div>
+);
+
 };
 
 export default LoginCard;
