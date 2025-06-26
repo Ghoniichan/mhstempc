@@ -1,6 +1,6 @@
 .information-card-fullwidth {
     width: 100%;
-    max-width: 80rem;
+    /* max-width: 80rem; */
     padding: 0;
     box-sizing: border-box;
     display: flex;
@@ -36,6 +36,7 @@
 .ic-card {
     width: 100%;
     box-sizing: border-box;
+    
 }
 
 .card {

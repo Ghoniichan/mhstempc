@@ -16,10 +16,7 @@ const ClientProfileCapitalShareScreen = () => {
   const columnHeadings = ['Date', 'OR', 'REF', 'Received Amount', 'Balance'];
 
   const [rows, setRows] = useState<CapitalShareEntry[]>([
-    { date: '2023-01-01', or: 'OR001', ref: 'REF001', amount: 500, balance: 500 },
-    { date: '2023-01-01', or: 'OR001', ref: 'REF001', amount: 500, balance: 1000 },
-    { date: '2023-01-01', or: 'OR001', ref: 'REF001', amount: 500, balance: 1500 },
-    { date: '2023-01-01', or: 'OR001', ref: 'REF001', amount: 500, balance: 2000 },
+    
   ]);
 
   const [newRow, setNewRow] = useState({
@@ -105,7 +102,7 @@ const ClientProfileCapitalShareScreen = () => {
         className="flex-grow-1 d-flex flex-column"
         style={{ padding: '40px 20px', overflow: 'hidden' }}
       >
-        <h1>Client Profile</h1>
+        <h3>Client Profile</h3>
 
         <div style={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', paddingRight: '10px' }}>
           <InformationCard
