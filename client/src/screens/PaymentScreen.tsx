@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
@@ -16,28 +15,19 @@ interface Payment {
   date: string;
   collectedBy: string;
   dueDate: string;
-  loanAmount: string;  // currency string
+  loanAmount: string;
 }
 
-// Map from UI label to the actual Payment key
 const sortKeyMap: Record<string, keyof Payment> = {
-  "Name": "name",
-  "ID": "id",
+  Name: "name",
   "Loan No.": "loanNo",
-  "Method": "method",
-  "Date Release": "dateRelease",
-  "Date": "date",
-  "Collected by": "collectedBy",
+  "Loan Amount": "loanAmount",
+  "Mode of Payment": "method",
+  "Payment Date": "date",
   "Due Date": "dueDate",
-  "Loan Amount": "loanAmount"
 };
 
-// A generic quickSort that takes a `keyof T`
-const quickSort = <T,>(
-  arr: T[],
-  key: keyof T,
-  order: 'asc' | 'desc'
-): T[] => {
+const quickSort = <T,>(arr: T[], key: keyof T, order: "asc" | "desc"): T[] => {
   if (arr.length <= 1) return arr;
   const pivot = arr[arr.length - 1];
   const left: T[] = [];
@@ -45,18 +35,15 @@ const quickSort = <T,>(
   for (let i = 0; i < arr.length - 1; i++) {
     const a = (arr[i] as any)[key] as string | number;
     const b = (pivot as any)[key] as string | number;
-    if (order === 'asc' ? a < b : a > b) left.push(arr[i]);
+    if (order === "asc" ? a < b : a > b) left.push(arr[i]);
     else right.push(arr[i]);
   }
   return [...quickSort(left, key, order), pivot, ...quickSort(right, key, order)];
 };
 
 const PaymentScreen = () => {
-  const navigate = useNavigate();
-
-  // 1) store the LABEL (e.g. "Name"), not the key
   const [selectedColumnLabel, setSelectedColumnLabel] = useState("Name");
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
 
   const [payments] = useState<Payment[]>([
@@ -83,7 +70,13 @@ const PaymentScreen = () => {
       loanAmount: "₱30,000",
     },
   ]);
+
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>(payments);
+  const [editingRow, setEditingRow] = useState<string | null>(null);
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
+  const [paidAmounts, setPaidAmounts] = useState<Record<string, number>>({});
+  const [paymentModes, setPaymentModes] = useState<Record<string, string>>({});
+  const [showDropdown, setShowDropdown] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     document.title = "MHSTEMPC | Payment";
@@ -97,51 +90,135 @@ const PaymentScreen = () => {
       return;
     }
     setFilteredPayments(
-      payments.filter(p =>
-        Object.values(p).some(v =>
-          typeof v === 'string' && v.toLowerCase().includes(q)
+      payments.filter((p) =>
+        Object.values(p).some(
+          (v) => typeof v === "string" && v.toLowerCase().includes(q)
         )
       )
     );
   };
 
-  const handleSort = (columnLabel: string, order: 'asc' | 'desc') => {
-    // 2) look up the actual keyof Payment
+  const handleSort = (columnLabel: string, order: "asc" | "desc") => {
     const key = sortKeyMap[columnLabel];
     const isCurrencyField = key === "loanAmount";
 
     let sorted: Payment[];
     if (isCurrencyField) {
-      // Numeric parse for currency
       sorted = [...filteredPayments].sort((a, b) => {
         const aVal = parseFloat(a.loanAmount.replace(/[₱,]/g, ""));
         const bVal = parseFloat(b.loanAmount.replace(/[₱,]/g, ""));
-        return order === 'asc' ? aVal - bVal : bVal - aVal;
+        return order === "asc" ? aVal - bVal : bVal - aVal;
       });
     } else {
-      // Generic sort
       sorted = quickSort(filteredPayments, key, order);
     }
 
     setFilteredPayments(sorted);
-    // 3) store the LABEL here
     setSelectedColumnLabel(columnLabel);
     setSortOrder(order);
   };
 
+  const handlePaidSubmit = (loanNo: string) => {
+    const input = inputValues[loanNo];
+    const amount = parseFloat(input);
+    if (!isNaN(amount)) {
+      setPaidAmounts((prev) => ({ ...prev, [loanNo]: amount }));
+      setShowDropdown((prev) => ({ ...prev, [loanNo]: true }));
+    }
+    setEditingRow(null);
+  };
+
+  const handlePaymentModeChange = (loanNo: string, mode: string) => {
+    setPaymentModes((prev) => ({ ...prev, [loanNo]: mode }));
+    setShowDropdown((prev) => ({ ...prev, [loanNo]: false }));
+  };
+
+  const rows = filteredPayments.map((p) => {
+    const loanAmountNum = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
+    const paid = paidAmounts[p.loanNo] || 0;
+    const remaining = Math.max(0, loanAmountNum - paid);
+    const isEditing = editingRow === p.loanNo;
+    const showModeDropdown = showDropdown[p.loanNo];
+    const selectedPaymentMode = paymentModes[p.loanNo] || "";
+
+    const actionCell = selectedPaymentMode ? (
+      <span className="text-success fw-semibold">Paid</span>
+    ) : isEditing ? (
+      <div className="d-flex gap-1">
+        <input
+          type="number"
+          className="form-control form-control-sm"
+          placeholder="Amount"
+          value={inputValues[p.loanNo] || ""}
+          onChange={(e) =>
+            setInputValues((prev) => ({
+              ...prev,
+              [p.loanNo]: e.target.value,
+            }))
+          }
+          style={{ width: "100px" }}
+          autoFocus
+        />
+        <button
+          className="btn btn-sm btn-primary"
+          onClick={() => handlePaidSubmit(p.loanNo)}
+        >
+          Enter
+        </button>
+      </div>
+    ) : showModeDropdown ? (
+      <div className="d-flex flex-column">
+        <label className="form-label mb-1 small">Mode of Payment:</label>
+        <select
+          className="form-select form-select-sm"
+          style={{ width: "120px" }}
+          value={selectedPaymentMode}
+          onChange={(e) => handlePaymentModeChange(p.loanNo, e.target.value)}
+        >
+          <option value="" disabled>
+            Select
+          </option>
+          <option value="Cash">Cash</option>
+          <option value="Card">Card</option>
+        </select>
+      </div>
+    ) : (
+      <button
+        className="btn btn-sm btn-success"
+        onClick={() => setEditingRow(p.loanNo)}
+      >
+        Paid
+      </button>
+    );
+
+    return [
+      p.name,
+      p.loanNo,
+      p.loanAmount,
+      selectedPaymentMode || p.method,
+      p.date,
+      p.dueDate,
+      `₱${remaining.toLocaleString()}`,
+      actionCell,
+    ];
+  });
+
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
-      filteredPayments.map(p => ({
-        Name: p.name,
-        ID: p.id,
-        "Loan No.": p.loanNo,
-        Method: p.method,
-        "Date Release": p.dateRelease,
-        Date: p.date,
-        "Collected by": p.collectedBy,
-        "Due Date": p.dueDate,
-        "Loan Amount": p.loanAmount,
-      }))
+      filteredPayments.map((p) => {
+        const loanAmount = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
+        const paid = paidAmounts[p.loanNo] || 0;
+        const remaining = Math.max(0, loanAmount - paid);
+        return {
+          Name: p.name,
+          "Loan No.": p.loanNo,
+          "Loan Amount": p.loanAmount,
+          "Mode of Payment": paymentModes[p.loanNo] || p.method,
+          "Payment Date": p.date,
+          "Due Date": p.dueDate,
+          "Remaining Balance": `₱${remaining.toLocaleString()}`,
+        };
+      })
     );
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Payments");
@@ -150,39 +227,32 @@ const PaymentScreen = () => {
 
   const exportToWord = () => {
     let content = "Payment Records\n\n";
-    filteredPayments.forEach(p => {
-      content += `Name: ${p.name}\nID: ${p.id}\nLoan No.: ${p.loanNo}\nMethod: ${p.method}\nDate Release: ${p.dateRelease}\nPayment Date: ${p.date}\nCollected by: ${p.collectedBy}\nDue Date: ${p.dueDate}\nLoan Amount: ${p.loanAmount}\n\n`;
+    filteredPayments.forEach((p) => {
+      const loanAmount = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
+      const paid = paidAmounts[p.loanNo] || 0;
+      const remaining = Math.max(0, loanAmount - paid);
+      content += `Name: ${p.name}\nLoan No.: ${p.loanNo}\nLoan Amount: ${p.loanAmount}\nMode of Payment: ${paymentModes[p.loanNo] || p.method}\nPayment Date: ${p.date}\nDue Date: ${p.dueDate}\nRemaining Balance: ₱${remaining.toLocaleString()}\n\n`;
     });
-    const blob = new Blob([content], { type: "application/msword;charset=utf-8" });
+    const blob = new Blob([content], {
+      type: "application/msword;charset=utf-8",
+    });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "payments.doc";
     link.click();
   };
 
-  const exportAsImage = async (format: 'jpeg' | 'png') => {
+  const exportAsImage = async (format: "jpeg" | "png") => {
     const table = document.querySelector("table");
     if (!table) return;
     const html2canvas = (await import("html2canvas")).default;
-    html2canvas(table).then(canvas => {
+    html2canvas(table).then((canvas) => {
       const link = document.createElement("a");
       link.download = `payments.${format}`;
       link.href = canvas.toDataURL(`image/${format}`);
       link.click();
     });
   };
-
-  const rows = filteredPayments.map(p => [
-    p.name,
-    p.id,
-    p.loanNo,
-    p.method,
-    p.dateRelease,
-    p.date,
-    p.collectedBy,
-    p.dueDate,
-    p.loanAmount,
-  ]);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
@@ -208,7 +278,7 @@ const PaymentScreen = () => {
             isDropdown
             dropdownItems={[
               { label: "Choose column to sort by:", onClick: () => {} },
-              ...Object.keys(sortKeyMap).map(label => ({
+              ...Object.keys(sortKeyMap).map((label) => ({
                 label: label === selectedColumnLabel ? `✓ ${label}` : label,
                 onClick: () => handleSort(label, sortOrder),
               })),
@@ -224,14 +294,6 @@ const PaymentScreen = () => {
             ]}
           />
 
-          <ButtonCustom
-            text="Add Payment"
-            icon="bi bi-cash-stack"
-            backgroundColor="#fff"
-            textColor="#000"
-            borderColor="#d9d9d9"
-            onClick={() => navigate("/addPayment")}
-          />
 
           <ButtonCustom
             text="Download"
@@ -244,8 +306,8 @@ const PaymentScreen = () => {
             dropdownItems={[
               { label: "Export to Excel", onClick: exportToExcel },
               { label: "Export to Word", onClick: exportToWord },
-              { label: "Download as JPEG", onClick: () => exportAsImage('jpeg') },
-              { label: "Download as PNG", onClick: () => exportAsImage('png') },
+              { label: "Download as JPEG", onClick: () => exportAsImage("jpeg") },
+              { label: "Download as PNG", onClick: () => exportAsImage("png") },
             ]}
           />
         </div>
@@ -254,14 +316,13 @@ const PaymentScreen = () => {
           <CustomTable
             columnHeadings={[
               "Name",
-              "ID",
               "Loan No.",
-              "Method",
-              "Date Release",
-              "Date",
-              "Collected by",
-              "Due Date",
               "Loan Amount",
+              "Mode of Payment",
+              "Payment Date",
+              "Due Date",
+              "Remaining Balance",
+              "Actions",
             ]}
             rows={rows}
           />
