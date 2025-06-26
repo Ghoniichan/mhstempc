@@ -4,6 +4,8 @@ import navlogo from '../../../src/assets/Images/mhstempc_logo.png';
 import SettingSection from './SettingSection';
 import NotificationSection from './NotificationSection';
 import './Sidebar.css';
+import log from '../../api/log';
+import { getUserIdFromJwt } from '../../utils/tokenDecoder';
 
 const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
@@ -12,6 +14,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const logout = () => {
+    log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'logged out', 'User logged out');
     localStorage.clear();
 };
 
@@ -113,9 +116,9 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={logout}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-        <span className="description" onClick={logout}>Log Out</span>
+        <span className="description">Log Out</span>
       </NavLink>
     </>
   );
@@ -142,9 +145,9 @@ const Sidebar = () => {
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={logout}>
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
-        <span className="description" onClick={logout}>Log Out</span>
+        <span className="description">Log Out</span>
       </NavLink>
     </>
   );
