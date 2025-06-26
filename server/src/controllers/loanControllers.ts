@@ -79,9 +79,6 @@ export const getloans: RequestHandler = async (req: Request, res: Response): Pro
     }
 };
 
-
-
-
 export const updateLoanStatus: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     const ALLOWED_STATUSES = ['pending', 'approved', 'disapproved', 'processing'];
     const client = await pool.connect();
@@ -240,3 +237,28 @@ export const getActiveLoans: RequestHandler = async (req: Request, res: Response
         client.release();
     }
 };
+
+export const getLoanByPN: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    const { policy_no } = req.params;
+    const client = await pool.connect();
+    try {
+        const result = await client.query(
+            `SELECT la.application_date AS date, c.id AS OR, c.interest, c.service_fee, 0 AS fines, la.due_date, c.net_loan_fee_proceeds AS received_amount
+            FROM loan_applications la
+            JOIN membership_applications m ON m.id = la.membership_application_id
+            JOIN computations c ON c.loan_application_id = la.id
+            WHERE m.policy_number = $1 AND la.status = 'approved';`,
+            [policy_no]
+        );
+        if (result.rows.length === 0) {
+            res.status(404).json("Loan not found");
+            return;
+        }
+        res.status(200).json(result.rows[0]);
+    } catch (error: any) {
+        console.error('Error in getLoanByPN:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    } finally {
+        client.release();
+    }
+}

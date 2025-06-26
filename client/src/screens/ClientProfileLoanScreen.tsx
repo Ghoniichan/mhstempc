@@ -4,72 +4,92 @@ import { useState, useEffect } from "react";
 
 const fetchClientInfo = async (policyNo: string) => {
   try {
-    const response = await axios.get(`/api/user/${policyNo}`);
-    return response.data;
+    const { data } = await axios.get(`/api/user/${policyNo}`);
+    return data;
   } catch (error) {
     console.error("Error fetching client information:", error);
     return null;
   }
 };
 
-const formatDateOnly = (isoString?: string): string => {
-  return isoString ? isoString.split('T')[0] : '';
+const fetchLoansByPN = async (policyNo: string) => {
+  try {
+    const { data } = await axios.get(`/api/loans/by-policy/${policyNo}`);
+    // If your endpoint returns a single object, wrap it in an array:
+    return Array.isArray(data) ? data : [data];
+  } catch (error) {
+    console.error("Error fetching loans:", error);
+    return [];
+  }
 };
 
+const formatDateOnly = (isoString?: string): string =>
+  isoString ? isoString.split('T')[0] : "";
+
 const ClientProfileLoanScreen = () => {
-  const [data, setData] = useState<{
+  interface Client {
     first_name?: string;
     middle_name?: string;
     last_name?: string;
     present_address?: string;
     tel_cel_no?: string;
-    policy_number?: string;
     membership_date?: string;
-  } | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+    // Add other fields as needed based on your API response
+  }
+  
+  const [client, setClient] = useState<Client | null>(null);
+
+  interface Loan {
+    date?: string;
+    or?: string | number;
+    interest?: number;
+    service_fee?: number;
+    fines?: number;
+    due_date?: string;
+    received_amount?: number;
+    // Add other fields as needed based on your API response
+  }
+
+  const [loans, setLoans] = useState<Loan[]>([]);
+  const [loadingClient, setLoadingClient] = useState(false);
+  const [loadingLoans, setLoadingLoans] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const p = localStorage.getItem('selectedPolicyNumber');
+  const policy = localStorage.getItem('selectedPolicyNumber') || "";
 
   useEffect(() => {
-    if (!p) {
-      // No policy number: you may redirect or show error
+    if (!policy) {
       setError("No policy number provided.");
       return;
     }
-    let isMounted = true;
-    const load = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const clientData = await fetchClientInfo(p);
-        if (isMounted) {
-          if (clientData) {
-            setData(clientData);
-          } else {
-            setError("No client data found for the given policy number");
-            setData(null);
-          }
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.error(err);
-          setError("Error fetching client data");
-          setData(null);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-    load();
 
-    // cleanup in case component unmounts before fetch completes
-    return () => {
-      isMounted = false;
+    let mounted = true;
+
+    const loadAll = async () => {
+      setLoadingClient(true);
+      setError(null);
+
+      const clientData = await fetchClientInfo(policy);
+      if (!mounted) return;
+
+      if (clientData) {
+        setClient(clientData);
+      } else {
+        setError("No client data found for the given policy number");
+      }
+      setLoadingClient(false);
+
+      // now fetch loans
+      setLoadingLoans(true);
+      const loanData = await fetchLoansByPN(policy);
+      if (!mounted) return;
+      setLoans(loanData);
+      setLoadingLoans(false);
     };
-  }, [p]);
+
+    loadAll();
+    return () => { mounted = false; };
+  }, [policy]);
 
   const columnHeadings = [
     'Date',
@@ -81,13 +101,17 @@ const ClientProfileLoanScreen = () => {
     'Received Amount'
   ];
 
-  // You probably will fetch rows dynamically too; here is just static example
-  const rows = [
-    ['2023-01-01', 'OR001', '₱500', '₱50', '₱0', '2023-02-01', '₱550'],
-    // ...
-  ];
+  // transform your loan objects into rows of strings/cells
+  const rows = loans.map(loan => [
+    formatDateOnly(loan.date),
+    String(loan.or),
+    `₱${loan.interest}`,
+    `₱${loan.service_fee}`,
+    `₱${loan.fines}`,
+    formatDateOnly(loan.due_date),
+    `₱${loan.received_amount}`
+  ]);
 
-  // Render logic
   return (
     <div className="d-flex">
       <div style={{ width: '200px', flexShrink: 0 }}>
@@ -99,28 +123,23 @@ const ClientProfileLoanScreen = () => {
       >
         <h3>Client Profile</h3>
 
-        {loading && <p>Loading client data...</p>}
-
+        {(loadingClient || loadingLoans) && <p>Loading...</p>}
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        {!loading && !error && data && (
+        {!loadingClient && !loadingLoans && !error && client && (
           <InformationCard
-            name={`${data.first_name || ""} ${data.middle_name || ""} ${data.last_name || ""}`.trim() || "—"}
+            name={`${client.first_name ?? ""} ${client.middle_name ?? ""} ${client.last_name ?? ""}`.trim() || "—"}
             title="Client Loan Profile"
             department="Finance"
-            policyNumber={p || "—"}
-            address={data.present_address || "—"}
-            contactNumber={data.tel_cel_no || "—"}
-            loanStatus="Active"           // or derive from data if available
-            membershipType="Standard"     // or derive if available
-            membershipDate={formatDateOnly(data.membership_date) || "—"}
+            policyNumber={policy}
+            address={client.present_address || "—"}
+            contactNumber={client.tel_cel_no || "—"}
+            loanStatus="Active"
+            membershipType="Standard"
+            membershipDate={formatDateOnly(client.membership_date) || "—"}
             columnHeadings={columnHeadings}
             rows={rows}
           />
-        )}
-
-        {!loading && !error && data === null && (
-          <p>No client data to display.</p>
         )}
       </div>
     </div>
