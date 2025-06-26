@@ -1,5 +1,6 @@
 .information-card-fullwidth {
     width: 100%;
+    max-width: 80rem;
     padding: 0;
     box-sizing: border-box;
     display: flex;
@@ -19,7 +20,7 @@
 .ic-top-bar {
     width: 100%;
     background-color: #002D62;
-    height: 30px;
+    height: 50px;
     color: white;
     font-size: 14px;
     padding-left: 15px;
@@ -81,5 +82,6 @@ img.img-fluid {
   color: #ffffcc; /* optional lighter text on hover */
   outline: none;
   cursor: pointer;
+  
 }
 

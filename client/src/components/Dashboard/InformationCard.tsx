@@ -40,7 +40,7 @@ const InformationCard: React.FC<InformationCardProps> = ({
     backgroundColor: 'white',
     color: '#002D62',
     border: '2px solid #002D62',
-    padding: '10px 0',
+    padding: '10px',
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.3s ease',
@@ -67,11 +67,11 @@ const InformationCard: React.FC<InformationCardProps> = ({
     <div className="information-card-fullwidth">
       <Row className="main-card-row">
         <Col xs={12} s={12} md={12} lg={12} className="mx-auto">
-          <div className="card shadow-md p-0 mb-4 mt-3 bg-white rounded w-100 overflow-auto">
+          <div className="card shadow mt-2 bg-white rounded w-100 overflow-auto">
             <div className="ic-top-bar">
-              <span className="top-bar-text">{title}</span>
+              <span className="top-bar-text gothic-a1-bold" style={{fontSize: '17px'}}>{title}</span>
             </div>
-            <div className="card-body p-4 rounded">
+            <div className="card-body p-3 rounded">
               <Row className="mb-3 align-items-center">
                 <Col xs={3} md={2} className="align-self-start">
                   <img
@@ -84,35 +84,36 @@ const InformationCard: React.FC<InformationCardProps> = ({
                 <Col xs={9} md={10}>
                   <Row>
                     <Col xs={12} md={6}>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px', paddingTop: '20px'}}>
                         Name: <span className="fw-normal">{name}</span>
                       </h5>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px'}}>
                         Department: <span className="fw-normal">{department}</span>
                       </h5>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px'}}>
                         MHSTEMPC Policy Number: <span className="fw-normal">{policyNumber}</span>
                       </h5>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px'}}>
                         Address: <span className="fw-normal">{address}</span>
                       </h5>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px'}}>
                         Contact Number: <span className="fw-normal">{contactNumber}</span>
                       </h5>
                     </Col>
 
-                    <Col xs={12} md={6}>
-                      <h5 className="form-label fw-semibold mb-3">
+                    <Col xs={12} md={6} style={{ paddingRight: '20px' }}>
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px', paddingTop: '20px'}}>
                         Loan Status: <span className="fw-normal">{loanStatus}</span>
                       </h5>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px'}}>
                         Type of Membership: <span className="fw-normal">{membershipType}</span>
                       </h5>
-                      <h5 className="form-label fw-semibold mb-3">
+                      <h5 className="form-label gothic-a1-bold mb-3" style={{textAlign: 'left', fontSize: '19px'}}>
                         Date of Membership: <span className="fw-normal">{membershipDate}</span>
                       </h5>
                       <button
-                        className="btn btn-danger w-100 mt-2"
+                        className="btn btn-danger shadow w-100 mt-2 gothic-a1-bold" 
+                        style={{ padding: '10px', borderRadius: '20px'}}
                         onClick={() => navigate('/clientSendSms')}
                       >
                         Send SMS

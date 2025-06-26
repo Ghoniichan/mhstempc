@@ -12,21 +12,21 @@ const MembershipFormSecond: React.FC<MembershipFormSecondProps> = ({ onCancel })
   return (
     <Container fluid className="py-5">
       <Row className="justify-content-center">
-        <Col xs={12} s={12} md={12} lg={10} xl={8}>
+        <Col xs={12} md={9}>
           <div className="mfs-top-bar">
-            <span className="top-bar-text">MEMBERSHIP APPLICATION FORM</span>
+            <span className="top-bar-text gothic-a1-bold">MEMBERSHIP APPLICATION FORM</span>
           </div>
         </Col>
       </Row>
 
       <Row className="justify-content-center">
-        <Col xs={12} s={12} md={12} lg={10} xl={8}>
+        <Col xs={12} md={9}>
           <div className="card shadow-lg p-4 mb-5 bg-white rounded mfs-card">
             <div className="card-body">
               <form>
                 <Row className="mb-3">
                   <Col>
-                    <h5>OBLIGATIONS AND DUTIES OF THE MEMBERS:</h5>
+                    <h5 className='textone gothic-a1-bold' style={{textAlign: 'left'}}>OBLIGATIONS AND DUTIES OF THE MEMBERS:</h5>
                     <p>Please read carefully the following obligations:</p>
                   </Col>
                 </Row>

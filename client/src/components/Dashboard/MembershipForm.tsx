@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -253,19 +253,26 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
         return !!errors[fieldPath];
     };
 
+    useEffect(() => {
+        document.title = 'MHSTEMPC | Membership Application Form';
+      }, []);
+
     return (
         <div className="main-layout">
             <Container fluid className="py-5" style={{ minHeight: '100vh', paddingTop: '40px', paddingBottom: '40px' }}>
-                <Row className="justify-content-center">
-                        <div className="mf-top-bar ">
-                            <span className="top-bar-text gothic-a1-bold">MEMBERSHIP APPLICATION FORM</span>
-                        </div>
-                </Row>
+            <Row className="justify-content-center">
+                <Col xs={12} md={9}>
+                <div className="mf-top-bar d-flex">
+                    <span className="top-bar-text gothic-a1-bold">MEMBERSHIP APPLICATION FORM</span>
+                </div>
+                </Col>
+            </Row>
 
-                <Row className="justify-content-center" >
-                        <div className="card shadow-lg p-4 mb-5 bg-white rounded mf-card" >
-                            <div className="card-body">     
-                                <form onSubmit={handleSubmit}>
+            <Row className="justify-content-center">
+                <Col xs={12} md={9}>
+                <div className="card shadow-lg p-4 mb-5 bg-white rounded mf-card mx-auto" >
+                    <div className="card-body">
+                    <form onSubmit={handleSubmit}>
                                     {/* Date and Policy Number */}
                                     <div className="d-flex flex-column align-items-end mb-5" style={{ maxWidth: 220, marginLeft: 'auto' }}>
                                         <div className="mb-3 w-100">
@@ -539,17 +546,23 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     <Row className="mb-3">
                                         <Col xs={12} md={4}>
                                             <div className="d-flex flex-column align-items-start">
-                                                <label htmlFor="civilStatus" className="form-label gothic-a1-bold" style={{ alignSelf: 'flex-start' }}>
+                                                <label htmlFor="civilStatus" className="form-label gothic-a1-bold" style={{ alignSelf: 'flex-start',  }}>
                                                     Civil Status <span className="text-danger">*</span>
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    className={`form-control ${hasFieldError('userInfo.civilStatus') ? 'is-invalid' : ''}`}
+                                                <select
+                                                    className={`form-select ${hasFieldError('userInfo.civilStatus') ? 'is-invalid' : ''}`}
                                                     id="civilStatus"
                                                     value={formData.userInfo.civilStatus}
                                                     onChange={e => handleInputChange('userInfo', 'civilStatus', e.target.value)}
+                                                    style={{ border: '1px solid #002d62' }}
                                                     required
-                                                />
+                                                >
+                                                    <option value="" style={{ color: 'gray' }}>Select Civil Status</option>
+                                                    <option value="single">Single</option>
+                                                    <option value="married">Married</option>
+                                                    <option value="widow">Widowed</option>
+                                                    <option value="other">Other</option>
+                                                </select>
                                                 {hasFieldError('userInfo.civilStatus') && (
                                                     <div className="invalid-feedback">{getFieldError('userInfo.civilStatus')}</div>
                                                 )}
@@ -599,7 +612,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                     </Row>
 
                                     {/* Row 7 */}
-                                    <Row className="mb-3">
+                                    <Row className="mb-3 align-items-end">
                                         <Col xs={12} md={4}>
                                             <div className="d-flex flex-column align-items-start">
                                                 <label htmlFor="religion" className="form-label gothic-a1-bold" style={{ alignSelf: 'flex-start' }}>
@@ -618,8 +631,8 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                                 )}
                                             </div>
                                         </Col>
-                                        <Col xs={12} md={4} xl={4}>
-                                            <div className="d-flex flex-column align-items-start">
+                                        <Col xs={12} md={4} xl={4} className="d-flex flex-column align-items-center">
+                                            <div className="d-flex flex-column align-items-start w-100">
                                                 <label htmlFor="fbAccEmailAddress" className="form-label gothic-a1-bold" style={{ alignSelf: 'flex-start' }}>
                                                     Facebook Account/E-mail Address
                                                 </label>
@@ -940,7 +953,9 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                 </form>
                             </div>
                         </div>
-                </Row>
+                       </Col> 
+                    </Row>
+                
             </Container>
         </div>
     );

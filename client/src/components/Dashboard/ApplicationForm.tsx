@@ -172,7 +172,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <Container fluid className="af-container main-content d-flex flex-column align-items-center" style={{ minHeight: '100vh', paddingTop: '40px', paddingBottom: '40px' }}>
+    <Container fluid className="af-container main-content d-flex flex-column align-items-center" style={{ minHeight: '100vh', paddingBottom: '30px' }}>
       <div className="af-top-bar w-100 d-flex justify-content-center mb-0">
         <div className="af-top-bar-text gothic-a1-bold d-flex justify-content-start w-100" style={{ textAlign: 'left' }}>
           MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
