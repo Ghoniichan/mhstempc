@@ -18,3 +18,13 @@ export const audit = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const getAuditLogs = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const result = await pool.query("SELECT * FROM audit_log ORDER BY created_at DESC");
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error("Error fetching audit logs:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
