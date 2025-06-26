@@ -6,7 +6,7 @@ const AboutUsScreen = () => {
   return (
     <div className="about-us-screen-wrapper">
       <NavBar />
-      <div className="about-us-container min-vh-100">
+      <div className="about-us-container min-vh-100" style={{ overflowY: "auto", maxHeight: "calc(100vh - 120px)" }}>
         <div className="about-us-content py-3">
           <div className="title-section col-12" style={{ textAlign: 'center', marginBottom: '40px' }}>
             <h1 className="about-us-title gothic-a1-bold">About Us</h1>
@@ -42,7 +42,7 @@ const AboutUsScreen = () => {
           <div className="location-wrapper mt-4 d-flex justify-content-center">
             <div className="location-card shadow rounded p-3" style={{ maxWidth: "730px", width: "100%", backgroundColor: "#fff" }}>
                 <div className="d-flex align-items-center mb-3">
-                <div className="location-icon me-2" style={{ fontSize: "24px", color: "#e74c3c" }}>
+                <div className="location-icon me-2" style={{ fontSize: "24px", color: "#ffffff" }}>
                     <i className="fas fa-map-marker-alt"></i>
                 </div>
                 <div className="location-text gothic-a1-bold" style={{ fontSize: "18px" }}>
@@ -50,19 +50,25 @@ const AboutUsScreen = () => {
                 </div>
                 </div>
 
-                <div className="map-container rounded overflow-hidden" style={{ width: "100%", height: "300px" }}>
-                <iframe
+                <div
+                  className="map-container rounded overflow-hidden"
+                  style={{
+                    width: "100%",
+                    height: "300px",
+                    overflow: "auto"
+                  }}
+                >
+                  <iframe
                     title="Google Map"
                     width="100%"
-                    height="100%"
-                    frameBorder="0"
-                    style={{ border: 0 }}
+                    height="400"
+                    style={{ border: 0, minWidth: "600px", minHeight: "400px" }}
                     allowFullScreen
                     src="https://www.google.com/maps?q=F.+Torres+St.+Concepcion+Uno,+Marikina+City&output=embed"
-                ></iframe>
+                  ></iframe>
                 </div>
             </div>
-            </div>
+          </div>
 
         </div>
       </div>

@@ -2,26 +2,27 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/Dashboard/CustomButton";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
-import InputField from "../components/Dashboard/InputField";
 import '../screens/ForgotPass.css';
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
 
-  const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  // ✅ Philippine number validation
+  const isValidPhilippinePhoneNumber = (phone: string): boolean => {
+    const regex = /^(09\d{9}|\+639\d{9})$/;
+    return regex.test(phone);
   };
 
-  const handleEmailVerif = () => {
-    if (!email) {
-      setError("Email is required");
+  // ✅ Handle form submission
+  const handlePhoneVerif = () => {
+    if (!phoneNumber) {
+      setError("Phone number is required");
       return;
     }
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address");
+    if (!isValidPhilippinePhoneNumber(phoneNumber)) {
+      setError("Please enter a valid Philippine phone number");
       return;
     }
 
@@ -29,9 +30,31 @@ const ForgotPasswordScreen = () => {
     navigate("/emailVerif");
   };
 
+  // ✅ Restrict input to only digits (and optional '+' at the start)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input = e.target.value;
+
+    if (input.startsWith("+")) {
+      input = "+" + input.slice(1).replace(/\D/g, "");
+    } else {
+      input = input.replace(/\D/g, "");
+    }
+
+    setPhoneNumber(input);
+    setError("");
+  };
+
+  // ✅ Submit form when Enter key is pressed
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handlePhoneVerif();
+    }
+  };
+
   useEffect(() => {
-        document.title = "MHSTEMPC | Forgot Password";
-      }, []);
+    document.title = "MHSTEMPC | Forgot Password";
+  }, []);
 
   return (
     <div
@@ -49,7 +72,7 @@ const ForgotPasswordScreen = () => {
     >
       <ColumnLayoutCard
         title="Forgot Password"
-        description="Enter your email address associated with your account."
+        description="Enter your mobile number associated with your account."
         titleStyle={{ fontSize: '20px', paddingLeft: '15px', paddingTop: '20px' }}
         descriptionStyle={{
           fontSize: '15px',
@@ -58,20 +81,41 @@ const ForgotPasswordScreen = () => {
           paddingLeft: '15px',
         }}
       >
-        <form>
-          <InputField
-            value={email}
-            onChange={(val: string) => {
-              setEmail(val);
-              setError(""); 
-            }}
-            error={error} 
-          />
+        <form onKeyDown={handleKeyPress}>
+          <div style={{ padding: "0 5px 10px 5px" }}>
+            <label
+              className="phonelabel gothic-a1-bold"
+              style={{ display: 'block', marginBottom: '5px', textAlign: 'left' }}
+            >
+              Phone
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={phoneNumber}
+              onChange={handleInputChange}
+              placeholder="+639123456789"
+              style={{
+                width: "100%",
+                padding: "10px",
+                fontSize: "14px",
+                border: "1px solid #002d62",
+                borderRadius: "5px",
+                height: "55px"
+              }}
+            />
+            {error && (
+              <div style={{ color: "red", marginTop: "5px", fontSize: "13px" }}>
+                {error}
+              </div>
+            )}
+          </div>
+
           <div className="left-align-button">
             <CustomButton
-              label="Send email"
+              label="Send code"
               type="button"
-              onClick={handleEmailVerif}
+              onClick={handlePhoneVerif}
             />
           </div>
         </form>

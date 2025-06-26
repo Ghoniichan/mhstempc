@@ -20,7 +20,7 @@ const FormsScreen = () => {
                         <div className="columnOne col-12">
                             <div className="row gx-0 gy-4 justify-content-center">
                                 {/* Membership Form Card */}
-                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center h-100">
                                     <div className="card h-100 shadow" style={{ maxWidth: '280px', width: '100%' }}>
                                         <div className="card-body text-center p-4">
                                             <div className="mb-3">
@@ -38,7 +38,7 @@ const FormsScreen = () => {
                                 </div>
 
                                 {/* Loan Application Form Card */}
-                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
+                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center h-100">
                                     <div className="card h-100 shadow" style={{ maxWidth: '280px', width: '100%' }}>
                                         <div className="card-body text-center p-4">
                                             <div className="mb-3">

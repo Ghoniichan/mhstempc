@@ -172,14 +172,14 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
   }, [user]);
 
   return (
-    <Container fluid className="af-container main-content">
-      <div className="af-top-bar" >
-        <span className="af-top-bar-text gothic-a1-bold">
+    <Container fluid className="af-container main-content d-flex flex-column align-items-center" style={{ minHeight: '100vh', paddingTop: '40px', paddingBottom: '40px' }}>
+      <div className="af-top-bar w-100 d-flex justify-content-center mb-0">
+        <div className="af-top-bar-text gothic-a1-bold d-flex justify-content-start w-100" style={{ textAlign: 'left' }}>
           MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
-        </span>
+        </div>
       </div>
 
-      <div className="af-form-card formcard shadow-lg p-4 mb-5 bg-white rounded" style={{ width: '1200px', maxWidth: '970px' }}>
+      <div className="af-form-card formcard shadow-lg p-4 mb-5 bg-white rounded mx-auto" style={{ width: '100%', maxWidth: '970px', marginLeft: 0, marginRight: 0 }}>
         <div className="af-card-body card-body scrollable-form">
           <form onSubmit={handleSubmit} className="af-form">
 
@@ -358,7 +358,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
             </Row>
 
             {/* Co-Makers Section */}
-            <h5 className="af-heading co-maker-heading mb-3 gothic-a1-bold">Co-Makers (optional)</h5>
+            <h5 className="af-heading co-maker-heading mb-3 gothic-a1-bold" style={{textAlign: 'left'}}>Co-Makers (optional)</h5>
             {formData.coMakers.map((cm, idx) => (
               <Row key={idx} className="af-row mb-3 co-maker-row">
                 <Col xs={12} md={6} className="af-col">

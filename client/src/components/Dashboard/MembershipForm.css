@@ -1,5 +1,7 @@
 .mf-top-bar {
     background-color: #002D62;
+    width: 100%;
+    max-width: 970px !important;
     height: 50px;
     width: 100%;
     margin-left: 0;
@@ -20,6 +22,12 @@
     margin-left: 0;
     max-width: none;
     flex-grow: 1;
+    
+}
+
+.form-control {
+    border: 1px solid #002D62 !important;
+  border-radius: 4px;
 }
 
 @media (min-width: 768px) {

@@ -280,16 +280,16 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                 <div className="mt-4 d-flex flex-wrap justify-content-end gap-2" style={{ paddingBottom: '20px' }}>
                   <button
                     type="button"
-                    className="btn btn-secondary px-4"
+                    className="btn btn-secondary gothic-a1-bold px-4"
                     onClick={onCancel}
-                    style={{ color: '#002d62', backgroundColor: 'white' }}
+                    style={{ color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62', borderRadius: '20px', height: '45px', width: '110px' }}
                   >
-                    Cancel
+                    Back
                   </button>
                   <button
                     type="submit"
-                    className="btn btn-primary px-4"
-                    style={{ backgroundColor: '#002d62', color: 'white' }}
+                    className="btn btn-primary gothic-a1-bold px-4"
+                    style={{ backgroundColor: '#002d62', color: '#ffffff', borderRadius: '20px', height: '45px', width: '110px' }}
                   >
                     Submit
                   </button>
