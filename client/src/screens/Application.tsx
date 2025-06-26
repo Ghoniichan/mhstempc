@@ -9,6 +9,8 @@ import Backbutton from "../components/Dashboard/Backbutton";
 import EditStatus from "../components/Dashboard/EditStatus";
 import axios from '../api/axiosInstance';
 import { JSX } from "react";
+import log from '../api/log';
+import { getUserIdFromJwt } from '../utils/tokenDecoder';
 
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
   if (arr.length <= 1) return arr;
@@ -134,6 +136,7 @@ const Application = () => {
 
     try {
       await axios.patch(`/api/loans/${loanNo}/status`, { status: newStatus.toLowerCase() });
+      log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'updated loan status', `Loan ${loanNo} status changed to ${capitalizedStatus}`);
     } catch {
       updatedList[editingIndex] = { ...app, status: prevStatus };
       setFilteredApps(updatedList);

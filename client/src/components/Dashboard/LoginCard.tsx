@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../../api/axiosInstance';
 import { AxiosError } from 'axios';
 import './LoginCard.css';
+import log from '../../api/log';
+import { getUserIdFromJwt } from '../../utils/tokenDecoder';
 
 const LOCKOUT_KEY = 'lockoutExpiresAt';
 
@@ -103,6 +105,8 @@ const LoginCard: React.FC = () => {
       localStorage.removeItem(LOCKOUT_KEY);
       setLockoutSeconds(null);
 
+      log(getUserIdFromJwt(jwtToken) || '', 'logged in', 'User logged in');
+
       navigate('/dashboard');
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
@@ -115,6 +119,7 @@ const LoginCard: React.FC = () => {
           localStorage.setItem(LOCKOUT_KEY, expiresAt.toString());
           setLockoutSeconds(ra);
           setErrors({ general: `Too many attempts. Try again in ${formatTime(ra)}.` });
+          log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'login failed', 'Too many attempts, lockout started');
         } else if (status === 401) {
           setErrors({ general: 'Invalid email or password' });
         } else if (status === 403) {
