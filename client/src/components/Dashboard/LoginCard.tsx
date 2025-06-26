@@ -114,7 +114,7 @@ const LoginCard: React.FC = () => {
 
         if (status === 429) {
           // read Retry-After header
-          const ra = parseInt(headers['retry-after'] as string, 10) || 5 * 60;
+          const ra = parseInt(headers['retry-after'] as string, 10) || 15;
           const expiresAt = Date.now() + ra * 1000;
           localStorage.setItem(LOCKOUT_KEY, expiresAt.toString());
           setLockoutSeconds(ra);
