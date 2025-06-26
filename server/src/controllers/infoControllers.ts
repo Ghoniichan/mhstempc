@@ -28,6 +28,21 @@ export const user: RequestHandler = async (req: Request, res: Response): Promise
   }
 }
 
+export const userInfo: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+  const { policy_no } = req.params;
+  try {
+    const result = await pool.query("SELECT first_name, middle_name, last_name, present_address, tel_cel_no, membership_date, policy_number FROM membership_applications WHERE policy_number = $1;", [policy_no]);
+    if (result.rows.length === 0) {
+      res.status(404).json("User not found");
+      return;
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+}
+
 export const profile: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
