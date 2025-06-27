@@ -46,3 +46,31 @@ export const addCapital = (req: Request, res: Response): void => {
         return;
     }
 }
+
+export const userGetCapital = async (req: Request, res: Response): Promise<void> => {
+    const { account_id } = req.params;
+
+    try {
+        const response = await pool.query(`SELECT
+                cs.entry_date AS "Date",
+                cs.or_code_generated AS "OR",
+                cs.ref_code AS "REF",
+                cs.amount AS "Received",
+                cs.balance AS "Balance"
+            FROM
+                public.account_credentials ac
+            JOIN
+                public.membership_applications ma ON ac.account_id = ma.account_id
+            JOIN
+                public.capital_share cs ON ma.id = cs.membership_id
+            WHERE
+                ac.account_id = $1
+            ORDER BY
+                cs.entry_date ASC, cs.id ASC;`, [account_id]);
+        res.status(200).json(response.rows);
+    } catch (error) {
+        console.error("Error fetching user capital:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+        return;
+    }
+}

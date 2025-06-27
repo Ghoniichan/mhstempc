@@ -123,9 +123,11 @@ const UserSavings = () => {
   };
 
   const rows = filteredSavings.map(entry => [
-    entry.date,
-    entry.ref,
-    entry.received,
+    entry.entry_date instanceof Date
+      ? entry.entry_date.toISOString().slice(0,10)
+      : String(entry.entry_date || '').slice(0,10),
+    entry.ref_code,
+    entry.received_amount,
     entry.withdrawal,
     entry.balance
   ]);
