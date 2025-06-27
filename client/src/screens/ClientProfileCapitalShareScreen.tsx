@@ -15,14 +15,8 @@ type CapitalShareEntry = {
 const ClientProfileCapitalShareScreen = () => {
   const columnHeadings = ['Date', 'OR', 'REF', 'Received Amount', 'Balance'];
 
-  const [rows, setRows] = useState<CapitalShareEntry[]>([
-    
-  ]);
-
-  const [newRow, setNewRow] = useState({
-    date: '',
-    amount: '',
-  });
+  const [rows, setRows] = useState<CapitalShareEntry[]>([]);
+  const [newRow, setNewRow] = useState({ date: '', amount: '' });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,13 +26,11 @@ const ClientProfileCapitalShareScreen = () => {
   const handleAddRow = async () => {
     const { date, amount } = newRow;
     if (date && amount) {
-      // parse numeric value, strip non-digits
       const numericReceived = parseFloat(amount.replace(/[^0-9.-]+/g, '')) || 0;
-
       const entry: CapitalShareEntry = {
         date,
-        or: '', // or code can be set here or via another input
-        ref: '', // ref code can be set here or via another input
+        or: '',
+        ref: '',
         amount: numericReceived,
         balance: (rows.length > 0 ? rows[rows.length - 1].balance : 0) + numericReceived,
       };
@@ -57,8 +49,6 @@ const ClientProfileCapitalShareScreen = () => {
         alert('New capital share entry added successfully');
       } catch (error) {
         console.error('Error adding new row:', error);
-        // Handle error, e.g., show a notification or alert
-        
       }
     } else {
       alert('Please fill out all fields');
@@ -72,11 +62,10 @@ const ClientProfileCapitalShareScreen = () => {
         console.error('No policy number found in localStorage');
         return;
       }
-      
+
       try {
         const response = await axios.get(`/api/capital/${policyNumber}`);
         const transformed: CapitalShareEntry[] = response.data.map((entry: Record<string, unknown>) => ({
-          // format the ISO date-string to yyyy-mm-dd (or whatever you want)
           date: typeof entry.entry_date === 'string' ? entry.entry_date.slice(0, 10) : '',
           or: typeof entry.or_code_generated === 'string' ? entry.or_code_generated : '',
           ref: typeof entry.ref_code === 'string' ? entry.ref_code : '',
@@ -86,7 +75,6 @@ const ClientProfileCapitalShareScreen = () => {
         setRows(transformed);
       } catch (error) {
         console.error('Error initializing client profile:', error);
-        // Handle error, e.g., show a notification or alert
       }
     };
 
@@ -94,17 +82,23 @@ const ClientProfileCapitalShareScreen = () => {
   }, []);
 
   return (
-    <div className="d-flex" style={{ height: '100vh' }}>
+    <div className="d-flex flex-column" style={{ minHeight: '100vh', overflowY: 'auto' }}>
       <div style={{ width: '200px', flexShrink: 0 }}>
         {/* <Sidebar /> */}
       </div>
-      <div
-        className="flex-grow-1 d-flex flex-column"
-        style={{ padding: '40px 20px', overflow: 'hidden' }}
-      >
+      <div className="flex-grow-1 d-flex flex-column" style={{ padding: '40px 20px', paddingLeft: '220px' }}>
         <h3>Client Profile</h3>
 
-        <div style={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', paddingRight: '10px' }}>
+        <div
+          style={{
+            flexGrow: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+          className="no-scrollbar"
+        >
           <InformationCard
             name="John Doe"
             title="Client Loan Profile"
@@ -120,9 +114,8 @@ const ClientProfileCapitalShareScreen = () => {
           />
         </div>
 
-        {/* Add Row Form */}
-        <div className="mt-4 w-100 bg-white pt-3" style={{ flexShrink: 0 }}>
-          <h5>Add New Capital Share Entry</h5>
+        <div className="mt-4 w-100 bg-white pt-2" style={{ flexShrink: 0 }}>
+          <h5 className='captsharetxt gothic-a1-bold'>Add New Capital Share Entry</h5>
           <div className="row g-2 align-items-end">
             <div className="col-md-3 col-6">
               <input
@@ -131,6 +124,7 @@ const ClientProfileCapitalShareScreen = () => {
                 value={newRow.date}
                 onChange={handleInputChange}
                 className="form-control"
+                style={{ width: '100%', height: '55px' }}
               />
             </div>
             <div className="col-md-3 col-6">
@@ -140,11 +134,14 @@ const ClientProfileCapitalShareScreen = () => {
                 value={newRow.amount}
                 placeholder="₱ Amount"
                 onChange={handleInputChange}
-                className="form-control"
+                className="form-control"                
+                style={{ width: '100%', height: '55px' }}
               />
             </div>
-            <div className="col-md-2 col-12">
-              <CustomButton label="Add Capital Share" onClick={handleAddRow} />
+            <div className="col-md-3 col-12">
+              <CustomButton 
+                label="Add Capital Share" onClick={handleAddRow}
+              />
             </div>
           </div>
         </div>

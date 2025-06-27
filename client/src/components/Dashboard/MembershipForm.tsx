@@ -938,7 +938,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
                                             type="button"
                                             className="btn btn-secondary gothic-a1-bold"
                                             style={{ color: '#002d62', backgroundColor: '#ffffff', borderColor: '#002d62', borderRadius: '20px', height: '45px', width: '100px'}}
-                                            onClick={() => window.location.href = '/'}
+                                            onClick={() => window.location.href = '/client'}
                                         >
                                             Cancel
                                         </button>

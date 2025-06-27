@@ -13,9 +13,7 @@ const ClientProfileSavingsScreen = () => {
     'Balance'
   ];
 
-  const [rows, setRows] = useState<string[][]>([
- 
-  ]);
+  const [rows, setRows] = useState<string[][]>([]);
 
   const [newRow, setNewRow] = useState({
     date: '',
@@ -68,9 +66,8 @@ const ClientProfileSavingsScreen = () => {
         const response = await axios.get(`/api/savings/${policyNumber}`);
         const savingsData: SavingsEntry[] = response.data;
 
-        // Assuming savingsData is an array of objects with the same structure as rows
         const formattedRows = savingsData.map((entry: SavingsEntry) => [
-          entry.entry_date.slice(0, 10), // Format date to YYYY-MM-DD
+          entry.entry_date.slice(0, 10),
           entry.ref_code,
           `₱${entry.received_amount}`,
           `₱${entry.withdrawal}`,
@@ -85,14 +82,24 @@ const ClientProfileSavingsScreen = () => {
   }, []);
 
   return (
-    <div className="d-flex" style={{ height: '100vh' }}>
+    <div className="d-flex flex-column" style={{ minHeight: '100vh', overflowY: 'auto' }}>
       <div style={{ width: '200px', flexShrink: 0 }}>
         {/* <Sidebar /> */}
       </div>
-      <div className="flex-grow-1 d-flex flex-column" style={{ padding: '40px 20px', overflow: 'hidden' }}>
+      <div className="flex-grow-1 d-flex flex-column" style={{ padding: '40px 20px', paddingLeft: '220px' }}>
         <h3>Client Profile</h3>
 
-        <div style={{ flexGrow: 1, overflowY: 'auto', overflowX: 'hidden', paddingRight: '10px' }}>
+        <div
+          style={{
+            flexGrow: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            paddingRight: '10px',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
+          className="no-scrollbar"
+        >
           <InformationCard
             title="Client Loan Profile"
             name="John Doe"
@@ -109,8 +116,8 @@ const ClientProfileSavingsScreen = () => {
         </div>
 
         {/* Add Savings Entry Form */}
-        <div className="mt-4 bg-white pt-3" style={{ flexShrink: 0 }}>
-          <h5>Add New Savings Entry</h5>
+        <div className="mt-4 bg-white pt-2" style={{ flexShrink: 0 }}>
+          <h5 className='savingstxt gothic-a1-bold'>Add New Savings Entry</h5>
           <div className="row g-2 align-items-end">
             <div className="col-md-2 col-6">
               <input
@@ -119,29 +126,32 @@ const ClientProfileSavingsScreen = () => {
                 value={newRow.date}
                 onChange={handleInputChange}
                 className="form-control"
+                style={{ width: '100%', height: '55px' }}
               />
             </div>
             <div className="col-md-2 col-6">
               <input
                 type="text"
                 name="receivedAmount"
-                value={newRow.receivedAmount || ''}
+                value={newRow.receivedAmount}
                 placeholder="₱ Received"
                 onChange={handleInputChange}
                 className="form-control"
+                style={{ width: '100%', height: '55px' }}
               />
             </div>
             <div className="col-md-2 col-6">
               <input
                 type="text"
                 name="withdrawal"
-                value={newRow.withdrawal || ''}
+                value={newRow.withdrawal}
                 placeholder="₱ Withdrawal"
                 onChange={handleInputChange}
                 className="form-control"
+                style={{ width: '100%', height: '55px' }}
               />
             </div>
-            <div className="col-md-2 col-12">
+            <div className="col-md-3 col-12">
               <CustomButton label="Add Savings Entry" onClick={handleAddRow} />
             </div>
           </div>

@@ -64,8 +64,8 @@ const LoanDetailModal: React.FC<LoanDetailModalProps> = ({ show, onClose, loan }
             <img src={companyLogo} alt="Company Logo" style={{ width: "100px" }} />
           </div>
           <div className="text-center">
-            <h5 className="mb-0 fw-bold">{loan?.name}</h5>
-            <div className="text-muted mb-3">{loan?.id}</div>
+            <h5 className="mb-0 gothic-a1-bold">{loan?.name}</h5>
+            <div className="text-muted mb-3 gothic-a1-regular">{loan?.id}</div>
             <div className="mb-3">
               <div
                 className="mx-auto bg-success d-flex justify-content-center align-items-center"
@@ -75,32 +75,32 @@ const LoanDetailModal: React.FC<LoanDetailModalProps> = ({ show, onClose, loan }
               </div>
             </div>
             <hr />
-            <h6 className="text-muted mb-3">Computation</h6>
+            <h6 className="text-muted gothic-a1-bold mb-3">Computation</h6>
             <div className="d-flex justify-content-between mb-1">
-              <span>Loan Amount</span> <span>{loan?.loanAmount}</span>
+              <span className="gothic-a1-bold">Loan Amount</span> <span className="gothic-a1-regular">{loan?.loanAmount}</span>
             </div>
             <div className="d-flex justify-content-between mb-1">
-              <span>Interest</span> <span>{loan?.interest}</span>
+              <span className="gothic-a1-bold">Interest</span> <span className="gothic-a1-regular">{loan?.interest}</span>
             </div>
             <div className="d-flex justify-content-between mb-1">
-              <span>Service Fee</span> <span>{loan?.serviceFee}</span>
+              <span className="gothic-a1-bold">Service Fee</span> <span className="gothic-a1-regular">{loan?.serviceFee}</span>
             </div>
             <div className="d-flex justify-content-between mb-1">
-              <span>Paid–Up Capital</span> <span>{loan?.capitalShare}</span>
+              <span className="gothic-a1-bold">Paid–Up Capital</span> <span className="gothic-a1-regular"> {loan?.capitalShare}</span>
             </div>
             <div className="d-flex justify-content-between mb-3">
-              <span>Savings</span> <span>{loan?.savings}</span>
+              <span className="gothic-a1-bold">Savings</span> <span className="gothic-a1-regular">{loan?.savings}</span>
             </div>
             <hr />
             <div className="d-flex justify-content-between fw-bold mb-5">
-              <span>Net Loan Fee Proceeds</span> <span>{loan?.balance}</span>
+              <span className="gothic-a1-bold">Net Loan Fee Proceeds</span> <span className="gothic-a1-bold">{loan?.balance}</span>
             </div>
-            <div className="mb-4 text-muted">Signature</div>
+            <div className="mb-4 text-muted gothic-a1-bold">Signature</div>
           </div>
         </div>
         <Button
-          className="w-100 mt-3 text-white"
-          style={{ backgroundColor: "#002d62", border: "none" }}
+          className="w-100 mt-3 text-white gothic-a1-bold"
+          style={{ backgroundColor: "#002d62", border: "none", height: "50px" }}
           onClick={downloadModalAsPDF}
         >
           <i className="bi bi-download me-2"></i>Download
