@@ -5,6 +5,7 @@ import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
+import axios from '../api/axiosInstance';
 
 interface Payment {
   name: string;
@@ -46,7 +47,7 @@ const PaymentScreen = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [payments] = useState<Payment[]>([
+  const [payments, setPayments] = useState<Payment[]>([
     {
       name: "Micha Bandasan",
       id: "MHST12345",
@@ -253,6 +254,42 @@ const PaymentScreen = () => {
       link.click();
     });
   };
+
+
+  useEffect(() => {
+    document.title = "MHSTEMPC | Payment";
+
+    const fetchPayments = async () => {
+      try {
+        const res = await axios.get("/api/payments");
+        const data = res.data; // array of raw payment records
+
+        const mapped: Payment[] = data.map((item: any) => ({
+          name: item.name, // Replace with actual name if available from join
+          id: String(item.id),
+          loanNo: item.loan_application_id,
+          method: item.payment_status === "paid" ? "Cash" : "Pending",
+          dateRelease: "N/A", // Replace if you have release date
+          date: item.payment_date
+            ? new Date(item.payment_date).toISOString().split("T")[0]
+            : "",
+          collectedBy: "N/A", // Replace if you have collector data
+          dueDate: new Date(item.due_date).toISOString().split("T")[0],
+          loanAmount: `₱${parseFloat(item.amount_due).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+        }));
+
+        setPayments(mapped);
+        setFilteredPayments(mapped);
+      } catch (err) {
+        console.error("Failed to fetch payments:", err);
+      }
+    };
+
+    fetchPayments();
+  }, []);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>

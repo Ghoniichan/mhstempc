@@ -160,7 +160,7 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
     }
 
     await client.query('COMMIT');
-    res.status(201).json({ member_id: userInfo, account_id: accountId });
+    res.status(201).json({ member_id: userInfo, account_id: accountId, password: pass });
   } catch (err: any) {
     await client.query('ROLLBACK');
     console.error(err.message);

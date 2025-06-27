@@ -262,3 +262,29 @@ export const getLoanByPN: RequestHandler = async (req: Request, res: Response): 
         client.release();
     }
 }
+
+export const getForPayment: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    const { loan_id } = req.params;
+    const client = await pool.connect();
+
+    try {
+        const result = await client.query(
+            `SELECT l.due_date, l.payment_terms, c.net_loan_fee_proceeds
+            FROM loan_applications l
+            JOIN computations c
+            ON c.loan_application_id = l.id
+            WHERE l.id = $1;`,
+            [loan_id]
+        );
+        if (result.rows.length === 0) {
+            res.status(404).json({ error: 'No payments found for this loan.' });
+            return;
+        }
+        res.status(200).json(result.rows[0]);
+    } catch (error: any) {
+        console.error('Error in getForPayment:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    } finally {
+        client.release();
+    }
+}

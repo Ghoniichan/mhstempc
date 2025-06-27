@@ -1,4 +1,4 @@
-import {loans, getloans, updateLoanStatus, newComputations, getActiveLoans, getLoanByPN} from '../controllers/loanControllers';
+import {loans, getloans, updateLoanStatus, newComputations, getActiveLoans, getLoanByPN, getForPayment} from '../controllers/loanControllers';
 import { Router } from 'express';
 
 const router = Router();
@@ -8,5 +8,6 @@ router.get('/by-policy/:policy_no', getLoanByPN);
 router.patch('/:id/status', updateLoanStatus);
 router.post('/new/computations', newComputations);
 router.get('/active', getActiveLoans);
+router.get('/for-payment/:loan_id', getForPayment);
 
 export default router;

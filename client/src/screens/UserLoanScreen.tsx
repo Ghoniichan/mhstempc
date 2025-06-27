@@ -6,6 +6,8 @@ import Backbutton from "../components/Dashboard/Backbutton";
 import SearchBar from "../components/Dashboard/SearchBar";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import LoanDetailModal from "../components/Dashboard/LoanDetailModal";
+import axios from "../api/axiosInstance";
+import { getUserIdFromJwt } from "../utils/tokenDecoder";
 
 // QuickSort Function
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
@@ -46,30 +48,56 @@ const UserLoanScreen = () => {
   const [selectedLoan, setSelectedLoan] = useState<any | null>(null);
   const [showModal, setShowModal] = useState(false);
 
+  const normalizeLoanKeys = (loan: any) => ({
+    date: loan.date,
+    or: loan.or,
+    interest: loan.interest,
+    serviceFee: loan.service_fee,
+    fines: loan.fines,
+    dueDate: loan.due_date,
+    receivedAmount: loan.received_amount
+  });
+
+  const formatDate = (isoString: string): string => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(isoString).toLocaleDateString('en-PH', options); // or 'en-US' if you prefer
+  };
+
+  const formatCurrency = (amount: number | string): string => {
+    const num = typeof amount === "string" ? parseFloat(amount) : amount;
+    return `₱${num.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
   useEffect(() => {
     document.title = "MHSTEMPC | Loans";
-    const sample = [
-      {
-        date: "2025-06-01",
-        or: "001",
-        interest: "₱200.00",
-        serviceFee: "₱50.00",
-        fines: "₱0.00",
-        dueDate: "2025-06-15",
-        receivedAmount: "₱5,000.00",
-      },
-      {
-        date: "2025-05-20",
-        or: "002",
-        interest: "₱150.00",
-        serviceFee: "₱40.00",
-        fines: "₱10.00",
-        dueDate: "2025-06-10",
-        receivedAmount: "₱3,500.00",
-      },
-    ];
-    setLoans(sample);
-    setFilteredLoans(sample);
+
+    
+
+    const fetchLoansByPN = async () => {
+      const userId = getUserIdFromJwt(localStorage.getItem('token') || '');
+      
+      try {
+        const response = await axios.get(`/api/user/profile/${userId}`);
+        const policy_no = response.data?.policy_number;
+        if (!policy_no) {
+          const response = await axios.get(`/api/loan/user/${userId}`);
+          return response.data;
+        }
+
+        const { data } = await axios.get(`/api/loans/by-policy/${policy_no}`);
+        return data;
+      } catch (error) {
+        console.error("Error fetching loans:", error);
+        return [];
+      } 
+    }
+
+    fetchLoansByPN().then(data => {
+      const dataArray = Array.isArray(data) ? data : [data]; // 👈 convert to array if needed
+      const normalized = dataArray.map(normalizeLoanKeys);
+      setLoans(normalized);
+      setFilteredLoans(normalized);
+    });
   }, []);
 
   const handleSearch = (query: string) => {
@@ -136,13 +164,13 @@ const UserLoanScreen = () => {
   };
 
   const rows = filteredLoans.map(loan => [
-    loan.date,
+    formatDate(loan.date),
     loan.or,
-    loan.interest,
-    loan.serviceFee,
-    loan.fines,
-    loan.dueDate,
-    loan.receivedAmount
+    formatCurrency(loan.interest),
+    formatCurrency(loan.serviceFee),
+    formatCurrency(loan.fines),
+    formatDate(loan.dueDate),
+    formatCurrency(loan.receivedAmount)
   ]);
 
   return (
