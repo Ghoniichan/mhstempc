@@ -44,24 +44,6 @@ const UserSavings = () => {
 
   useEffect(() => {
     document.title = "MHSTEMPC | Savings";
-    const sample = [
-      {
-        date: "2025-06-05",
-        ref: "SAV001",
-        received: "₱1,000.00",
-        withdrawal: "₱0.00",
-        balance: "₱5,000.00",
-      },
-      {
-        date: "2025-05-20",
-        ref: "SAV002",
-        received: "₱500.00",
-        withdrawal: "₱0.00",
-        balance: "₱4,000.00",
-      },
-    ];
-    setSavings(sample);
-    setFilteredSavings(sample);
   }, []);
 
   const handleSearch = (query: string) => {
@@ -121,16 +103,20 @@ const UserSavings = () => {
     link.download = "savings.doc";
     link.click();
   };
+  
+  const formatDate = (isoString: string): string => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(isoString).toLocaleDateString('en-PH', options); // or 'en-US' if you prefer
+  };
 
   const rows = filteredSavings.map(entry => [
-    entry.entry_date instanceof Date
-      ? entry.entry_date.toISOString().slice(0,10)
-      : String(entry.entry_date || '').slice(0,10),
+    entry.formattedDate,
     entry.ref_code,
     entry.received_amount,
     entry.withdrawal,
     entry.balance
   ]);
+
 
   useEffect(() => {
     const fetchSavings = async () => {
@@ -145,8 +131,30 @@ const UserSavings = () => {
         }
         const savingsResponse = await axios.get(`/api/savings/${policy_no}`);
 
-        setSavings(savingsResponse.data);
-        setFilteredSavings(savingsResponse.data);
+        interface SavingsEntry {
+          entry_date: string | Date;
+          ref_code: string;
+          received_amount: string;
+          withdrawal: string;
+          balance: string;
+          [key: string]: any;
+        }
+
+        interface ProcessedSavingsEntry extends SavingsEntry {
+          formattedDate: string;
+        }
+
+        const processed: ProcessedSavingsEntry[] = (savingsResponse.data as SavingsEntry[]).map((entry: SavingsEntry) => ({
+          ...entry,
+          formattedDate: formatDate(
+            entry.entry_date instanceof Date
+              ? entry.entry_date.toISOString()
+              : entry.entry_date
+          )
+        }));
+
+        setSavings(processed);
+        setFilteredSavings(processed);
       } catch (error) {
         console.error("Error fetching savings data:", error);
       }

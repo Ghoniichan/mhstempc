@@ -117,6 +117,12 @@ const UserCapitalShare = () => {
     row.balance
   ]);
 
+    
+  const formatDate = (isoString: string): string => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(isoString).toLocaleDateString('en-PH', options); // or 'en-US' if you prefer
+  };
+
   useEffect(() => {
 
     const fetchCapitalShare = async () => {
@@ -132,7 +138,7 @@ const UserCapitalShare = () => {
 
         const capitalResponse = await axios.get(`/api/capital/${policy_no}`);
         const transformed: any[] = capitalResponse.data.map((entry: Record<string, unknown>) => ({
-          date: typeof entry.entry_date === 'string' ? entry.entry_date.slice(0, 10) : '',
+          date: typeof entry.entry_date === 'string' ? formatDate(entry.entry_date) : '',
           or: typeof entry.or_code_generated === 'string' ? entry.or_code_generated : '',
           ref: typeof entry.ref_code === 'string' ? entry.ref_code : '',
           received: typeof entry.amount === 'string' ? `₱${parseFloat(entry.amount).toFixed(2)}` : '₱0.00',
