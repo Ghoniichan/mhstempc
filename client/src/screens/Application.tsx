@@ -136,6 +136,16 @@ const Application = () => {
 
     try {
       await axios.patch(`/api/loans/${loanNo}/status`, { status: newStatus.toLowerCase() });
+      if (newStatus.toLowerCase() === "approved") {
+        const response = await axios.get(`/api/loans/for-payment/${loanNo}`); 
+        const { payment_terms, due_date, net_loan_fee_proceeds } = response.data;
+        await axios.post('/api/payments/initialize', {
+          loan_id: loanNo,
+          payment_terms: parseInt(payment_terms, 10),
+          due_date: due_date.slice(0, 10),
+          net_loan_fee_proceeds: parseFloat(net_loan_fee_proceeds)
+        });
+      }
       log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'updated loan status', `Loan ${loanNo} status changed to ${capitalizedStatus}`);
     } catch {
       updatedList[editingIndex] = { ...app, status: prevStatus };
