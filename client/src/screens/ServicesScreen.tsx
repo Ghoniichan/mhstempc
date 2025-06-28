@@ -33,10 +33,10 @@ const ServicesScreen = () => {
                                                     />
                                                 </div>
                                                 <h4 className="card-title mb-2 gothic-a1-bold">Loan</h4>
-                                                <div className="d-flex align-items-center justify-content-center">
+                                                {/* <div className="d-flex align-items-center justify-content-center">
                                                     <span className="text-muted">View more</span>
                                                     <i className="fas fa-chevron-right text-muted ms-1"></i>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
@@ -56,10 +56,10 @@ const ServicesScreen = () => {
                                                     />
                                                 </div>
                                                 <h4 className="card-title mb-2 gothic-a1-bold">Capital Share</h4>
-                                                <div className="d-flex align-items-center justify-content-center">
+                                                {/* <div className="d-flex align-items-center justify-content-center">
                                                     <span className="text-muted">View more</span>
                                                     <i className="fas fa-chevron-right text-muted ms-1"></i>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
