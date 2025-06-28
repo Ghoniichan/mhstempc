@@ -1,8 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomTable from "../components/Dashboard/CustomTable";
+import axios from "../api/axiosInstance";
+
+interface BugReport {
+  clientName: string;
+  dateSubmitted: string;
+  subject: string;
+  detail: string;
+  status: string;
+}
+
+interface ApiBugReport {
+  reporter_name: string;
+  date_submitted: string;
+  subject: string;
+  details: string;
+  status: string;
+}
 
 const AdminBugReportListScreen = () => {
-  const [bugReports, setBugReports] = useState([
+  const [bugReports, setBugReports] = useState<BugReport[]>([
     {
       clientName: "Alice Johnson",
       dateSubmitted: "2025-06-15",
@@ -21,7 +38,7 @@ const AdminBugReportListScreen = () => {
 
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
-  const handleResolve = (index: number) => {
+  const handleResolve = async (index: number) => {
     const updatedReports = [...bugReports];
     updatedReports[index].status = "Resolved";
     setBugReports(updatedReports);
@@ -38,6 +55,26 @@ const AdminBugReportListScreen = () => {
         : [...prev, index]
     );
   };
+
+  useEffect(() => {
+    const fetchBugReports = async () => {
+      try {
+        const response = await axios.get("/api/bugs");
+        const reports = response.data.map((report: ApiBugReport) => ({
+          clientName: report.reporter_name,
+          dateSubmitted: new Date(report.date_submitted).toLocaleDateString(),
+          subject: report.subject,
+          detail: report.details,
+          status: report.status,
+        }));
+        setBugReports(reports);        
+      } catch (error) {
+        console.error("Error fetching bug reports:", error);
+      }
+    };
+
+    fetchBugReports();
+  }, []);
 
   return (
     <div
