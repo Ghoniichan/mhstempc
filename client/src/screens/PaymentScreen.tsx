@@ -11,19 +11,20 @@ interface Payment {
   name: string;
   id: string;
   loanNo: string;
-  method: string;
+  status: string;
   dateRelease: string;
   date: string;
   collectedBy: string;
   dueDate: string;
   loanAmount: string;
+  remaining: string;
 }
 
 const sortKeyMap: Record<string, keyof Payment> = {
   Name: "name",
   "Loan No.": "loanNo",
   "Loan Amount": "loanAmount",
-  "Mode of Payment": "method",
+  "Payment Status": "status",
   "Payment Date": "date",
   "Due Date": "dueDate",
 };
@@ -42,35 +43,24 @@ const quickSort = <T,>(arr: T[], key: keyof T, order: "asc" | "desc"): T[] => {
   return [...quickSort(left, key, order), pivot, ...quickSort(right, key, order)];
 };
 
+const submitPayment = async (id: string, amount: number): Promise<void> => {
+  try {
+    const response = await axios.patch(`/api/payments/${id}`, { amountPaid: amount });
+    if (response.status !== 200) {
+      throw new Error("Failed to submit payment");
+    }
+  } catch (error) {
+    console.error("Error submitting payment:", error);
+    throw error;
+  }
+}
+
 const PaymentScreen = () => {
   const [selectedColumnLabel, setSelectedColumnLabel] = useState("Name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [payments, setPayments] = useState<Payment[]>([
-    {
-      name: "Micha Bandasan",
-      id: "MHST12345",
-      loanNo: "LN20240601",
-      method: "Cash",
-      dateRelease: "2025-06-01",
-      date: "2025-06-10",
-      collectedBy: "Cashier 1",
-      dueDate: "2025-12-01",
-      loanAmount: "₱50,000",
-    },
-    {
-      name: "Juan Dela Cruz",
-      id: "MHST67890",
-      loanNo: "LN20240520",
-      method: "Online",
-      dateRelease: "2025-05-20",
-      date: "2025-06-05",
-      collectedBy: "Cashier 2",
-      dueDate: "2025-11-20",
-      loanAmount: "₱30,000",
-    },
-  ]);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>(payments);
   const [editingRow, setEditingRow] = useState<string | null>(null);
@@ -119,30 +109,45 @@ const PaymentScreen = () => {
     setSortOrder(order);
   };
 
-  const handlePaidSubmit = (loanNo: string) => {
-    const input = inputValues[loanNo];
+  const handlePaidSubmit = async (id: string) => {
+    const input = inputValues[id];
     const amount = parseFloat(input);
-    if (!isNaN(amount)) {
-      setPaidAmounts((prev) => ({ ...prev, [loanNo]: amount }));
-      setShowDropdown((prev) => ({ ...prev, [loanNo]: true }));
+    const payment = filteredPayments.find((p) => p.id === id);
+    if (!payment) return;
+
+    const loanAmountNum = parseFloat(payment.loanAmount.replace(/[₱,]/g, ""));
+    if (!isNaN(amount) && amount > 0) {
+      setPaidAmounts((prev) => ({ ...prev, [id]: (prev[id] || 0) + amount }));
+      // Only show dropdown if fully paid
+      if ((paidAmounts[id] || 0) + amount >= loanAmountNum) {
+        setShowDropdown((prev) => ({ ...prev, [id]: true }));
+      }
+    }
+    console.log(`Payment for ${id} submitted: ₱${amount}`);
+
+    try {
+      await submitPayment(id, amount);
+    } catch (error) {
+      console.error("Error submitting payment:", error);
     }
     setEditingRow(null);
   };
 
-  const handlePaymentModeChange = (loanNo: string, mode: string) => {
-    setPaymentModes((prev) => ({ ...prev, [loanNo]: mode }));
-    setShowDropdown((prev) => ({ ...prev, [loanNo]: false }));
+  const handlePaymentModeChange = (id: string, mode: string) => {
+    setPaymentModes((prev) => ({ ...prev, [id]: mode }));
+    setShowDropdown((prev) => ({ ...prev, [id]: false }));
   };
 
   const rows = filteredPayments.map((p) => {
     const loanAmountNum = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
-    const paid = paidAmounts[p.loanNo] || 0;
-    const remaining = Math.max(0, loanAmountNum - paid);
-    const isEditing = editingRow === p.loanNo;
-    const showModeDropdown = showDropdown[p.loanNo];
-    const selectedPaymentMode = paymentModes[p.loanNo] || "";
+    const paid = paidAmounts[p.id] || 0;
+    const remaining = p.remaining;
+    const remainingNum = parseFloat(p.remaining.replace(/[₱,]/g, ""));
+    const isEditing = editingRow === p.id;
+    const showModeDropdown = showDropdown[p.id] && paid >= loanAmountNum;
+    const selectedPaymentMode = paymentModes[p.id] || "";
 
-    const actionCell = selectedPaymentMode ? (
+    const actionCell = (remainingNum === 0) ? (
       <span className="text-success fw-semibold">Paid</span>
     ) : isEditing ? (
       <div className="d-flex gap-1">
@@ -150,19 +155,26 @@ const PaymentScreen = () => {
           type="number"
           className="form-control form-control-sm"
           placeholder="Amount"
-          value={inputValues[p.loanNo] || ""}
-          onChange={(e) =>
+          value={inputValues[p.id] || ""}
+          onChange={(e) =>{
+            const value = e.target.value;
+            let numericValue = parseFloat(value);
+            const remaining = parseFloat(p.remaining.replace(/[₱,]/g, ""));
+            // Clamp the value to the remaining balance
+            if (numericValue > remaining) {
+              numericValue = remaining;
+            }
             setInputValues((prev) => ({
               ...prev,
-              [p.loanNo]: e.target.value,
-            }))
-          }
+              [p.id]: !isNaN(numericValue) ? numericValue.toString() : "",
+            }));
+          }}
           style={{ width: "100px" }}
           autoFocus
         />
         <button
           className="btn btn-sm btn-primary"
-          onClick={() => handlePaidSubmit(p.loanNo)}
+          onClick={() => handlePaidSubmit(p.id)}
         >
           Enter
         </button>
@@ -174,7 +186,7 @@ const PaymentScreen = () => {
           className="form-select form-select-sm"
           style={{ width: "120px" }}
           value={selectedPaymentMode}
-          onChange={(e) => handlePaymentModeChange(p.loanNo, e.target.value)}
+          onChange={(e) => handlePaymentModeChange(p.id, e.target.value)}
         >
           <option value="" disabled>
             Select
@@ -186,7 +198,7 @@ const PaymentScreen = () => {
     ) : (
       <button
         className="btn btn-sm btn-success"
-        onClick={() => setEditingRow(p.loanNo)}
+        onClick={() => setEditingRow(p.id)}
       >
         Paid
       </button>
@@ -196,10 +208,10 @@ const PaymentScreen = () => {
       p.name,
       p.loanNo,
       p.loanAmount,
-      selectedPaymentMode || p.method,
+      selectedPaymentMode || p.status,
       p.date,
       p.dueDate,
-      `₱${remaining.toLocaleString()}`,
+      remaining,
       actionCell,
     ];
   });
@@ -207,17 +219,14 @@ const PaymentScreen = () => {
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
       filteredPayments.map((p) => {
-        const loanAmount = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
-        const paid = paidAmounts[p.loanNo] || 0;
-        const remaining = Math.max(0, loanAmount - paid);
         return {
           Name: p.name,
           "Loan No.": p.loanNo,
           "Loan Amount": p.loanAmount,
-          "Mode of Payment": paymentModes[p.loanNo] || p.method,
+          "Payment Status": paymentModes[p.loanNo] || p.status,
           "Payment Date": p.date,
           "Due Date": p.dueDate,
-          "Remaining Balance": `₱${remaining.toLocaleString()}`,
+          "Remaining Balance": p.remaining,
         };
       })
     );
@@ -229,10 +238,8 @@ const PaymentScreen = () => {
   const exportToWord = () => {
     let content = "Payment Records\n\n";
     filteredPayments.forEach((p) => {
-      const loanAmount = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
-      const paid = paidAmounts[p.loanNo] || 0;
-      const remaining = Math.max(0, loanAmount - paid);
-      content += `Name: ${p.name}\nLoan No.: ${p.loanNo}\nLoan Amount: ${p.loanAmount}\nMode of Payment: ${paymentModes[p.loanNo] || p.method}\nPayment Date: ${p.date}\nDue Date: ${p.dueDate}\nRemaining Balance: ₱${remaining.toLocaleString()}\n\n`;
+      const remaining = parseFloat(p.remaining.replace(/[₱,]/g, ""));;
+      content += `Name: ${p.name}\nLoan No.: ${p.loanNo}\nLoan Amount: ${p.loanAmount}\nMode of Payment: ${paymentModes[p.loanNo] || p.status}\nPayment Date: ${p.date}\nDue Date: ${p.dueDate}\nRemaining Balance: ${remaining.toLocaleString()}\n\n`;
     });
     const blob = new Blob([content], {
       type: "application/msword;charset=utf-8",
@@ -268,7 +275,7 @@ const PaymentScreen = () => {
           name: item.name, // Replace with actual name if available from join
           id: String(item.id),
           loanNo: item.loan_application_id,
-          method: item.payment_status === "paid" ? "Cash" : "Pending",
+          status: item.payment_status,
           dateRelease: "N/A", // Replace if you have release date
           date: item.payment_date
             ? new Date(item.payment_date).toISOString().split("T")[0]
@@ -276,6 +283,10 @@ const PaymentScreen = () => {
           collectedBy: "N/A", // Replace if you have collector data
           dueDate: new Date(item.due_date).toISOString().split("T")[0],
           loanAmount: `₱${parseFloat(item.amount_due).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+          remaining: `₱${parseFloat(item.remaining_balance).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}`,
@@ -289,7 +300,7 @@ const PaymentScreen = () => {
     };
 
     fetchPayments();
-  }, []);
+  }, [filteredPayments]);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
@@ -355,7 +366,7 @@ const PaymentScreen = () => {
               "Name",
               "Loan No.",
               "Loan Amount",
-              "Mode of Payment",
+              "Payment Status",
               "Payment Date",
               "Due Date",
               "Remaining Balance",

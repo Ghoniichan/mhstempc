@@ -10,6 +10,7 @@ import capitalRoutes from "./routes/capitalRoutes";
 import savingsRoutes from "./routes/savingsRoutes";
 import auditRoutes from "./routes/auditRoutes";
 import paymentsRoutes from "./routes/paymentsRoutes";
+import bugReportRoutes from "./routes/bugReportRoutes";
 
 dotenv.config();
 
@@ -36,6 +37,8 @@ app.use("/api/savings", savingsRoutes);
 app.use("/api/audit", auditRoutes);
 
 app.use("/api/payments", paymentsRoutes);
+
+app.use("/api/bugs", bugReportRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

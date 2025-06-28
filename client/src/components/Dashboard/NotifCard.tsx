@@ -10,7 +10,7 @@ const NotifCard: React.FC = () => {
       <div className="notif-card-header">
         <div className="notif-card-header-left">
           <i className="bi bi-bell" />
-          <span className="notif-card-title gothic-a1-bold">Account Changes</span>
+          <span className="notif-card-title gothic-a1-bold">Account Changed</span>
         </div>
         <div className="notif-card-header-date gothic-a1-regular">
           July 15

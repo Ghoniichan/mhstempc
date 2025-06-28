@@ -1,28 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomTable from "../components/Dashboard/CustomTable";
+import axios from "../api/axiosInstance";
+
+interface BugReport {
+  id: string;
+  clientName: string;
+  dateSubmitted: string;
+  subject: string;
+  detail: string;
+  status: string;
+}
+
+interface ApiBugReport {
+  id: string;
+  reporter_name: string;
+  date_submitted: string;
+  subject: string;
+  details: string;
+  status: string;
+}
 
 const AdminBugReportListScreen = () => {
-  const [bugReports, setBugReports] = useState([
-    {
-      clientName: "Alice Johnson",
-      dateSubmitted: "2025-06-15",
-      subject: "App Crash on Login",
-      detail: "The app crashes whenever I try to log in using my credentials.",
-      status: "Pending",
-    },
-    {
-      clientName: "Bob Williams",
-      dateSubmitted: "2025-06-14",
-      subject: "Wrong Data Displayed",
-      detail: "My account balance is showing incorrect values after update. I’ve tried re-logging but the issue persists across multiple devices. Please look into it as soon as possible since it's affecting my records.",
-      status: "Pending",
-    },
-  ]);
+  const [bugReports, setBugReports] = useState<BugReport[]>([]);
 
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
-  const handleResolve = (index: number) => {
+  const handleResolve = async (index: number) => {
     const updatedReports = [...bugReports];
+    // Log the report id and status before changing it
+    const reportId = updatedReports[index].id;
+    try {
+      // Call the API to resolve the bug report
+      await axios.put(`/api/bugs/${reportId}`);
+      
+      // Log the successful resolution
+      console.log(`Bug report ${reportId} resolved successfully.`);
+    } catch (error) {
+      console.error("Error resolving bug report:", error);
+      alert("Failed to resolve the bug report. Please try again later.");
+      return;
+      
+    }
+
     updatedReports[index].status = "Resolved";
     setBugReports(updatedReports);
 
@@ -38,6 +57,27 @@ const AdminBugReportListScreen = () => {
         : [...prev, index]
     );
   };
+
+  useEffect(() => {
+    const fetchBugReports = async () => {
+      try {
+        const response = await axios.get("/api/bugs");
+        const reports = response.data.map((report: ApiBugReport) => ({
+          id: report.id,
+          clientName: report.reporter_name,
+          dateSubmitted: new Date(report.date_submitted).toLocaleDateString(),
+          subject: report.subject,
+          detail: report.details,
+          status: report.status,
+        }));
+        setBugReports(reports);        
+      } catch (error) {
+        console.error("Error fetching bug reports:", error);
+      }
+    };
+
+    fetchBugReports();
+  }, []);
 
   return (
     <div
@@ -91,7 +131,7 @@ const AdminBugReportListScreen = () => {
                   <button
                     className="btn btn-success btn-sm"
                     onClick={() => handleResolve(index)}
-                    disabled={report.status !== "Pending"}
+                    disabled={report.status !== "pending"}
                   >
                     Resolve
                   </button>,
