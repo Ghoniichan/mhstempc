@@ -53,7 +53,7 @@ const Appointment = () => {
           : null;
         if (!accountId) throw new Error("No account ID in token");
 
-        const res = await axios.get(`/api/notifications/get-my-appointments/${accountId}`);
+        const res = await axios.get(`/api/appointments/get-my-appointments/${accountId}`);
         const { appointments: raw } = res.data;
 
         const mapped: AppointmentItem[] = raw.map((a: any) => ({
@@ -103,7 +103,7 @@ const Appointment = () => {
     const apt = appointments[index];
 
     try {
-      await axios.patch(`/api/notifications/update/status/${apt.id}`, {
+      await axios.patch(`/api/appointments/update/status/${apt.id}`, {
         status: decision,
       });
 

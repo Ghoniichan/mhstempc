@@ -34,7 +34,7 @@ const UserAppointmentScreen = () => {
         message: subject
       };
 
-      const response = await axios.post('/api/notifications/book-appointment', appointmentPayload);
+      const response = await axios.post('/api/appointments/book-appointment', appointmentPayload);
       if (response.status !== 201) {
         throw new Error('Failed to book appointment.');
       }
