@@ -21,6 +21,10 @@ interface LoanData {
   balance: string;
   interest: string;
   serviceFee: string;
+  termsOfPayment?: {
+    month: string;
+    amount: string;
+  }[];
 }
 
 const sortKeyMap: Record<string, keyof LoanData> = {
@@ -70,6 +74,22 @@ const mapApiToLoanData = (item: any): LoanData => {
   const netLoanFeeNum = parseFloat(item.net_loan_fee_proceeds);
   const interestNum = parseFloat(item.interest);
   const serviceFeeNum = parseFloat(item.service_fee);
+  const termCount = parseInt(item.payment_terms, 10);
+
+  const termAmount = isNaN(amountNum) || isNaN(termCount) || termCount === 0
+    ? 0
+    : +(amountNum / termCount).toFixed(2);
+
+  const termsOfPayment = Array.from({ length: termCount }, (_, i) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + i);
+    const month = date.toLocaleString('default', { month: 'long' });
+    const year = date.getFullYear();
+    return {
+      month: `${month} ${year}`,
+      amount: formatCurrency(termAmount),
+    };
+  });
 
   return {
     name: item.name || "-",
@@ -83,6 +103,7 @@ const mapApiToLoanData = (item: any): LoanData => {
     balance: isNaN(netLoanFeeNum) ? "-" : formatCurrency(netLoanFeeNum),
     interest: isNaN(interestNum) ? "-" : formatCurrency(interestNum),
     serviceFee: isNaN(serviceFeeNum) ? "-" : formatCurrency(serviceFeeNum),
+    termsOfPayment,
   };
 };
 
@@ -160,25 +181,33 @@ const Loans = () => {
   };
 
   const handleSort = (columnLabel: string, order?: 'asc' | 'desc') => {
-    const key = sortKeyMap[columnLabel];
-    const newOrder: 'asc' | 'desc' =
-      order ?? (selectedColumn === columnLabel && sortOrder === 'asc' ? 'desc' : 'asc');
+  const key = sortKeyMap[columnLabel];
+  const newOrder: 'asc' | 'desc' =
+    order ?? (selectedColumn === columnLabel && sortOrder === 'asc' ? 'desc' : 'asc');
 
-    let sorted = [...filteredLoans];
-    if (["loanAmount", "capitalShare", "savings", "balance"].includes(key)) {
-      sorted.sort((a, b) => {
-        const parseValue = (val: string) => parseFloat(val.replace(/[₱,]/g, "")) || 0;
-        const aVal = parseValue(a[key]);
-        const bVal = parseValue(b[key]);
-        return newOrder === "asc" ? aVal - bVal : bVal - aVal;
-      });
-    } else {
-      sorted = quickSort(sorted, key, newOrder);
-    }
-    setFilteredLoans(sorted);
-    setSelectedColumn(columnLabel);
-    setSortOrder(newOrder);
-  };
+  let sorted = [...filteredLoans];
+
+  if (["loanAmount", "capitalShare", "savings", "balance"].includes(key)) {
+    sorted.sort((a, b) => {
+      const parseValue = (val: string) => parseFloat(val.replace(/[₱,]/g, "")) || 0;
+      const aVal = parseValue(a[key] as string);
+      const bVal = parseValue(b[key] as string);
+      return newOrder === "asc" ? aVal - bVal : bVal - aVal;
+    });
+  } else {
+    // ✅ Ensure all values are treated as strings during sorting
+    sorted = quickSort(
+      sorted.map(item => ({ ...item, [key]: String(item[key] ?? "") })),
+      key,
+      newOrder
+    );
+  }
+
+  setFilteredLoans(sorted);
+  setSelectedColumn(columnLabel);
+  setSortOrder(newOrder);
+};
+
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(

@@ -14,6 +14,10 @@ interface LoanDetailModalProps {
     capitalShare: string;
     savings: string;
     balance: string;
+    termsOfPayment?: {
+      month: string;
+      amount: string;
+    }[];
   } | null;
 }
 
@@ -92,10 +96,26 @@ const LoanDetailModal: React.FC<LoanDetailModalProps> = ({ show, onClose, loan }
               <span className="gothic-a1-bold">Savings</span> <span className="gothic-a1-regular">{loan?.savings}</span>
             </div>
             <hr />
-            <div className="d-flex justify-content-between fw-bold mb-5">
+            <div className="d-flex justify-content-between fw-bold mb-1">
               <span className="gothic-a1-bold">Net Loan Fee Proceeds</span> <span className="gothic-a1-bold">{loan?.balance}</span>
             </div>
-            <div className="mb-4 text-muted gothic-a1-bold">Signature</div>
+
+            {loan?.termsOfPayment && loan.termsOfPayment.length > 0 && (
+              <>
+                <hr />
+                <h6 className="text-muted gothic-a1-bold mb-3">Terms of Payment</h6>
+                <div className="mb-4">
+                  {loan.termsOfPayment.map((term, index) => (
+                    <div key={index} className="d-flex justify-content-between mb-1 gothic-a1-regular">
+                      <span>{term.month}</span>
+                      <span>{term.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            <div className="mb-4 text-muted gothic-a1-bold" style={{paddingTop: '50px'}}>Signature</div>
           </div>
         </div>
         <Button
