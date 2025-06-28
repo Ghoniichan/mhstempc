@@ -39,3 +39,34 @@ export const submitReport = async (req: Request, res: Response): Promise<void> =
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+
+export const resolveReport = async (req: Request, res: Response): Promise<void> => {
+    const { report_id } = req.params;
+
+    // Validate input
+    if (!report_id) {
+        res.status(400).json({ error: "report_id is required." });
+        return;
+    }
+
+    try {
+        const result = await pool.query(
+            `UPDATE bug_reports
+             SET status = 'resolved'
+             WHERE id = $1
+             RETURNING *`,
+            [report_id]
+        );
+
+        if (result.rows.length === 0) {
+            res.status(404).json({ error: "Bug report not found." });
+            return;
+        }
+
+        res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error("Error resolving bug report:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+
+}
