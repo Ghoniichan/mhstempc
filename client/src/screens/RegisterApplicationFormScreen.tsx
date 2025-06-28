@@ -15,7 +15,7 @@ const RegisterApplicationFormScreen = () => {
   };
 
   return (
-    <div className="d-flex" style={{ minHeight: "1000vh" }}>
+    <div className="d-flex" style={{ minHeight: "100vh" }}>
       <div style={{ width: "200px", flexShrink: 0 }}>
         {/* sidebar or whatever */}
       </div>
