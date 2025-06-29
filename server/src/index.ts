@@ -2,16 +2,15 @@ import dotenv from "dotenv";
 import cors from "cors";
 import express from "express";
 import authRoutes from "./routes/jwtAuth"
-import sendEmail from "./routes/notificationRoutes";
 import infoRoutes from "./routes/infoRoutes";
 import loanRoutes from "./routes/loanRoutes";
-import notifRoutes from "./routes/notifRoutes";
 import capitalRoutes from "./routes/capitalRoutes";
 import savingsRoutes from "./routes/savingsRoutes";
 import auditRoutes from "./routes/auditRoutes";
 import paymentsRoutes from "./routes/paymentsRoutes";
 import bugReportRoutes from "./routes/bugReportRoutes";
 import appointmentRoutes from "./routes/appointmentRoutes";
+import smsRoutes from "./routes/smsRoutes";
 
 dotenv.config();
 
@@ -25,11 +24,7 @@ app.use("/api/auth", authRoutes);
 
 app.use("/api/user", infoRoutes);
 
-app.use("/api/notification", sendEmail);
-
 app.use("/api/loans", loanRoutes);
-
-app.use("/api/notifications", notifRoutes);
 
 app.use("/api/capital", capitalRoutes);
 
@@ -42,6 +37,8 @@ app.use("/api/payments", paymentsRoutes);
 app.use("/api/bugs", bugReportRoutes);
 
 app.use("/api/appointments", appointmentRoutes);
+
+app.use("/api/sms", smsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
