@@ -3,7 +3,7 @@ import './Notifcard.css';
 
 const NotifCard: React.FC = () => {
   const navigate = useNavigate();
-  const handleCardClick = () => navigate('/appointmentRequest');
+  const handleCardClick = () => navigate('');
 
   return (
     <div className="notif-card-container" onClick={handleCardClick}>

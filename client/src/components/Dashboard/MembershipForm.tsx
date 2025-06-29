@@ -270,7 +270,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({ onNext }) => {
 
             <Row className="justify-content-center">
                 <Col xs={12} md={9}>
-                <div className="card shadow-lg p-4 mb-5 bg-white rounded mf-card mx-auto" >
+                <div className="card shadow-lg p-4 mb-5 bg-white rounded mf-card mx-auto " >
                     <div className="card-body">
                     <form onSubmit={handleSubmit}>
                                     {/* Date and Policy Number */}

@@ -4,7 +4,7 @@ import '../screens/AboutUs.css';
 
 const AboutUsScreen = () => {
   return (
-    <div className="about-us-screen-wrapper">
+    <div className="about-us-screen-wrapper  " style={{ height: "100vh" }}>
       <NavBar />
       <div className="about-us-container">
         <div className="about-us-content py-3">
