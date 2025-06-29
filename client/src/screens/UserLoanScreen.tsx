@@ -40,6 +40,7 @@ const sortKeyMap: Record<string, string> = {
 
 const UserLoanScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchError, setSearchError] = useState<string | null>(null);
   const [loans, setLoans] = useState<any[]>([]);
   const [filteredLoans, setFilteredLoans] = useState<any[]>([]);
   const [selectedColumn, setSelectedColumn] = useState<string>("Date");
@@ -60,7 +61,7 @@ const UserLoanScreen = () => {
 
   const formatDate = (isoString: string): string => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(isoString).toLocaleDateString('en-PH', options); // or 'en-US' if you prefer
+    return new Date(isoString).toLocaleDateString('en-PH', options);
   };
 
   const formatCurrency = (amount: number | string): string => {
@@ -71,11 +72,9 @@ const UserLoanScreen = () => {
   useEffect(() => {
     document.title = "MHSTEMPC | Loans";
 
-    
-
     const fetchLoansByPN = async () => {
       const userId = getUserIdFromJwt(localStorage.getItem('token') || '');
-      
+
       try {
         const response = await axios.get(`/api/user/profile/${userId}`);
         const policy_no = response.data?.policy_number;
@@ -89,11 +88,11 @@ const UserLoanScreen = () => {
       } catch (error) {
         console.error("Error fetching loans:", error);
         return [];
-      } 
+      }
     }
 
     fetchLoansByPN().then(data => {
-      const dataArray = Array.isArray(data) ? data : [data]; // 👈 convert to array if needed
+      const dataArray = Array.isArray(data) ? data : [data];
       const normalized = dataArray.map(normalizeLoanKeys);
       setLoans(normalized);
       setFilteredLoans(normalized);
@@ -105,15 +104,22 @@ const UserLoanScreen = () => {
     const trimmed = query.trim().toLowerCase();
     if (!trimmed) {
       setFilteredLoans(loans);
+      setSearchError(null);
       return;
     }
 
-    const filtered = loans.filter(loan =>
-      Object.values(loan).some(val =>
-        typeof val === "string" && val.toLowerCase().includes(trimmed)
-      )
-    );
+    const isValidDate = (val: string) => !isNaN(Date.parse(val));
+
+    const filtered = loans.filter(loan => {
+      const matchOR = loan.or?.toLowerCase().includes(trimmed);
+      const matchFormattedDate = formatDate(loan.date).toLowerCase().includes(trimmed);
+      const matchRawDate = isValidDate(trimmed) &&
+        new Date(loan.date).toDateString().toLowerCase() === new Date(trimmed).toDateString().toLowerCase();
+      return matchOR || matchFormattedDate || matchRawDate;
+    });
+
     setFilteredLoans(filtered);
+    setSearchError(filtered.length === 0 ? `No results found for "${query}"` : null);
   };
 
   const handleSort = (columnLabel: string, order: 'asc' | 'desc') => {
@@ -185,9 +191,12 @@ const UserLoanScreen = () => {
           <h3 className="mb-0">Loans</h3>
         </div>
 
-        <div className="d-flex align-items-center mb-4 w-100" style={{ gap: "5px" }}>
+        <div className="d-flex align-items-center mb-2 w-100" style={{ gap: "5px" }}>
           <div style={{ flex: 1 }}>
-            <SearchBar value={searchQuery} onSearch={handleSearch} />
+            <SearchBar
+              value={searchQuery}
+              onSearch={handleSearch}
+            />
           </div>
 
           <ButtonCustom
@@ -231,6 +240,12 @@ const UserLoanScreen = () => {
           />
         </div>
 
+        {searchError && (
+          <div className="alert alert-danger w-100" role="alert">
+            {searchError}
+          </div>
+        )}
+
         {filteredLoans.length > 0 ? (
           <CustomTable
             columnHeadings={[
@@ -246,13 +261,14 @@ const UserLoanScreen = () => {
             onRowClick={handleRowClick}
           />
         ) : (
-          <div className="text-center w-100 mt-4 text-muted fs-5">
-            No results found.
-          </div>
+          !searchError && (
+            <div className="text-center w-100 mt-4 text-muted fs-5">
+              No results found.
+            </div>
+          )
         )}
       </div>
 
-      {/* Loan Detail Modal */}
       <LoanDetailModal
         show={showModal}
         onClose={() => setShowModal(false)}

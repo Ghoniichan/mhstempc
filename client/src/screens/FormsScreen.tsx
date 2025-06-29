@@ -21,25 +21,32 @@ const FormsScreen = () => {
                             <div className="row gx-0 gy-4 justify-content-center">
                                 {/* Membership Form Card */}
                                 <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center h-100">
-                                    <div className="card h-100 shadow" style={{ maxWidth: '280px', width: '100%' }}>
-                                        <div className="card-body text-center p-4">
-                                            <div className="mb-3">
-                                                <div className="d-inline-flex align-items-center justify-content-center mb-3">
-                                                    <img
-                                                        src={membership}
-                                                        alt='membershipImg'
-                                                        className='membershipImg img-fluid'
-                                                        style={{ maxWidth: '100%', height: 'auto', width: '120px' }}
-                                                    />
-                                                </div>
-                                                <h4 className="card-title mb-2 gothic-a1-bold">Membership Form</h4>
-                                                <div className="d-flex align-items-center justify-content-center">
-                                                    <span className="text-muted">click here to download</span>
+                                    <a
+                                        href="/membership-form.docx"
+                                        download="membership-form.docx"
+                                        style={{ textDecoration: 'none', color: 'inherit', width: '100%' }}
+                                    >
+                                        <div className="card h-100 shadow" style={{ maxWidth: '280px', width: '100%' }}>
+                                            <div className="card-body text-center p-4">
+                                                <div className="mb-3" style={{paddingTop: '28px'}}>
+                                                    <div className="d-inline-flex align-items-center justify-content-center mb-3">
+                                                        <img
+                                                            src={membership}
+                                                            alt='membershipImg'
+                                                            className='membershipImg img-fluid'
+                                                            style={{ maxWidth: '100%', height: 'auto', width: '120px' }}
+                                                        />
+                                                    </div>
+                                                    <h4 className="card-title mb-2 gothic-a1-bold">Membership Form</h4>
+                                                    <div className="d-flex align-items-center justify-content-center">
+                                                        <span className="text-muted">click here to download</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
+
 
                                 {/* Loan Application Form Card */}
                                 <div className="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center h-100">

@@ -54,6 +54,7 @@ import LoanAppFormTwo from './screens/LoanAppFormTwo';
 import SchedofLoanRelease from './screens/ScheduleofLoanRelease';
 import Appointment from './screens/Appointment';
 import UserPayments from './screens/UserPayments';
+import LoanServices from './screens/LoanServices';
 
 
 
@@ -139,6 +140,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/services" element={<ServicesScreen />} />
+          <Route path='/loanservices' element={<LoanServices />} />
           <Route path="/help" element={<HelpScreen />} />
           <Route path="/forms" element={<FormsScreen />} />
           <Route path="/aboutUs" element={<AboutUsScreen />} />
