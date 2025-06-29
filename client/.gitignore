@@ -12,7 +12,8 @@ dist
 dist-ssr
 *.local
 
-client\src\api
+# Ignore custom axios instance
+client/src/api/axiosInstance.ts
 
 
 # Editor directories and files
