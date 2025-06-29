@@ -243,7 +243,17 @@ export const getLoanByPN: RequestHandler = async (req: Request, res: Response): 
     const client = await pool.connect();
     try {
         const result = await client.query(
-            `SELECT la.application_date AS date, c.id AS OR, c.interest, c.service_fee, 0 AS fines, la.due_date, c.net_loan_fee_proceeds AS received_amount
+            `SELECT CONCAT(m.last_name, ', ', m.first_name) name, 
+            la.id AS id, m.policy_number AS policy_no, 
+            c.paid_up_capital, 
+            la.application_date AS date, 
+            c.id AS OR, c.interest, 
+            c.service_fee, 0 AS fines, 
+            la.due_date, 
+            la.id AS loan_no,
+            c.savings,
+            c.net_loan_fee_proceeds
+            AS received_amount
             FROM loan_applications la
             JOIN membership_applications m ON m.id = la.membership_application_id
             JOIN computations c ON c.loan_application_id = la.id

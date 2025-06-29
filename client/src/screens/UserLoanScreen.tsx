@@ -38,6 +38,38 @@ const sortKeyMap: Record<string, string> = {
   "Received Amount": "receivedAmount"
 };
 
+  interface NormalizedLoan {
+    date: string;
+    name: string;
+    id: string;
+    or: string;
+    interest: number | string;
+    loan_no: string;
+    serviceFee: number | string;
+    fines: number | string;
+    dueDate: string;
+    paid_up_capital: number | string;
+    savings: number | string;
+    receivedAmount: number | string;
+    termsOfPayment: Record<string, unknown>;
+  }
+
+  const normalizeLoanKeys = (loan: any): NormalizedLoan => ({
+    date: loan.date,
+    name: loan.name,
+    id: loan.policy_no,
+    or: loan.or,
+    interest: loan.interest,
+    loan_no: loan.loan_no,
+    serviceFee: loan.service_fee,
+    fines: loan.fines,
+    dueDate: loan.due_date,
+    paid_up_capital: loan.paid_up_capital,
+    savings: loan.savings,
+    receivedAmount: loan.received_amount,
+    termsOfPayment: {}
+  });
+
 const UserLoanScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -49,15 +81,9 @@ const UserLoanScreen = () => {
   const [selectedLoan, setSelectedLoan] = useState<any | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  const normalizeLoanKeys = (loan: any) => ({
-    date: loan.date,
-    or: loan.or,
-    interest: loan.interest,
-    serviceFee: loan.service_fee,
-    fines: loan.fines,
-    dueDate: loan.due_date,
-    receivedAmount: loan.received_amount
-  });
+
+
+
 
   const formatDate = (isoString: string): string => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -162,9 +188,22 @@ const UserLoanScreen = () => {
   };
 
   const handleRowClick = (row: any[]) => {
-    const loan = filteredLoans.find(item => item.or === row[1]); // OR number as unique key
-    if (loan) {
-      setSelectedLoan(loan);
+    const rawLoan = filteredLoans.find(item => item.or === row[1]);
+    if (rawLoan) {
+      // Transform to LoanDetailModal shape
+      setSelectedLoan({
+        name: rawLoan.name ?? "-", // you may need to fetch name from API if not present
+        id: rawLoan.id ?? "-", // or some identifier
+        loanNo: rawLoan.loan_no ?? "-",
+        loanAmount: rawLoan.receivedAmount ? formatCurrency(rawLoan.receivedAmount) : "-",
+        interest: rawLoan.interest ? formatCurrency(rawLoan.interest) : "-",
+        serviceFee: rawLoan.serviceFee ? formatCurrency(rawLoan.serviceFee) : "-",
+        capitalShare: rawLoan.paid_up_capital ? formatCurrency(rawLoan.paid_up_capital) : "-",
+        savings: rawLoan.savings ? formatCurrency(rawLoan.savings) : "-",
+        balance: rawLoan.receivedAmount ? formatCurrency(rawLoan.receivedAmount) : "-",
+        // Optionally, fetch termsOfPayment from API or leave as []
+        termsOfPayment: [],
+      });
       setShowModal(true);
     }
   };

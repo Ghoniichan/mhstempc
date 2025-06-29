@@ -138,3 +138,29 @@ export const updatePayment = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+export const getPaymentTerms = async (req: Request, res: Response): Promise<void> => {
+  const { loan_id } = req.params;
+
+  if (!loan_id) {
+    res.status(400).json({ error: "Loan ID is required." });
+    return;
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT id, due_date, amount_due FROM payments WHERE loan_application_id = $1;`,
+      [loan_id]
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: "Loan not found." });
+      return;
+    }
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching payment terms:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}

@@ -1,6 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import companyLogo from '../../../src/assets/Images/logo.png';
+import axios from "../../api/axiosInstance";
 
 interface LoanDetailModalProps {
   show: boolean;
@@ -8,6 +9,7 @@ interface LoanDetailModalProps {
   loan: {
     name: string;
     id: string;
+    loanNo: string,
     loanAmount: string;
     interest: string;
     serviceFee: string;
@@ -23,6 +25,9 @@ interface LoanDetailModalProps {
 
 const LoanDetailModal: React.FC<LoanDetailModalProps> = ({ show, onClose, loan }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // Local state for fetched payment terms
+  const [paymentTerms, setPaymentTerms] = useState<{ month: string; amount: string }[]>([]);
 
   const downloadModalAsPDF = async () => {
     if (typeof window === 'undefined' || !modalRef.current || !loan) return;
@@ -42,6 +47,35 @@ const LoanDetailModal: React.FC<LoanDetailModalProps> = ({ show, onClose, loan }
       html2pdf().set(opt).from(modalRef.current!).save();
     }, 300);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!loan) return;
+      try {
+        const response = await axios.get(`/api/payments/terms/${loan.loanNo}`);
+        // Map API response to { month, amount }
+        type PaymentTermApiResponse = {
+          due_date: string;
+          amount_due: string;
+        };
+        const mapped = (response.data as PaymentTermApiResponse[]).map((item) => {
+          const date = new Date(item.due_date);
+          const month = date.toLocaleString('default', { month: 'long' });
+          const day = String(date.getDate()).padStart(2, '0');
+          const year = date.getFullYear();
+          return {
+            month: `${month} ${day}, ${year}`,
+            amount: `₱${parseFloat(item.amount_due).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          };
+        });
+        setPaymentTerms(mapped);
+      } catch (error) {
+        console.error("Error fetching payment terms:", error);
+        setPaymentTerms([]);
+      }
+    };
+    fetchData();
+  }, [loan]);
 
   return (
     <Modal
@@ -100,12 +134,12 @@ const LoanDetailModal: React.FC<LoanDetailModalProps> = ({ show, onClose, loan }
               <span className="gothic-a1-bold">Net Loan Fee Proceeds</span> <span className="gothic-a1-bold">{loan?.balance}</span>
             </div>
 
-            {loan?.termsOfPayment && loan.termsOfPayment.length > 0 && (
+            {paymentTerms.length > 0 && (
               <>
                 <hr />
                 <h6 className="text-muted gothic-a1-bold mb-3">Terms of Payment</h6>
                 <div className="mb-4">
-                  {loan.termsOfPayment.map((term, index) => (
+                  {paymentTerms.map((term, index) => (
                     <div key={index} className="d-flex justify-content-between mb-1 gothic-a1-regular">
                       <span>{term.month}</span>
                       <span>{term.amount}</span>
