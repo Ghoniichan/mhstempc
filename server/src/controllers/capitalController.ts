@@ -10,7 +10,7 @@ export const getCapital = (req: Request, res: Response): void => {
     }
 
     try {
-        pool.query("SELECT c.* FROM capital_share c JOIN membership_applications m ON c.membership_id = m.id WHERE m.policy_number = $1;", 
+        pool.query("SELECT c.* FROM capital_share c JOIN membership_applications m ON c.membership_id = m.id WHERE m.policy_number = $1 ORDER BY c.entry_date DESC;", 
             [policy_num], (error, result) => {
             if (error) {
                 console.error("Error fetching capital:", error);
@@ -66,7 +66,7 @@ export const userGetCapital = async (req: Request, res: Response): Promise<void>
             WHERE
                 ac.account_id = $1
             ORDER BY
-                cs.entry_date ASC, cs.id ASC;`, [account_id]);
+                cs.entry_date, cs.id ASC;`, [account_id]);
         res.status(200).json(response.rows);
     } catch (error) {
         console.error("Error fetching user capital:", error);

@@ -9,7 +9,7 @@ export const getSavings = (req: Request, res: Response): void => {
     }
 
     try {
-        pool.query("SELECT s.* FROM savings s JOIN membership_applications m ON s.membership_id = m.id WHERE m.policy_number = $1;", 
+        pool.query("SELECT s.* FROM savings s JOIN membership_applications m ON s.membership_id = m.id WHERE m.policy_number = $1 ORDER BY s.entry_date;", 
             [policy_num], (error, result) => {
             if (error) {
                 console.error("Error fetching savings:", error);

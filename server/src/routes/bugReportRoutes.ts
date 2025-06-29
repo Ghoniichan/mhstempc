@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/', getAllBugReports);
 router.post('/submit', submitReport);
-router.put('/:report_id', resolveReport);
+router.put('/:report_id/:account_id', resolveReport);
 
 
 export default router;

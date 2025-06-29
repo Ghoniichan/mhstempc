@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import CustomTable from "../components/Dashboard/CustomTable";
 import axios from "../api/axiosInstance";
+import { getUserIdFromJwt } from "../utils/tokenDecoder";
 
 interface BugReport {
   id: string;
@@ -31,7 +32,7 @@ const AdminBugReportListScreen = () => {
     const reportId = updatedReports[index].id;
     try {
       // Call the API to resolve the bug report
-      await axios.put(`/api/bugs/${reportId}`);
+      await axios.put(`/api/bugs/${reportId}/${getUserIdFromJwt(localStorage.getItem("token") || "")}`);
       
       // Log the successful resolution
       console.log(`Bug report ${reportId} resolved successfully.`);

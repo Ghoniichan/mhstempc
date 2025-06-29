@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import pool from "../config/db.config";
-
+import {createNotificationDB} from "../controllers/notificationController";
 
 export const bookAppointment = async (req: Request, res: Response): Promise<void> => {
     const { sender, appointment_date, appointment_time, message } = req.body;
@@ -50,6 +50,21 @@ export const bookAppointment = async (req: Request, res: Response): Promise<void
             res.status(500).json({ error: "Failed to book appointment" });
             return;
         }
+        // Create notification for each admin
+        createNotificationDB(
+            sender, 
+            adminIds, 
+            `New appointment booked for ${appointment_date} at ${appointment_time}`, 
+            "Appointment Notification"
+        );
+
+        createNotificationDB(
+            sender, 
+            sender, 
+            `Your appointment for ${appointment_date} at ${appointment_time} has been successfully booked.`, 
+            "Appointment Confirmation"
+        )
+        
         
         await client.query('COMMIT');
 

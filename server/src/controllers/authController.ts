@@ -3,7 +3,10 @@ import { Request, Response, RequestHandler } from 'express';
 import bcrypt from 'bcrypt';
 import pool from '../config/db.config'; // Adjust path to your database connection
 import jwtGenerator from '../utils/jwtGenerator'; // Adjust path to your JWT utility
-import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
+import {createNotificationDB} from '../controllers/notificationController'; // Adjust path to your notification controller
+import { create } from 'domain';
+
+
 
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
@@ -33,6 +36,15 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
       // optional lockout after 3 failures
       if (count >= 3) {
+        const notification = await createNotificationDB(
+          '9ea7cd3d-56a1-4c8a-990e-7244525b7cb3',
+          user.rows[0].account_id,
+          'Too many login attempts',
+          'Account Locked'
+        );
+
+        console.log(notification);
+
          res
           .status(429)
           .set('Retry-After', String(5 * 60))

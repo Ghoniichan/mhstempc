@@ -11,6 +11,7 @@ type Notification = {
   isRead: boolean;
   created_at: string;
   subject: string;
+  sender_name: string;
 };
 
 const NotificationSection = () => {

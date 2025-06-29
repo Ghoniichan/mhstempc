@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import pool from "../config/db.config";
+import { createNotificationDB } from "../controllers/notificationController";
 
 export const getAllBugReports = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -33,6 +34,28 @@ export const submitReport = async (req: Request, res: Response): Promise<void> =
              RETURNING *`,
             [reporter_id, subject, details]
         );
+
+        const admin_ids = (await pool.query("SELECT account_id FROM account_credentials WHERE is_admin = TRUE")).rows;
+        const adminIds = admin_ids.map(r => r.account_id);
+        if (adminIds.length === 0) {
+            res.status(404).json({ error: "No admin accounts found" });
+            return;
+        }
+        // Create a notification for the reporter
+        await createNotificationDB(
+            reporter_id,
+            reporter_id,
+            `Your bug report titled "${subject}" has been submitted successfully.`,
+            "Bug Report Submitted"
+        );
+
+        await createNotificationDB(
+            reporter_id,
+            adminIds,
+            `A new bug report titled "${subject}" has been submitted by ${reporter_id}.`,
+            "New Bug Report"
+        );
+
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error("Error submitting bug report:", err);
@@ -41,7 +64,7 @@ export const submitReport = async (req: Request, res: Response): Promise<void> =
 }
 
 export const resolveReport = async (req: Request, res: Response): Promise<void> => {
-    const { report_id } = req.params;
+    const { report_id, account_id } = req.params;
 
     // Validate input
     if (!report_id) {
@@ -49,7 +72,10 @@ export const resolveReport = async (req: Request, res: Response): Promise<void> 
         return;
     }
 
+    const client = await pool.connect();
+
     try {
+        await client.query("BEGIN");
         const result = await pool.query(
             `UPDATE bug_reports
              SET status = 'resolved'
@@ -63,10 +89,22 @@ export const resolveReport = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
+        const reporter = result.rows[0].account_id;
+        const subject = result.rows[0].subject;
+        await createNotificationDB(
+            account_id,
+            reporter,
+            `Your bug report titled "${subject}" has been resolved.`,
+            "Bug Report Resolved"
+        );
+
         res.status(200).json(result.rows[0]);
+        await client.query("COMMIT");
     } catch (err) {
         console.error("Error resolving bug report:", err);
         res.status(500).json({ error: "Internal Server Error" });
+    }finally {
+        client.release();
     }
 
 }
