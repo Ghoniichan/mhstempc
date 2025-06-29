@@ -21,3 +21,29 @@ export const getNotifications = async (req: Request, res: Response): Promise<voi
     }
 }
 
+export const createNotification = async (req: Request, res: Response): Promise<void> => {
+    const { sender } = req.params;
+    const { subject, message } = req.body;
+    let { receiver } = req.body;
+
+    if (!subject || !message || !receiver || receiver.length === 0) {
+        res.status(400).json({ error: "Subject, message, and receiver (as a non-empty array) are required" });
+        return;
+    }
+
+    //if receiver is not an array, convert it to an array
+    if (!Array.isArray(receiver)) {
+        receiver = [receiver];
+    }
+
+    try {
+        const response = await pool.query(
+            `INSERT INTO notifications (sender, subject, message, receiver)
+            VALUES ($1, $2, $3, $4::uuid[])
+            RETURNING *;`, [sender, subject, message, receiver]);
+        res.status(201).json(response.rows[0]);
+    } catch (error) {
+        console.error("Error creating notification:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}

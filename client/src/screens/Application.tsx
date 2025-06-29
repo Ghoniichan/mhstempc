@@ -11,6 +11,8 @@ import axios from '../api/axiosInstance';
 import { JSX } from "react";
 import log from '../api/log';
 import { getUserIdFromJwt } from '../utils/tokenDecoder';
+import { idFromLoanId } from '../api/accIdFinder';
+import { sendNotification } from '../api/notification';
 
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc' = 'asc'): T[] => {
   if (arr.length <= 1) return arr;
@@ -146,7 +148,11 @@ const Application = () => {
           net_loan_fee_proceeds: parseFloat(net_loan_fee_proceeds)
         });
       }
-      log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'updated loan status', `Loan ${loanNo} status changed to ${capitalizedStatus}`);
+      const userid = getUserIdFromJwt(localStorage.getItem('token') || '');
+      const acc = await idFromLoanId(loanNo);
+      const receiverId = acc && acc.account_id ? acc.account_id : '';
+      sendNotification(receiverId, userid ? userid : '', "Your loan application has been updated to " + capitalizedStatus, "Loan Status Update");
+      log(userid || '', 'updated loan status', `Loan ${loanNo} status changed to ${capitalizedStatus}`);
     } catch {
       updatedList[editingIndex] = { ...app, status: prevStatus };
       setFilteredApps(updatedList);
