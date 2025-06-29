@@ -11,6 +11,7 @@ import paymentsRoutes from "./routes/paymentsRoutes";
 import bugReportRoutes from "./routes/bugReportRoutes";
 import appointmentRoutes from "./routes/appointmentRoutes";
 import smsRoutes from "./routes/smsRoutes";
+import notificationRoutes from "./routes/notificationRoutes";
 
 dotenv.config();
 
@@ -39,6 +40,8 @@ app.use("/api/bugs", bugReportRoutes);
 app.use("/api/appointments", appointmentRoutes);
 
 app.use("/api/sms", smsRoutes);
+
+app.use("/api/notifications", notificationRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
