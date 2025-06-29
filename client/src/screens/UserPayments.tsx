@@ -7,19 +7,17 @@ import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
 
 interface PaymentData {
-  name: string;
-  policyNo: string;
-  amountPaid: string;
+  loanNo: string;
   loanAmount: string;
+  amountPaid: string;
   datePaid: string;
 }
 
 const sortKeyMap: Record<string, keyof PaymentData> = {
-  "Name": "name",
-  "MHSTEMPC Policy No.": "policyNo",
-  "Amount Paid": "amountPaid",
+  "Loan No.": "loanNo",
   "Loan Amount": "loanAmount",
-  "Date Paid": "datePaid"
+  "Amount Paid": "amountPaid",
+  "Date Paid": "datePaid",
 };
 
 const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 'asc' | 'desc'): T[] => {
@@ -40,23 +38,21 @@ const quickSort = <T extends Record<string, any>>(arr: T[], key: string, order: 
 };
 
 const UserPayments = () => {
-  const [selectedColumn, setSelectedColumn] = useState("Name");
+  const [selectedColumn, setSelectedColumn] = useState("Loan No.");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [searchQuery, setSearchQuery] = useState("");
 
   const [paymentData] = useState<PaymentData[]>([
     {
-      name: "Micha Bandasan",
-      policyNo: "MHST12345",
-      amountPaid: "₱5,000",
+      loanNo: "LN-10001",
       loanAmount: "₱50,000",
+      amountPaid: "₱5,000",
       datePaid: "2025-06-15",
     },
     {
-      name: "Jane Doe",
-      policyNo: "MHST54321",
-      amountPaid: "₱3,000",
+      loanNo: "LN-10002",
       loanAmount: "₱30,000",
+      amountPaid: "₱3,000",
       datePaid: "2025-06-10",
     },
   ]);
@@ -66,6 +62,13 @@ const UserPayments = () => {
   useEffect(() => {
     document.title = "MHSTEMPC | User Payments";
   }, []);
+
+  const calculateRemaining = (loan: string, paid: string) => {
+    const loanVal = parseFloat(loan.replace(/[₱,]/g, ""));
+    const paidVal = parseFloat(paid.replace(/[₱,]/g, ""));
+    const remaining = loanVal - paidVal;
+    return `₱${remaining.toLocaleString()}`;
+  };
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -110,11 +113,11 @@ const UserPayments = () => {
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(
       filteredPayments.map(payment => ({
-        Name: payment.name,
-        "MHSTEMPC Policy No.": payment.policyNo,
-        "Amount Paid": payment.amountPaid,
+        "Loan No.": payment.loanNo,
         "Loan Amount": payment.loanAmount,
+        "Amount Paid": payment.amountPaid,
         "Date Paid": payment.datePaid,
+        "Remaining Balance": calculateRemaining(payment.loanAmount, payment.amountPaid),
       }))
     );
     const workbook = XLSX.utils.book_new();
@@ -125,7 +128,7 @@ const UserPayments = () => {
   const exportToWord = () => {
     let content = "User Payments\n\n";
     filteredPayments.forEach(payment => {
-      content += `Name: ${payment.name}\nMHSTEMPC Policy No.: ${payment.policyNo}\nAmount Paid: ${payment.amountPaid}\nLoan Amount: ${payment.loanAmount}\nDate Paid: ${payment.datePaid}\n\n`;
+      content += `Loan No.: ${payment.loanNo}\nLoan Amount: ${payment.loanAmount}\nAmount Paid: ${payment.amountPaid}\nDate Paid: ${payment.datePaid}\nRemaining Balance: ${calculateRemaining(payment.loanAmount, payment.amountPaid)}\n\n`;
     });
 
     const blob = new Blob([content], {
@@ -153,11 +156,11 @@ const UserPayments = () => {
   };
 
   const rows = filteredPayments.map(payment => [
-    payment.name,
-    payment.policyNo,
-    payment.amountPaid,
+    payment.loanNo,
     payment.loanAmount,
+    payment.amountPaid,
     payment.datePaid,
+    calculateRemaining(payment.loanAmount, payment.amountPaid),
   ]);
 
   return (
@@ -220,11 +223,11 @@ const UserPayments = () => {
         {filteredPayments.length > 0 ? (
           <CustomTable
             columnHeadings={[
-              "Name",
-              "MHSTEMPC Policy No.",
-              "Amount Paid",
+              "Loan No.",
               "Loan Amount",
+              "Amount Paid",
               "Date Paid",
+              "Remaining Balance",
             ]}
             rows={rows}
           />

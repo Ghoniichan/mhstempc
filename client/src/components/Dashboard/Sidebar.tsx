@@ -11,12 +11,13 @@ const Sidebar = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string>('');
   const location = useLocation();
 
   const logout = () => {
     log(getUserIdFromJwt(localStorage.getItem('token') || '') || '', 'logged out', 'User logged out');
     localStorage.clear();
-};
+  };
 
   useEffect(() => {
     const getUserRole = () => {
@@ -62,6 +63,9 @@ const Sidebar = () => {
         case "/appointment":
           title = "MHSTEMPC | Appointment";
           break;
+        case "/adminBugReportList":
+          title = "MHSTEMPC | Bug Reports";
+          break;
         case "/home":
           title = "MHSTEMPC | Home";
           break;
@@ -77,46 +81,86 @@ const Sidebar = () => {
     e.preventDefault();
     setShowSettings(prev => !prev);
     setShowNotifications(false);
+    setSelectedItem('settings');
   };
 
   const handleNotificationsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowNotifications(prev => !prev);
     setShowSettings(false);
+    setSelectedItem('notifications');
   };
 
-  const handleClosePanel = () => {
+  const handleNavLinkClick = (item: string) => {
     setShowSettings(false);
     setShowNotifications(false);
+    setSelectedItem(item);
   };
 
   const renderAdminNavigation = () => (
     <>
-      <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink
+        to="/dashboard"
+        className={`nav-link ${selectedItem === 'dashboard' || location.pathname === '/dashboard' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('dashboard')}
+      >
         <span className="Navicon"><i className="bi bi-grid"></i></span>
         <span className="description">Dashboard</span>
       </NavLink>
-      <NavLink to="/client" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+
+      <NavLink
+        to="/client"
+        className={`nav-link ${selectedItem === 'client' || location.pathname === '/client' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('client')}
+      >
         <span className="Navicon"><i className="bi bi-people"></i></span>
         <span className="description">Client</span>
       </NavLink>
-      <NavLink to="/appointment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+
+      <NavLink
+        to="/appointment"
+        className={`nav-link ${selectedItem === 'appointment' || location.pathname === '/appointment' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('appointment')}
+      >
         <span className="Navicon"><i className="bi bi-calendar-event"></i></span>
         <span className="description">Appointment</span>
       </NavLink>
-      <NavLink to="/adminBugReportList" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+
+      <NavLink
+        to="/adminBugReportList"
+        className={`nav-link ${selectedItem === 'bug' || location.pathname === '/adminBugReportList' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('bug')}
+      >
         <span className="Navicon"><i className="bi bi-bug"></i></span>
         <span className="description">Bug Reports</span>
       </NavLink>
-      <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
+
+      <a
+        href="#notifications"
+        onClick={handleNotificationsClick}
+        className={`nav-link ${selectedItem === 'notifications' ? 'active' : ''}`}
+      >
         <span className="Navicon"><i className="bi bi-bell"></i></span>
         <span className="description">Notification</span>
       </a>
-      <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
+
+      <a
+        href="#settings"
+        onClick={handleSettingsClick}
+        className={`nav-link ${selectedItem === 'settings' ? 'active' : ''}`}
+      >
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={logout}>
+
+      <NavLink
+        to="/home"
+        className={`nav-link ${selectedItem === 'logout' ? 'active' : ''}`}
+        onClick={() => {
+          handleNavLinkClick('logout');
+          logout();
+        }}
+      >
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
         <span className="description">Log Out</span>
       </NavLink>
@@ -125,27 +169,59 @@ const Sidebar = () => {
 
   const renderUserNavigation = () => (
     <>
-      <NavLink to="/userProfile" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+      <NavLink
+        to="/userProfile"
+        className={`nav-link ${selectedItem === 'account' || location.pathname === '/userProfile' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('account')}
+      >
         <span className="Navicon"><i className="bi bi-person"></i></span>
         <span className="description">Account</span>
       </NavLink>
-      <NavLink to="/dashboard" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+
+      <NavLink
+        to="/dashboard"
+        className={`nav-link ${selectedItem === 'dashboard' || location.pathname === '/dashboard' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('dashboard')}
+      >
         <span className="Navicon"><i className="bi bi-grid"></i></span>
         <span className="description">Dashboard</span>
       </NavLink>
-      <NavLink to="/userAppointment" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+
+      <NavLink
+        to="/userAppointment"
+        className={`nav-link ${selectedItem === 'appointment' || location.pathname === '/userAppointment' ? 'active' : ''}`}
+        onClick={() => handleNavLinkClick('appointment')}
+      >
         <span className="Navicon"><i className="bi bi-calendar-event"></i></span>
         <span className="description">Appointment</span>
       </NavLink>
-      <a href="#notifications" onClick={handleNotificationsClick} className={`nav-link ${showNotifications ? 'active' : ''}`}>
+
+      <a
+        href="#notifications"
+        onClick={handleNotificationsClick}
+        className={`nav-link ${selectedItem === 'notifications' ? 'active' : ''}`}
+      >
         <span className="Navicon"><i className="bi bi-bell"></i></span>
         <span className="description">Notification</span>
       </a>
-      <a href="#settings" onClick={handleSettingsClick} className={`nav-link ${showSettings ? 'active' : ''}`}>
+
+      <a
+        href="#settings"
+        onClick={handleSettingsClick}
+        className={`nav-link ${selectedItem === 'settings' ? 'active' : ''}`}
+      >
         <span className="Navicon"><i className="bi bi-gear"></i></span>
         <span className="description">Settings</span>
       </a>
-      <NavLink to="/home" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'} onClick={logout}>
+
+      <NavLink
+        to="/home"
+        className={`nav-link ${selectedItem === 'logout' ? 'active' : ''}`}
+        onClick={() => {
+          handleNavLinkClick('logout');
+          logout();
+        }}
+      >
         <span className="Navicon"><i className="bi bi-box-arrow-right"></i></span>
         <span className="description">Log Out</span>
       </NavLink>
@@ -174,7 +250,7 @@ const Sidebar = () => {
         <div className="sidebar-settings-panel">
           <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
             <h5 className="ms-3 mt-3 h5-setting">Settings</h5>
-            <button className="btn-close" onClick={handleClosePanel}></button>
+            <button className="btn-close" onClick={() => setShowSettings(false)}></button>
           </div>
           <div className="p-3">
             <SettingSection role={userRole === 'admin' ? 'Admin' : 'User'} />
@@ -186,7 +262,7 @@ const Sidebar = () => {
         <div className="sidebar-settings-panel">
           <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
             <h5 className="ms-3 mt-3 h5-setting">Notifications</h5>
-            <button className="btn-close" onClick={handleClosePanel}></button>
+            <button className="btn-close" onClick={() => setShowNotifications(false)}></button>
           </div>
           <div className="p-3">
             <NotificationSection />

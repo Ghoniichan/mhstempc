@@ -1,34 +1,34 @@
-.input {
-    position: relative;
-    width: 100%;
-    padding-bottom: 15px;
+/* Scoped styles for CreateNewPass screen */
+.subContNewPass {
+  margin-top: 5px;
 }
 
-.inputBox {
-    position: relative;
-    width: 100%;
-    height: 55px;
-    border-radius: 10px;
-    padding-left: 40px;
-    padding-right: 40px;
+.inputNewPass {
+  position: relative;
+  width: 100%;
+  padding-bottom: 15px;
 }
 
-.iconLock {
-    position: absolute;
-    top: 40%;
-    left: 15px;
-    transform: translateY(-50%);
-    position: absolute;
-    font-size: 1rem; 
-    color: #000000;
-    pointer-events: none;
+.inputBoxNewPass {
+  position: relative;
+  width: 100%;
+  height: 55px;
+  border-radius: 10px;
+  padding-right: 40px;
+  border: 1px solid #002d62;
 }
 
-.subCont {
-    margin-top: 5px;
+.iconLockNewPass {
+  position: absolute;
+  top: 40%;
+  left: 15px;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: #000000;
+  pointer-events: none;
 }
 
-.iconToggle {
+.iconToggleNewPass {
   position: absolute;
   right: 15px;
   top: 40%;

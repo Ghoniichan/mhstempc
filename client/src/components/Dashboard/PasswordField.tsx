@@ -32,7 +32,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error, p
           <i className="icon bi bi-lock-fill position-absolute"
             style={{
               left: '15px',
-              top: '40%',
+              top: '50%',
               transform: 'translateY(-50%)',
               fontSize: '1rem',
               color: '#000000'}}></i>

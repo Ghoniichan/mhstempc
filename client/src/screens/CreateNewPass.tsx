@@ -5,7 +5,6 @@ import '../screens/CreateNewPass.css';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
 const CreateNewPass = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
@@ -38,8 +37,8 @@ const CreateNewPass = () => {
   };
 
   useEffect(() => {
-          document.title = "MHSTEMPC | Create New Password";
-        }, []);
+    document.title = "MHSTEMPC | Create New Password";
+  }, []);
 
   return (
     <div
@@ -66,57 +65,40 @@ const CreateNewPass = () => {
           paddingLeft: '15px'
         }}
       >
-        <div className='subCont'>
-          <div className=" position-relative">
+        <div className="subContNewPass">
+          <div className="inputNewPass">
             <input
-            
               type={showPassword ? "text" : "password"}
               id="password"
-              className="inputBox form-control ps-5 pe-5"
+              className="inputBoxNewPass form-control"
+              style={{paddingLeft: '40px'}}
               placeholder="Enter New Password"
-              style={{ border: '1px solid #002d62', height: '55px' }}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <i className="iconLockNewPass bi bi-lock-fill" />
             <i
-              className="iconLock bi bi-lock-fill"
-              style={{
-                left: '15px',
-                top: '40%',
-                transform: 'translateY(-50%)',
-                fontSize: '1rem',
-                color: '#000',
-              }}
-            />
-            <i
-              className={`iconToggle bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}
+              className={`iconToggleNewPass bi ${showPassword ? 'bi-eye' : 'bi-eye-slash'}`}
               onClick={() => setShowPassword(!showPassword)}
             />
-
           </div>
 
-          <div className="input position-relative mt-2">
+          <div className="inputNewPass">
             <input
               type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
-              className="inputBox form-control ps-5 pe-5"
+              className="inputBoxNewPass form-control"
+              style={{paddingLeft: '40px'}}
               placeholder="Re-enter Password"
-              style={{ border: '1px solid #002d62', height: '55px' }}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            <i className="iconLock bi bi-lock-fill position-absolute"
-              style={{
-                left: '15px',
-                top: '40%',
-                transform: 'translateY(-50%)',
-                fontSize: '1rem',
-                color: '#000',
-              }}></i>
-            <i className={`iconToggle bi ${showConfirmPassword ? 'bi-eye' : 'bi-eye-slash'}`}
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}></i>
+            <i className="iconLockNewPass bi bi-lock-fill" />
+            <i
+              className={`iconToggleNewPass bi ${showConfirmPassword ? 'bi-eye' : 'bi-eye-slash'}`}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
           </div>
-
         </div>
 
         {error && (

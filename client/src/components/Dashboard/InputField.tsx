@@ -22,7 +22,7 @@ const InputField: React.FC<InputFieldProps> = ({ value, onChange, error, placeho
             value={value}
             onChange={(e) => onChange(e.target.value)}
           />
-          <i className="icon bi bi-envelope position-absolute" style={{top: '40%'}}></i>
+          <i className="icon bi bi-envelope position-absolute" style={{top: '50%'}}></i>
         </div>
         {error && <div className="text-danger mt-1" style={{ fontSize: '14px', paddingTop: '0px' }}>{error}</div>}
       </div>

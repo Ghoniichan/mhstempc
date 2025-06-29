@@ -6,23 +6,23 @@ import '../screens/ForgotPass.css';
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  // ✅ Philippine number validation
-  const isValidPhilippinePhoneNumber = (phone: string): boolean => {
-    const regex = /^(09\d{9}|\+639\d{9})$/;
-    return regex.test(phone);
+  // ✅ Email validation
+  const isValidEmail = (email: string): boolean => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   };
 
   // ✅ Handle form submission
-  const handlePhoneVerif = () => {
-    if (!phoneNumber) {
-      setError("Phone number is required");
+  const handleEmailVerif = () => {
+    if (!email) {
+      setError("Email is required");
       return;
     }
-    if (!isValidPhilippinePhoneNumber(phoneNumber)) {
-      setError("Please enter a valid Philippine phone number");
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address");
       return;
     }
 
@@ -30,17 +30,8 @@ const ForgotPasswordScreen = () => {
     navigate("/emailVerif");
   };
 
-  // ✅ Restrict input to only digits (and optional '+' at the start)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let input = e.target.value;
-
-    if (input.startsWith("+")) {
-      input = "+" + input.slice(1).replace(/\D/g, "");
-    } else {
-      input = input.replace(/\D/g, "");
-    }
-
-    setPhoneNumber(input);
+    setEmail(e.target.value);
     setError("");
   };
 
@@ -48,7 +39,7 @@ const ForgotPasswordScreen = () => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handlePhoneVerif();
+      handleEmailVerif();
     }
   };
 
@@ -72,7 +63,7 @@ const ForgotPasswordScreen = () => {
     >
       <ColumnLayoutCard
         title="Forgot Password"
-        description="Enter your mobile number associated with your account."
+        description="Enter the email address associated with your account."
         titleStyle={{ fontSize: '20px', paddingLeft: '15px', paddingTop: '20px' }}
         descriptionStyle={{
           fontSize: '15px',
@@ -87,14 +78,13 @@ const ForgotPasswordScreen = () => {
               className="phonelabel gothic-a1-bold"
               style={{ display: 'block', marginBottom: '5px', textAlign: 'left' }}
             >
-              Phone
+              Email
             </label>
             <input
-              type="text"
-              inputMode="numeric"
-              value={phoneNumber}
+              type="email"
+              value={email}
               onChange={handleInputChange}
-              placeholder="+639123456789"
+              placeholder="example@email.com"
               style={{
                 width: "100%",
                 padding: "10px",
@@ -115,7 +105,7 @@ const ForgotPasswordScreen = () => {
             <CustomButton
               label="Send code"
               type="button"
-              onClick={handlePhoneVerif}
+              onClick={handleEmailVerif}
             />
           </div>
         </form>
