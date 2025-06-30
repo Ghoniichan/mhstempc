@@ -1,5 +1,9 @@
 import express from 'express';
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
+const loanAssessorUrl = process.env.LOAN_ASSESSOR_URL;
 
 const router = express.Router();
 
@@ -7,7 +11,7 @@ router.post('/assess', async (req, res) => {
   try {
     const { loan_amount, capital_share, savings } = req.body;
     // Forward data to Python FastAPI server
-    const response = await axios.post('http://localhost:8000/predict', {
+    const response = await axios.post(`${loanAssessorUrl}`, {
       loan_amount,
       capital_share,
       savings,
