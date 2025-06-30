@@ -13,6 +13,7 @@ import appointmentRoutes from "./routes/appointmentRoutes";
 import smsRoutes from "./routes/smsRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 import accIDRoutes from "./routes/accIdRoutes";
+import loanAssessorRoutes from "./routes/loanAssessorRoute";
 
 dotenv.config();
 
@@ -45,6 +46,8 @@ app.use("/api/sms", smsRoutes);
 app.use("/api/notifications", notificationRoutes);
 
 app.use("/api/accid", accIDRoutes);
+
+app.use("/api/loan", loanAssessorRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
