@@ -25,4 +25,14 @@ router.post('/assess', async (req, res) => {
   }
 });
 
+router.get('/test-internal', async (req, res) => {
+  try {
+    const response = await axios.get('http://amusing-spontaneity.railway.internal:8080/'); // Or /predict if GET is allowed
+    res.send(response.data);
+  } catch (e) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    res.status(500).send({ error: errorMessage });
+  }
+});
+
 export default router;
