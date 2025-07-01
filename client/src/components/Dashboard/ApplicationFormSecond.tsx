@@ -128,10 +128,28 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
     navigate('/application');
   };
 
+  const fetchLogistics = async (loanAmount: number, policy_num: string) => {
+    try {
+      const data = await axios.post('/api/loan/assess', {
+        loan_amount: loanAmount,
+        policy_num: policy_num,
+      });
+
+      console.log('Logistics data:', data.data);
+      setLoanRatio(data.data.ratios.ratio_loan);
+      setSavingsRatio(data.data.ratios.ratio_savings);
+      setApprovalRate(data.data.prob_approval);
+      setRecommendedAction(data.data.prediction === 0 ? 'Disapproved' : 'Approved');
+    } catch (error) {
+      console.error('Error fetching logistics:', error);
+    }
+  };
+
   useEffect(() => {
     // Parse the user-typed loan amount
     const loanAmount = parseFloat(formData.computations.loanAmount);
     const paymentTerm = cleanedData.loanInfo.paymentTerms;
+    const policy_num = cleanedData.policy_num; // <-- Add this line to define policy_num
 
     if (!isNaN(loanAmount) && paymentTerm) {
       const {
@@ -157,46 +175,20 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
         }
       }));
     }
+    
+    if (
+      !isNaN(loanAmount) &&
+      policy_num
+    ) {
+      fetchLogistics(loanAmount, policy_num);
+    }
   }, [
     formData.computations.loanAmount,
-    cleanedData.loanInfo.paymentTerms
+    cleanedData.loanInfo.paymentTerms,
+    cleanedData.policy_num // Ensure policy_num is defined
   ]);
 
-  useEffect(() => {
-    const fetchLogistics = async () => {
-      const loan_amount  = parseFloat(formData.computations.loanAmount);
-      const capital_share = parseFloat(formData.computations.paidUpCapital);
-      const savings  = parseFloat(formData.computations.savings);
 
-      console.log('Fetching logistics with:', {
-        loan_amount,
-        capital_share,
-        savings: savings
-      });
-      try {
-        const { data } = await axios.post('/api/loan/assess', {
-          loan_amount: loan_amount,
-          capital_share: capital_share,
-          savings: savings
-        });
-        console.log('Logistics data:', data);
-        if (data.status === 200) {
-          setApprovalRate(data.prob_approval * 100);
-          setRecommendedAction(data.prediction === 1 ? 'Approve' : 'Reject');
-          setLoanRatio(data.ratios.ratio_loan * 100);
-          setSavingsRatio(data.ratios.ratio_savings * 100);
-        }
-      } catch (error) {
-        console.error('Error fetching logistics:', error);
-        // Handle error appropriately, e.g., show an alert or set an error state
-      }
-    };
-    fetchLogistics();
-  }, [
-    formData.computations.loanAmount,
-    formData.computations.paidUpCapital,
-    formData.computations.savings
-  ]);
 
   return (
     <Container fluid className="py-3 main-content">
