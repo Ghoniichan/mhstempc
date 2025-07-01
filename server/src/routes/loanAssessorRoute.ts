@@ -1,45 +1,11 @@
 import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
-import pool from "../config/db.config";
 
 dotenv.config();
 const loanAssessorUrl = process.env.LOAN_ASSESSOR_URL;
 
 const router = express.Router();
-
-router.get('/totals/:policy_num', async (req, res) => {
-  const { policy_num } = req.params;
-
-  if (!policy_num) {
-    res.status(400).json({ error: "Policy number is required" });
-    return;
-  }
-
-  try {
-    const query = `
-      SELECT
-        COALESCE(SUM(cs.amount), 0) AS total_capital_share,
-        COALESCE(SUM(s.received_amount - s.withdrawal), 0) AS total_savings
-      FROM membership_applications m
-      LEFT JOIN capital_share cs ON m.id = cs.membership_id
-      LEFT JOIN savings s ON m.id = s.membership_id
-      WHERE m.policy_number = $1
-    `;
-
-    const result = await pool.query(query, [policy_num]);
-    const totals = result.rows[0];
-
-    res.status(200).json({
-      policy_number: policy_num,
-      totalCapitalShare: parseFloat(totals.total_capital_share),
-      totalSavings: parseFloat(totals.total_savings)
-    });
-  } catch (error) {
-    console.error("Error fetching totals:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 router.post('/assess', async (req, res) => {
   try {
