@@ -176,10 +176,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
       }));
     }
     
-    if (
-      !isNaN(loanAmount) &&
-      policy_num
-    ) {
+    if (!isNaN(loanAmount) && !policy_num) {
       fetchLogistics(loanAmount, policy_num);
     }
   }, [

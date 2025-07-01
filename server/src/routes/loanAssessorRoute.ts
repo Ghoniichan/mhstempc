@@ -71,6 +71,7 @@ router.post('/assess', async (req, res) => {
     const totals = result.rows[0];
     const total_capital_share = parseFloat(totals.total_capital_share);
     const total_savings = parseFloat(totals.total_savings);
+    console.log(`Total Capital Share: ${total_capital_share}, Total Savings: ${total_savings}`);
 
     // Forward data to Python FastAPI server
     const response = await axios.post(`${loanAssessorUrl}`, {
