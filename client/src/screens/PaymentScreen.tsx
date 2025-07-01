@@ -5,7 +5,7 @@ import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
-import axios from '../api/axiosInstance';
+import axios from "../api/axiosInstance";
 
 interface Payment {
   name: string;
@@ -53,16 +53,14 @@ const submitPayment = async (id: string, amount: number): Promise<void> => {
     console.error("Error submitting payment:", error);
     throw error;
   }
-}
+};
 
 const PaymentScreen = () => {
   const [selectedColumnLabel, setSelectedColumnLabel] = useState("Name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [searchQuery, setSearchQuery] = useState("");
-
   const [payments, setPayments] = useState<Payment[]>([]);
-
-  const [filteredPayments, setFilteredPayments] = useState<Payment[]>(payments);
+  const [filteredPayments, setFilteredPayments] = useState<Payment[]>([]);
   const [editingRow, setEditingRow] = useState<string | null>(null);
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   const [paidAmounts, setPaidAmounts] = useState<Record<string, number>>({});
@@ -71,7 +69,42 @@ const PaymentScreen = () => {
 
   useEffect(() => {
     document.title = "MHSTEMPC | Payment";
-  }, []);
+
+    const fetchPayments = async () => {
+      try {
+        const res = await axios.get("/api/payments");
+        const data = res.data;
+
+        const mapped: Payment[] = data.map((item: any) => ({
+          name: item.name,
+          id: String(item.id),
+          loanNo: item.loan_application_id,
+          status: item.payment_status,
+          dateRelease: "N/A",
+          date: item.payment_date
+            ? new Date(item.payment_date).toISOString().split("T")[0]
+            : "",
+          collectedBy: "N/A",
+          dueDate: new Date(item.due_date).toISOString().split("T")[0],
+          loanAmount: `₱${parseFloat(item.amount_due).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+          remaining: `₱${parseFloat(item.remaining_balance).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`,
+        }));
+
+        setPayments(mapped);
+        setFilteredPayments(mapped);
+      } catch (err) {
+        console.error("Failed to fetch payments:", err);
+      }
+    };
+
+    fetchPayments();
+  }, []); // ✅ FIXED: only fetch once on mount
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -93,7 +126,7 @@ const PaymentScreen = () => {
     const key = sortKeyMap[columnLabel];
     const isCurrencyField = key === "loanAmount";
 
-    let sorted: Payment[];
+    let sorted: Payment[] = [];
     if (isCurrencyField) {
       sorted = [...filteredPayments].sort((a, b) => {
         const aVal = parseFloat(a.loanAmount.replace(/[₱,]/g, ""));
@@ -118,12 +151,10 @@ const PaymentScreen = () => {
     const loanAmountNum = parseFloat(payment.loanAmount.replace(/[₱,]/g, ""));
     if (!isNaN(amount) && amount > 0) {
       setPaidAmounts((prev) => ({ ...prev, [id]: (prev[id] || 0) + amount }));
-      // Only show dropdown if fully paid
       if ((paidAmounts[id] || 0) + amount >= loanAmountNum) {
         setShowDropdown((prev) => ({ ...prev, [id]: true }));
       }
     }
-    console.log(`Payment for ${id} submitted: ₱${amount}`);
 
     try {
       await submitPayment(id, amount);
@@ -141,68 +172,64 @@ const PaymentScreen = () => {
   const rows = filteredPayments.map((p) => {
     const loanAmountNum = parseFloat(p.loanAmount.replace(/[₱,]/g, ""));
     const paid = paidAmounts[p.id] || 0;
-    const remaining = p.remaining;
     const remainingNum = parseFloat(p.remaining.replace(/[₱,]/g, ""));
     const isEditing = editingRow === p.id;
     const showModeDropdown = showDropdown[p.id] && paid >= loanAmountNum;
     const selectedPaymentMode = paymentModes[p.id] || "";
 
-    const actionCell = (remainingNum === 0) ? (
-      <span className="text-success fw-semibold">Paid</span>
-    ) : isEditing ? (
-      <div className="d-flex gap-1">
-        <input
-          type="number"
-          className="form-control form-control-sm"
-          placeholder="Amount"
-          value={inputValues[p.id] || ""}
-          onChange={(e) =>{
-            const value = e.target.value;
-            let numericValue = parseFloat(value);
-            const remaining = parseFloat(p.remaining.replace(/[₱,]/g, ""));
-            // Clamp the value to the remaining balance
-            if (numericValue > remaining) {
-              numericValue = remaining;
-            }
-            setInputValues((prev) => ({
-              ...prev,
-              [p.id]: !isNaN(numericValue) ? numericValue.toString() : "",
-            }));
-          }}
-          style={{ width: "100px" }}
-          autoFocus
-        />
+    const actionCell =
+      remainingNum === 0 ? (
+        <span className="text-success fw-semibold">Paid</span>
+      ) : isEditing ? (
+        <div className="d-flex gap-1">
+          <input
+            type="number"
+            className="form-control form-control-sm"
+            placeholder="Amount"
+            value={inputValues[p.id] || ""}
+            onChange={(e) => {
+              let value = parseFloat(e.target.value);
+              const max = parseFloat(p.remaining.replace(/[₱,]/g, ""));
+              if (value > max) value = max;
+              setInputValues((prev) => ({
+                ...prev,
+                [p.id]: !isNaN(value) ? value.toString() : "",
+              }));
+            }}
+            style={{ width: "100px" }}
+            autoFocus
+          />
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={() => handlePaidSubmit(p.id)}
+          >
+            Enter
+          </button>
+        </div>
+      ) : showModeDropdown ? (
+        <div className="d-flex flex-column">
+          <label className="form-label mb-1 small">Mode of Payment:</label>
+          <select
+            className="form-select form-select-sm"
+            style={{ width: "120px" }}
+            value={selectedPaymentMode}
+            onChange={(e) => handlePaymentModeChange(p.id, e.target.value)}
+          >
+            <option value="" disabled>
+              Select
+            </option>
+            <option value="Cash">Cash</option>
+            <option value="Card">Card</option>
+          </select>
+        </div>
+      ) : (
         <button
-          className="btn btn-sm btn-primary"
-          onClick={() => handlePaidSubmit(p.id)}
+          className="btn btn-sm btn-success"
+          onClick={() => setEditingRow(p.id)}
         >
-          Enter
+          Paid
         </button>
-      </div>
-    ) : showModeDropdown ? (
-      <div className="d-flex flex-column">
-        <label className="form-label mb-1 small">Mode of Payment:</label>
-        <select
-          className="form-select form-select-sm"
-          style={{ width: "120px" }}
-          value={selectedPaymentMode}
-          onChange={(e) => handlePaymentModeChange(p.id, e.target.value)}
-        >
-          <option value="" disabled>
-            Select
-          </option>
-          <option value="Cash">Cash</option>
-          <option value="Card">Card</option>
-        </select>
-      </div>
-    ) : (
-      <button
-        className="btn btn-sm btn-success"
-        onClick={() => setEditingRow(p.id)}
-      >
-        Paid
-      </button>
-    );
+      );
 
     return [
       p.name,
@@ -211,24 +238,22 @@ const PaymentScreen = () => {
       selectedPaymentMode || p.status,
       p.date,
       p.dueDate,
-      remaining,
+      p.remaining,
       actionCell,
     ];
   });
 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
-      filteredPayments.map((p) => {
-        return {
-          Name: p.name,
-          "Loan No.": p.loanNo,
-          "Loan Amount": p.loanAmount,
-          "Payment Status": paymentModes[p.loanNo] || p.status,
-          "Payment Date": p.date,
-          "Due Date": p.dueDate,
-          "Remaining Balance": p.remaining,
-        };
-      })
+      filteredPayments.map((p) => ({
+        Name: p.name,
+        "Loan No.": p.loanNo,
+        "Loan Amount": p.loanAmount,
+        "Payment Status": paymentModes[p.loanNo] || p.status,
+        "Payment Date": p.date,
+        "Due Date": p.dueDate,
+        "Remaining Balance": p.remaining,
+      }))
     );
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Payments");
@@ -238,12 +263,9 @@ const PaymentScreen = () => {
   const exportToWord = () => {
     let content = "Payment Records\n\n";
     filteredPayments.forEach((p) => {
-      const remaining = parseFloat(p.remaining.replace(/[₱,]/g, ""));;
-      content += `Name: ${p.name}\nLoan No.: ${p.loanNo}\nLoan Amount: ${p.loanAmount}\nMode of Payment: ${paymentModes[p.loanNo] || p.status}\nPayment Date: ${p.date}\nDue Date: ${p.dueDate}\nRemaining Balance: ${remaining.toLocaleString()}\n\n`;
+      content += `Name: ${p.name}\nLoan No.: ${p.loanNo}\nLoan Amount: ${p.loanAmount}\nMode of Payment: ${paymentModes[p.loanNo] || p.status}\nPayment Date: ${p.date}\nDue Date: ${p.dueDate}\nRemaining Balance: ${p.remaining}\n\n`;
     });
-    const blob = new Blob([content], {
-      type: "application/msword;charset=utf-8",
-    });
+    const blob = new Blob([content], { type: "application/msword;charset=utf-8" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = "payments.doc";
@@ -261,46 +283,6 @@ const PaymentScreen = () => {
       link.click();
     });
   };
-
-
-  useEffect(() => {
-    document.title = "MHSTEMPC | Payment";
-
-    const fetchPayments = async () => {
-      try {
-        const res = await axios.get("/api/payments");
-        const data = res.data; // array of raw payment records
-
-        const mapped: Payment[] = data.map((item: any) => ({
-          name: item.name, // Replace with actual name if available from join
-          id: String(item.id),
-          loanNo: item.loan_application_id,
-          status: item.payment_status,
-          dateRelease: "N/A", // Replace if you have release date
-          date: item.payment_date
-            ? new Date(item.payment_date).toISOString().split("T")[0]
-            : "",
-          collectedBy: "N/A", // Replace if you have collector data
-          dueDate: new Date(item.due_date).toISOString().split("T")[0],
-          loanAmount: `₱${parseFloat(item.amount_due).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`,
-          remaining: `₱${parseFloat(item.remaining_balance).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`,
-        }));
-
-        setPayments(mapped);
-        setFilteredPayments(mapped);
-      } catch (err) {
-        console.error("Failed to fetch payments:", err);
-      }
-    };
-
-    fetchPayments();
-  }, [filteredPayments]);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>
@@ -341,7 +323,6 @@ const PaymentScreen = () => {
               },
             ]}
           />
-
 
           <ButtonCustom
             text="Download"
