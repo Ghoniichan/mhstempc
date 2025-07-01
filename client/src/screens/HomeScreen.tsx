@@ -23,7 +23,7 @@ const HomeScreen = () => {
             </small>
             <p className="nameTwo mb-0 alegreya-sans-bold">MHSTEMPC</p>
             <small className="nameOne d-block mb-5 alegreya-sans-regular">
-              MULTI-PURPOSE COOPERATIVE
+              MULTIPURPOSE COOPERATIVE
             </small>
           </div>
         </div>

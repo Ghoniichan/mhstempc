@@ -15,22 +15,22 @@ interface ApplicationFormSecondProps {
 
 interface FormData {
   termsAccepted: boolean;
-  signedDate: string;
+  signedDate: string; // Fixed: was "signedData"
   computations: {
     loanAmount: string;
     interest: string;
     paidUpCapital: string;
     serviceFee: string;
     savings: string;
-    netLoanProceeds: string;
-    approvalRate: string;
-    recommended: string;
+    netLoanProceeds: string; // Fixed: was "netLoansProceeds"
   };
   submissionTimestamp: string;
 }
 
 const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel }) => {
   const navigate = useNavigate();
+
+  // Get cleanedData passed from ApplicationForm (via location state)
   const location = useLocation();
   const cleanedData = location.state?.formData || {};
 
@@ -44,21 +44,25 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
       serviceFee: '',
       savings: '',
       netLoanProceeds: '',
-      approvalRate: '',
-      recommended: '',
     },
     submissionTimestamp: ''
   });
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, termsAccepted: e.target.checked }));
+    setFormData(prev => ({
+      ...prev,
+      termsAccepted: e.target.checked
+    }));
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({ ...prev, signedDate: e.target.value }));
+    setFormData(prev => ({
+      ...prev,
+      signedDate: e.target.value
+    }));
   };
 
-  const handleComputationChange = (field: keyof FormData['computations']) =>
+  const handleComputationChange = (field: keyof FormData['computations']) => 
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData(prev => ({
         ...prev,
@@ -71,74 +75,89 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
+    // Validate required fields
     if (!formData.termsAccepted) {
       alert('Please accept the terms and conditions before submitting.');
       return;
     }
-
+    
     if (!formData.signedDate) {
       alert('Please select a signing date.');
       return;
     }
 
     try {
-      const response = await axios.post('/api/loans/new', cleanedData);
-      if (response.status !== 201) {
-        alert('Failed to submit form. Please try again later.');
-        return;
-      }
+        console.log(cleanedData)
+        const response = await axios.post('/api/loans/new', cleanedData);
+        if (response.status === 201) {
+          console.log('Form submitted successfully');
+          log(getUserIdFromJwt(response.data.jwtToken) || '', 'submitted loan application', 'Loan application submitted');
+        } else {
+          console.error('Failed to submit form:', response.data);
+          alert('Failed to submit form. Please try again later.');
+          return;
+        }
 
-      log(
-        getUserIdFromJwt(response.data.jwtToken) || '',
-        'submitted loan application',
-        'Loan application submitted'
-      );
+        const data = {
+          loan_id: response.data.loan_id,
+          loan_amount: formData.computations.loanAmount,
+          interest: formData.computations.interest,
+          paid_up_capital: formData.computations.paidUpCapital,
+          service_fee: formData.computations.serviceFee,
+          savings: formData.computations.savings,
+          net_loan_proceeds: formData.computations.netLoanProceeds,
+        }
 
-      const data = {
-        loan_id: response.data.loan_id,
-        loan_amount: formData.computations.loanAmount,
-        interest: formData.computations.interest,
-        paid_up_capital: formData.computations.paidUpCapital,
-        service_fee: formData.computations.serviceFee,
-        savings: formData.computations.savings,
-        net_loan_proceeds: formData.computations.netLoanProceeds,
-        approval_rate: formData.computations.approvalRate,
-        recommended: formData.computations.recommended,
-      };
+        await axios.post('/api/loans/new/computations', data);
 
-      await axios.post('/api/loans/new/computations', data);
     } catch (error) {
-      console.error(error);
+      console.error('Error submitting form:', error);
       alert('An error occurred while submitting the form. Please try again later.');
       return;
     }
+    
+    // Show JSON in alert (you can remove this in production)
+    alert(`Form submitted successfully!`);
 
-    alert('Form submitted successfully!');
+    // Navigate to next page
     navigate('/application');
   };
 
   useEffect(() => {
-    const loanAmt = parseFloat(formData.computations.loanAmount);
-    const paymentTerm = cleanedData.loanInfo?.paymentTerms;
+    // Parse the user-typed loan amount
+    const loanAmount = parseFloat(formData.computations.loanAmount);
+    const paymentTerm = cleanedData.loanInfo.paymentTerms;
 
-    if (!isNaN(loanAmt) && paymentTerm) {
-      const { interest, paidUpCapital, serviceFee, savings, netAmount } =
-        calculateComputations(loanAmt, paymentTerm);
+    if (!isNaN(loanAmount) && paymentTerm) {
+      const {
+        interest,
+        paidUpCapital,
+        serviceFee,
+        savings,
+        netAmount
+      } = calculateComputations(loanAmount, paymentTerm);
 
       setFormData(prev => ({
         ...prev,
         computations: {
-          ...prev.computations,
-          interest: interest.toFixed(2),
-          paidUpCapital: paidUpCapital.toFixed(2),
-          serviceFee: serviceFee.toFixed(2),
-          savings: savings.toFixed(2),
+          // preserve whatever the user just typed:
+          loanAmount: prev.computations.loanAmount,
+
+          // overwrite only the computed outputs:
+          interest:        interest.toFixed(2),
+          paidUpCapital:   paidUpCapital.toFixed(2),
+          serviceFee:      serviceFee.toFixed(2),
+          savings:         savings.toFixed(2),
           netLoanProceeds: netAmount.toFixed(2),
         }
       }));
     }
-  }, [formData.computations.loanAmount, cleanedData.loanInfo?.paymentTerms]);
+
+  }, [
+    formData.computations.loanAmount,
+    cleanedData.loanInfo.paymentTerms
+  ]);
 
   return (
     <Container fluid className="py-3 main-content">
@@ -149,13 +168,15 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
               MULTI-PURPOSE LOAN PROGRAM APPLICATION FORM
             </span>
           </div>
-
-          <div className="card shadow-lg p-4 mb-5 bg-white rounded afs-card" style={{ width: '1200px', maxWidth: '970px' }}>
+ 
+          <div className="card shadow-lg p-4 mb-5 bg-white rounded afs-card" style={{width: '1200px', maxWidth: '970px'}}>
             <div className="scrollable-form">
               <form onSubmit={handleSubmit}>
                 <Row className="mb-4">
                   <Col>
-                    <h5 className="text-center gothic-a1-bold" style={{ fontSize: '20px' }}>PROGRAM TUTORIAL</h5>
+                    <h5 className="text-center gothic-a1-bold" style={{ fontSize: '20px' }}>
+                      PROGRAM TUTORIAL
+                    </h5>
                     <p className="gothic-a1-regular" style={{ fontSize: '16px' }}>
                       The Multi-Purpose Loan Project is to financially assist all legitimate members of the MHSTEMPC and teachers and employees of Marikina High School.
                     </p>
@@ -175,11 +196,11 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                   "If a borrower wishes to avail loan greater than 80% of his capital share, he must have a co-maker who is in good standing and only 90% of the co-maker's capital share can be a collateral for the said loan.",
                   "If a borrower failed to pay the monthly amortization for three consecutive months, the co-maker is responsible for the borrower's payment.",
                   "A co-maker can avail a loan if the borrower has paid 50% of his loan. However, if the remaining 50% loan balance is less than the capital share of the borrower, the loan difference will be deducted from the co-maker.",
-                  "MHSTEMPC members will have a 5% interest for 6 months term of payment and 10% for 12 months."
+                  "MHTEMPC members will have a 5% interest for 6 months term of payment and 10% interest for 12 months amortization."
                 ].map((text, idx) => (
                   <Row key={idx} className="mb-3">
                     <Col>
-                      <p className="gothic-a1-regular" style={{ fontSize: '16px' }}>
+                      <p className={`gothic-a1-regular ${idx > 0 ? 'indented-paragraph' : ''}`} style={{ fontSize: '16px' }}>
                         &bull; {text}
                       </p>
                     </Col>
@@ -192,12 +213,17 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                       <input
                         type="checkbox"
                         id="termsAndConditionsCheckbox"
+                        name="paymentTerms"
                         className="form-check-input"
                         checked={formData.termsAccepted}
                         onChange={handleCheckboxChange}
                         required
                       />
-                      <label htmlFor="termsAndConditionsCheckbox" className="form-check-label gothic-a1-bold mb-0" style={{ fontSize: '16px', lineHeight: '1.4' }}>
+                      <label
+                        htmlFor="termsAndConditionsCheckbox"
+                        className="form-check-label gothic-a1-bold mb-0"
+                        style={{ fontSize: '16px', lineHeight: '1.4' }}
+                      >
                         I hereby declare that I have read and understood the foregoing and have executed this document willingly and voluntarily.
                       </label>
                     </div>
@@ -216,7 +242,9 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                         onChange={handleDateChange}
                         required
                       />
-                      <span className="gothic-a1-bold">at Marikina High School, Concepcion, Marikina City.</span>
+                      <span className="gothic-a1-bold">
+                        at Marikina High School, Concepcion, Marikina City.
+                      </span>
                     </div>
                   </Col>
                 </Row>
@@ -227,53 +255,63 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                       <h6 className="box-title gothic-a1-bold" style={{ fontSize: '15px' }}>Computations:</h6>
 
                       {[
-                        { label: "Amount of Loan", field: "loanAmount" },
-                        { label: "Interest", field: "interest" },
-                        { label: "Paid-Up Capital", field: "paidUpCapital" },
-                        { label: "Service Fee", field: "serviceFee" },
-                        { label: "Savings", field: "savings" },
-                        { label: "Net Loan Fee Proceeds", field: "netLoanProceeds" }
-                      ].map(({ label, field }) => (
-                        <div className="mb-3" key={field}>
-                          <label htmlFor={field} className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>{label}:</label>
-                          <input
-                            type="text"
-                            id={field}
-                            className="form-control"
-                            placeholder={`Enter ${label.toLowerCase()}`}
-                            value={formData.computations[field as keyof FormData['computations']]}
-                            onChange={handleComputationChange(field as keyof FormData['computations'])}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </Col>
-                </Row>
-
-                <Row className="mb-2 justify-content-center">
-                  <Col xs={12} sm={10} md={6}>
-                    <div className="box-container" style={{ height: '100%', maxHeight: '300px' }}>
-                      <h6 className="box-title gothic-a1-bold " style={{ fontSize: '15px' }}>Approval Evaluation:</h6>
-                      <div className="mb-3">
-                        <label htmlFor="approvalRate" className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>Approval Rate:</label>
-                        <input
-                          type="text"
-                          id="approvalRate"
-                          className="form-control"
-                          value={formData.computations.approvalRate}
-                          onChange={handleComputationChange("approvalRate")}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label htmlFor="recommended" className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>Recommended:</label>
-                        <input
-                          type="text"
-                          id="recommended"
-                          className="form-control"
-                          value={formData.computations.recommended}
-                          onChange={handleComputationChange("recommended")}
-                        />
-                      </div>
+                        { label: "Amount of Loan", id: "loanAmountBox", field: "loanAmount" as keyof FormData['computations'] },
+                        { label: "Interest", id: "interestBox", field: "interest" as keyof FormData['computations'] },
+                        { label: "Paid-Up Capital", id: "paidUpCapitalBox", field: "paidUpCapital" as keyof FormData['computations'] },
+                        { label: "Service Fee", id: "serviceFeeBox", field: "serviceFee" as keyof FormData['computations'] },
+                        { label: "Savings", id: "savingsBox", field: "savings" as keyof FormData['computations'] },
+                        { label: "Net Loan Fee Proceeds", id: "netLoanProceedsBox", field: "netLoanProceeds" as keyof FormData['computations'] }
+                      ].map(({ label, id, field }) => (
+                            <div className="mb-3" key={id}>
+                            <label htmlFor={id} className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
+                              {label}:
+                            </label>
+                            <input 
+                              type="text" 
+                              id={id} 
+                              className="form-control" 
+                              placeholder={`Enter ${label.toLowerCase()}`} 
+                              value={formData.computations[field]}
+                              onChange={handleComputationChange(field)}
+                            />
+                            </div>
+                          ))}
+                          <div className="mb-1">
+                            <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
+                              Loan Ratio:
+                              <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
+                                {/* Replace with actual value if available */}
+                                N/A
+                              </span>
+                            </label>
+                          </div>
+                          <div className="mb-1">
+                            <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
+                              Savings Ratio:
+                              <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
+                                {/* Replace with actual value if available */}
+                                N/A
+                              </span>
+                            </label>
+                          </div>
+                          <div className="mb-1">
+                            <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
+                              Approval Rate:
+                              <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
+                                {/* Replace with actual value if available */}
+                                N/A
+                              </span>
+                            </label>
+                          </div>
+                          <div className="mb-1">
+                            <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
+                              Recommended Action:
+                              <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
+                                {/* Replace with actual value if available */}
+                                N/A
+                              </span>
+                            </label>
+                          </div>
                     </div>
                   </Col>
                 </Row>
