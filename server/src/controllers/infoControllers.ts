@@ -2,6 +2,7 @@ import { Request, Response, RequestHandler } from 'express';
 import pool from '../config/db.config'; 
 import bcrypt from 'bcrypt';
 import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
+import { sendEmail, buildPasswordEmail } from '../routes/emailerRoutes'; // Adjust path to your emailer routes
 
 export const clients: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -158,6 +159,9 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
         empValues
       );
     }
+
+    const emailContent = buildPasswordEmail(userInfo.firstName, pass);
+    await sendEmail(userInfo.fbAccEmailAddress, "Your Account Password", emailContent);
 
     await client.query('COMMIT');
     res.status(201).json({ member_id: userInfo, account_id: accountId, password: pass });
