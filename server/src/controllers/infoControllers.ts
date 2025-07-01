@@ -17,7 +17,7 @@ export const clients: RequestHandler = async (req: Request, res: Response): Prom
 export const user: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { policy_no } = req.params;
   try {
-    const result = await pool.query("SELECT first_name, middle_name, last_name, present_address, tel_cel_no, membership_date, policy_number, get_latest_capital_share_by_policy($1) AS capital, get_latest_savings_by_policy($1) AS savings FROM membership_applications WHERE policy_number = $1;", [policy_no]);
+    const result = await pool.query("SELECT first_name, middle_name, last_name, present_address, tel_cel_no, membership_date, policy_number, get_latest_capital_share_by_policy($1) AS capital, get_latest_savings_balance($1) AS savings FROM membership_applications WHERE policy_number = $1;", [policy_no]);
     if (result.rows.length === 0) {
       res.status(404).json("User not found");
       return;
