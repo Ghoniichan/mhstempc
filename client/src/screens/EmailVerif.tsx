@@ -2,13 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
 import Form from "react-bootstrap/Form";
 import CustomButton from "../components/Dashboard/CustomButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "../api/axiosInstance";
 
 const EmailVerif = () => {
   const [code, setCode] = useState<string[]>(["", "", "", ""]);
   const [error, setError] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
 
   const handleInputChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -46,14 +49,20 @@ const EmailVerif = () => {
 };
 
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const fullCode = code.join("");
     if (fullCode.length !== 4 || code.includes("")) {
       setError(true);
       return;
     }
-
-    navigate("/newpass");
+    try {
+      await axios.post("/api/auth/check-otp", { email: email, otp: fullCode });
+      navigate("/newpass", {state: { email } });
+    } catch (error) {
+      console.error("Error during email verification:", error);
+      setError(true);
+      return;
+    }
   };
 
   useEffect(() => {

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/Dashboard/CustomButton";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
 import '../screens/ForgotPass.css';
+import axios from "../api/axiosInstance";
 
 const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const ForgotPasswordScreen = () => {
   };
 
   // ✅ Handle form submission
-  const handleEmailVerif = () => {
+  const handleEmailVerif = async () => {
     if (!email) {
       setError("Email is required");
       return;
@@ -27,7 +28,15 @@ const ForgotPasswordScreen = () => {
     }
 
     setError("");
-    navigate("/emailVerif");
+    try {
+      await axios.post("/api/auth/forgot-password", { email: email });
+      
+      navigate("/emailVerif", {state: { email } });
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      setError("Failed to send verification email. Please try again later.");
+      return;
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

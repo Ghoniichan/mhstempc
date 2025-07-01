@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react';
 import CustomButton from "../components/Dashboard/CustomButton";
 import ColumnLayoutCard from "../components/Dashboard/ColumnLayoutCard";
 import '../screens/CreateNewPass.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import axios from "../api/axiosInstance";
 
 const CreateNewPass = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,9 +33,20 @@ const CreateNewPass = () => {
     return true;
   };
 
-  const handleReset = () => {
+  const handleReset =  async () => {
     if (validatePasswords()) {
-      navigate('/password-reset');
+      try {
+        await axios.post("/api/auth/change-password", {
+          email: email,
+          newPassword: password
+        });
+
+        navigate('/password-reset');
+      } catch (error) {
+        console.error("Error during password reset:", error);
+        setError("Failed to reset password. Please try again later.");
+        return;
+      }
     }
   };
 
