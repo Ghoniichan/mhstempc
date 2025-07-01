@@ -167,6 +167,12 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
       const loanAmt  = parseFloat(formData.computations.loanAmount);
       const capShare = parseFloat(formData.computations.paidUpCapital);
       const savings  = parseFloat(formData.computations.savings);
+
+      console.log('Fetching logistics with:', {
+        loanAmt,
+        capShare,
+        savings
+      });
       try {
         const { data } = await axios.post('/api/loan/assess', {
           loan_amount: loanAmt,
