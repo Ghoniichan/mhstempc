@@ -168,7 +168,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
           membershipDate: user.membership_date
             ? new Date(user.membership_date).toISOString().split('T')[0]
             : '',
-          numberOfShares: user.capital || ''
+          numberOfShares: user.capital || '',
+          savings: user.savings || ''
         }
       }));
     }

@@ -171,6 +171,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchLogistics = async (loanAmount: number, capital_share: number, savings: number) => {
     try {
+      console.log('Fetching logistics with:', loanAmount, capital_share, savings);
       const data = await axios.post('/api/loan/assess', {
         loan_amount: loanAmount,
         capital_share: capital_share,
