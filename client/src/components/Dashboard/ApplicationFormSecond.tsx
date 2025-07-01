@@ -164,20 +164,20 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
 
   useEffect(() => {
     const fetchLogistics = async () => {
-      const loanAmt  = parseFloat(formData.computations.loanAmount);
-      const capShare = parseFloat(formData.computations.paidUpCapital);
+      const loan_amount  = parseFloat(formData.computations.loanAmount);
+      const capital_share = parseFloat(formData.computations.paidUpCapital);
       const savings  = parseFloat(formData.computations.savings);
 
       console.log('Fetching logistics with:', {
-        loanAmt,
-        capShare,
-        savings
+        loan_amount,
+        capital_share,
+        savings: savings
       });
       try {
         const { data } = await axios.post('/api/loan/assess', {
-          loan_amount: loanAmt,
-          capital_share: capShare,
-          savings:   savings
+          loan_amount: loan_amount,
+          capital_share: capital_share,
+          savings: savings
         });
         console.log('Logistics data:', data);
         if (data.status === 200) {
