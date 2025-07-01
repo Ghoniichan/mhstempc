@@ -2,6 +2,7 @@ import { Request, Response, RequestHandler } from 'express';
 import pool from '../config/db.config'; 
 import bcrypt from 'bcrypt';
 import getRandomPassword from '../utils/passwordGene'; // Adjust path to your utility
+import { sendEmail, buildPasswordEmail } from '../routes/emailerRoutes'; // Adjust path to your emailer routes
 
 export const clients: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -16,7 +17,7 @@ export const clients: RequestHandler = async (req: Request, res: Response): Prom
 export const user: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const { policy_no } = req.params;
   try {
-    const result = await pool.query("SELECT first_name, middle_name, last_name, present_address, tel_cel_no, membership_date, policy_number, get_latest_capital_share_by_policy($1) AS capital FROM membership_applications WHERE policy_number = $1;", [policy_no]);
+    const result = await pool.query("SELECT first_name, middle_name, last_name, present_address, tel_cel_no, membership_date, policy_number, get_latest_capital_share_by_policy($1) AS capital, get_latest_savings_balance($1) AS savings FROM membership_applications WHERE policy_number = $1;", [policy_no]);
     if (result.rows.length === 0) {
       res.status(404).json("User not found");
       return;
@@ -158,6 +159,9 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
         empValues
       );
     }
+
+    const emailContent = buildPasswordEmail(userInfo.firstName, pass);
+    await sendEmail(userInfo.fbAccEmailAddress, "Your Account Password", emailContent);
 
     await client.query('COMMIT');
     res.status(201).json({ member_id: userInfo, account_id: accountId, password: pass });
