@@ -157,31 +157,37 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
         }
       }));
     }
+  }, [
+    formData.computations.loanAmount,
+    cleanedData.loanInfo.paymentTerms
+  ]);
 
+  useEffect(() => {
     const fetchLogistics = async () => {
       try {
-        const logistics = await axios.post('/api/loan/assess', {
-        loan_amount: parseFloat(formData.computations.loanAmount),
-        capital_share: parseFloat(formData.computations.paidUpCapital),
-        savings: parseFloat(formData.computations.savings)
-      });
-        setLoanRatio(logistics.data.ratios.ratio_loan);
-        setSavingsRatio(logistics.data.ratios.ratio_savings);
-        setApprovalRate(logistics.data.prob_approval);
-        setRecommendedAction(logistics.data.recommended_action === 1 ? 'Approve' : 'Reject');
+        const logInput = {
+          loan_amount: parseFloat(formData.computations.loanAmount),
+          capital_share: parseFloat(formData.computations.paidUpCapital),
+          savings: parseFloat(formData.computations.savings)
+        };
+        console.log('Logistics input:', logInput);
+        const logistics = await axios.post('/api/loan/assess', logInput);
+        if (logistics.status === 200) {
+          setLoanRatio(logistics.data.ratios.ratio_loan);
+          setSavingsRatio(logistics.data.ratios.ratio_savings);
+          setApprovalRate(logistics.data.prob_approval);
+          setRecommendedAction(logistics.data.recommended_action === 1 ? 'Approve' : 'Reject');
+        }
       } catch (error) {
         console.error('Error fetching logistics:', error);
         // Handle error appropriately, e.g., show an alert or set an error state
-        
       }
-    }
+    };
     fetchLogistics();
-
   }, [
     formData.computations.loanAmount,
     formData.computations.paidUpCapital,
-    formData.computations.savings,
-    cleanedData.loanInfo.paymentTerms
+    formData.computations.savings
   ]);
 
   return (
