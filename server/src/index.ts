@@ -15,6 +15,7 @@ import notificationRoutes from "./routes/notificationRoutes";
 import accIDRoutes from "./routes/accIdRoutes";
 import loanAssessorRoutes from "./routes/loanAssessorRoute";
 import emailerRoutes from "./routes/emailerRoutes";
+import missedPayRoutes from "./routes/missedPayRoutes";
 
 dotenv.config();
 
@@ -51,6 +52,8 @@ app.use("/api/accid", accIDRoutes);
 app.use("/api/loan", loanAssessorRoutes);
 
 app.use("/api/emailer", emailerRoutes);
+
+app.use("/api/missed-payments", missedPayRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

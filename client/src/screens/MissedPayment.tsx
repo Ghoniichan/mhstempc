@@ -4,6 +4,7 @@ import SearchBar from "../components/Dashboard/SearchBar";
 import CustomTable from "../components/Dashboard/CustomTable";
 import ButtonCustom from "../components/Dashboard/ButtonCustom";
 import Backbutton from "../components/Dashboard/Backbutton";
+import axios from "../api/axiosInstance";
 
 // Quick sort function
 const quickSort = <T,>(arr: T[], key: keyof T, order: 'asc' | 'desc'): T[] => {
@@ -160,6 +161,32 @@ const MissedPayment = () => {
     payment.totalAmount,
     payment.contactNo,
   ]);
+
+  useEffect(() => {
+    try {
+      const fetchMissedPayments = async () => {
+        const response = await axios.get("/api/missed-payments");
+        const data: MissedPaymentType[] = response.data.map((item: Record<string, unknown>) => ({
+          name: item.name as string,
+          id: item.id as string,
+          policyNo: item.policy_number as string,
+          loanNo: item.loan_no as string,
+          loanAmount: item.net_loan_fee_proceeds as string,
+          dueDate: item.due_date as string,
+          penalty: item.penalty as string,
+          totalAmount: item.remaining_balance as string,
+          contactNo: item.tel_cel_no as string,
+        }));
+
+        setFilteredData(data);
+      };
+
+      fetchMissedPayments();
+    } catch (error) {
+      console.error("Error fetching missed payments:", error);
+    }
+
+  }, []);
 
   return (
     <div className="d-flex" style={{ minHeight: "100vh" }}>

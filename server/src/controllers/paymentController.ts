@@ -127,6 +127,11 @@ export const updatePayment = async (req: Request, res: Response): Promise<void> 
       [amountPaid, id]
     );
 
+    await pool.query(`
+      INSERT INTO payment_transactions (payment_id, amount_paid)
+      VALUES ($1, $2);
+    `, [id, amountPaid]);
+
     if (result.rows.length === 0) {
       res.status(404).json({ error: "Payment not found." });
       return;
@@ -164,3 +169,4 @@ export const getPaymentTerms = async (req: Request, res: Response): Promise<void
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
