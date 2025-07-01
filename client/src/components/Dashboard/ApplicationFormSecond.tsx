@@ -164,19 +164,21 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
 
   useEffect(() => {
     const fetchLogistics = async () => {
+      const loanAmt  = parseFloat(formData.computations.loanAmount);
+      const capShare = parseFloat(formData.computations.paidUpCapital);
+      const savings  = parseFloat(formData.computations.savings);
       try {
-        const logInput = {
-          loan_amount: parseFloat(formData.computations.loanAmount),
-          capital_share: parseFloat(formData.computations.paidUpCapital),
-          savings: parseFloat(formData.computations.savings)
-        };
-        console.log('Logistics input:', logInput);
-        const logistics = await axios.post('/api/loan/assess', logInput);
-        if (logistics.status === 200) {
-          setLoanRatio(logistics.data.ratios.ratio_loan);
-          setSavingsRatio(logistics.data.ratios.ratio_savings);
-          setApprovalRate(logistics.data.prob_approval);
-          setRecommendedAction(logistics.data.recommended_action === 1 ? 'Approve' : 'Reject');
+        const { data } = await axios.post('/api/loan/assess', {
+          loan_amount: loanAmt,
+          capital_share: capShare,
+          savings:   savings
+        });
+        console.log('Logistics data:', data);
+        if (data.status === 200) {
+          setApprovalRate(data.prob_approval * 100);
+          setRecommendedAction(data.prediction === 1 ? 'Approve' : 'Reject');
+          setLoanRatio(data.ratios.ratio_loan * 100);
+          setSavingsRatio(data.ratios.ratio_savings * 100);
         }
       } catch (error) {
         console.error('Error fetching logistics:', error);
