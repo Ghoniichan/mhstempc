@@ -10,7 +10,6 @@ const Dashboard = () => {
   const [userRole, setUserRole] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [showStatement, setShowStatement] = useState(false);
-  const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
 
   useEffect(() => {
@@ -20,7 +19,6 @@ const Dashboard = () => {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const user = payload.user;
         setUserId(user.id);
-        setUserName(`${user.lastName}, ${user.firstName}`);
         const role = user.isAdmin ? 'admin' : 'user';
         setUserRole(role);
       } catch (err) {
@@ -139,16 +137,7 @@ const Dashboard = () => {
             <StatementOfAccount
               show={showStatement}
               onClose={() => setShowStatement(false)}
-              user={{ name: userName, id: userId }}
-              totals={{
-                totalLoan: "₱5,000.00",
-                totalPaid: "₱2,000.00",
-                remainingBalance: "₱3,000.00"
-              }}
-              payments={[
-                { date: "Jan 15, 2025", amount: "₱1,000.00" },
-                { date: "Feb 15, 2025", amount: "₱1,000.00" },
-              ]}
+              userId={userId}
             />
           )}
         </>

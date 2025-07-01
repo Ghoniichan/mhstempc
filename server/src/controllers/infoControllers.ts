@@ -173,3 +173,53 @@ export const addMember: RequestHandler = async (req: Request, res: Response): Pr
     client.release();
   }
 };
+
+
+export const accountStatement: RequestHandler = async (req: Request, res: Response): Promise<void> => { 
+
+  const client = await pool.connect();
+  if (!client) {
+    res.status(500).json({ error: "Failed to connect to database" });
+    return;
+  }
+  try {
+    await client.query('BEGIN');
+
+    const userId = req.params.id;
+    const user = await client.query(
+      `select CONCAT(m.last_name, ', ', m.first_name) AS name, m.policy_number
+      from account_credentials ac
+      join membership_applications m on m.account_id = ac.account_id
+      WHERE ac.account_id = $1`,
+      [userId]
+    );
+
+    const totals = await client.query(`
+      SELECT 
+        total_loan, 
+        remaining, 
+        (total_loan - remaining) AS paid
+      FROM (
+        SELECT
+          get_total_net_loan_fee_proceeds($1) AS total_loan,
+          get_total_remaining($1) AS remaining
+      ) AS data;  
+    `, [userId]);
+
+    const payments = await client.query(`
+      select p.due_date, p.amount_due
+      from payments p
+      join loan_applications l on l.id = p.loan_application_id
+      join membership_applications m on m.id = l.membership_application_id
+      where m.account_id = $1
+    `, [userId]);
+
+    await client.query('COMMIT');
+    res.status(200).json({ user: user.rows[0], totals: totals.rows[0], payments: payments.rows });
+  } catch (error: any) {
+    console.error("Error fetching account statement:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    client.release();
+  }
+}
