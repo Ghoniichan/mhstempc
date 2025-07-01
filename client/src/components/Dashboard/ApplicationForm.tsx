@@ -19,6 +19,7 @@ interface FormData {
     membershipType: string;
     membershipDate: string;
     numberOfShares: string;
+    savings: string;
   };
 
   loanInfo: {
@@ -47,6 +48,7 @@ interface ApplicationFormProps {
     policy_number?: string;
     membership_date?: string;
     capital?: string;
+    savings?: string;
   };
 }
 
@@ -67,7 +69,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ user }) => {
       membershipDate: user.membership_date
         ? new Date(user.membership_date).toISOString().split('T')[0]
         : '',
-      numberOfShares: user.capital || ''
+      numberOfShares: user.capital || '',
+      savings: user.savings || ''
     },
     loanInfo: {
       purpose: '',

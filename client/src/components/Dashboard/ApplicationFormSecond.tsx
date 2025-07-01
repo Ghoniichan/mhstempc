@@ -38,6 +38,8 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
   const [savingsRatio, setSavingsRatio] = useState<number | null>(null);
   const [approvalRate, setApprovalRate] = useState<number | null>(null);
   const [recommendedAction, setRecommendedAction] = useState<string>('');
+  const [readyToFetch, setReadyToFetch] = useState(false);
+
 
   const [formData, setFormData] = useState<FormData>({
     termsAccepted: false,
@@ -128,11 +130,51 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
     navigate('/application');
   };
 
-  const fetchLogistics = async (loanAmount: number, policy_num: string) => {
+
+
+useEffect(() => {
+  const loanAmount = parseFloat(formData.computations.loanAmount);
+  const paymentTerm = cleanedData.loanInfo?.paymentTerms;
+
+  if (!isNaN(loanAmount) && paymentTerm) {
+    const {
+      interest,
+      paidUpCapital,
+      serviceFee,
+      savings,
+      netAmount
+    } = calculateComputations(loanAmount, paymentTerm);
+
+    setFormData(prev => ({
+      ...prev,
+      computations: {
+        loanAmount: prev.computations.loanAmount,  // keep user input
+        interest:        interest.toFixed(2),
+        paidUpCapital:   paidUpCapital.toFixed(2),
+        serviceFee:      serviceFee.toFixed(2),
+        savings:         savings.toFixed(2),
+        netLoanProceeds: netAmount.toFixed(2),
+      }
+    }));
+
+    // **now that computations are done, allow fetchLogistics to run**
+    setReadyToFetch(true);
+  } else {
+    // if inputs are invalid, ensure we don’t fetch
+    setReadyToFetch(false);
+  }
+}, [
+  formData.computations.loanAmount,
+  cleanedData.loanInfo?.paymentTerms
+]);
+
+useEffect(() => {
+  const fetchLogistics = async (loanAmount: number, capital_share: number, savings: number) => {
     try {
       const data = await axios.post('/api/loan/assess', {
         loan_amount: loanAmount,
-        policy_num: policy_num,
+        capital_share: capital_share,
+        savings: savings,
       });
 
       console.log('Logistics data:', data.data);
@@ -145,45 +187,16 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
     }
   };
 
-  useEffect(() => {
-    // Parse the user-typed loan amount
-    const loanAmount = parseFloat(formData.computations.loanAmount);
-    const paymentTerm = cleanedData.loanInfo.paymentTerms;
-    const policy_num = cleanedData.policy_num; // <-- Add this line to define policy_num
-
-    if (!isNaN(loanAmount) && paymentTerm) {
-      const {
-        interest,
-        paidUpCapital,
-        serviceFee,
-        savings,
-        netAmount
-      } = calculateComputations(loanAmount, paymentTerm);
-
-      setFormData(prev => ({
-        ...prev,
-        computations: {
-          // preserve whatever the user just typed:
-          loanAmount: prev.computations.loanAmount,
-
-          // overwrite only the computed outputs:
-          interest:        interest.toFixed(2),
-          paidUpCapital:   paidUpCapital.toFixed(2),
-          serviceFee:      serviceFee.toFixed(2),
-          savings:         savings.toFixed(2),
-          netLoanProceeds: netAmount.toFixed(2),
-        }
-      }));
-    }
-    
-    if (!isNaN(loanAmount) && !policy_num) {
-      fetchLogistics(loanAmount, policy_num);
-    }
-  }, [
-    formData.computations.loanAmount,
-    cleanedData.loanInfo.paymentTerms,
-    cleanedData.policy_num // Ensure policy_num is defined
-  ]);
+  const loanAmount = parseFloat(cleanedData.loanInfo?.amount);
+  const capitalShare = parseFloat(cleanedData.membershipInfo?.numberOfShares || '0');
+  const savings = parseFloat(cleanedData.membershipInfo?.savings || '0');
+  fetchLogistics(loanAmount, capitalShare, savings);
+}, [
+  readyToFetch,
+  cleanedData.loanInfo?.amount,
+  cleanedData.membershipInfo?.numberOfShares,
+  cleanedData.membershipInfo?.savings
+]);
 
 
 
