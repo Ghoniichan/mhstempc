@@ -33,6 +33,11 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
   // Get cleanedData passed from ApplicationForm (via location state)
   const location = useLocation();
   const cleanedData = location.state?.formData || {};
+  
+  const [loanRatio, setLoanRatio] = useState<number | null>(null);
+  const [savingsRatio, setSavingsRatio] = useState<number | null>(null);
+  const [approvalRate, setApprovalRate] = useState<number | null>(null);
+  const [recommendedAction, setRecommendedAction] = useState<string>('');
 
   const [formData, setFormData] = useState<FormData>({
     termsAccepted: false,
@@ -110,7 +115,6 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
         }
 
         await axios.post('/api/loans/new/computations', data);
-
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('An error occurred while submitting the form. Please try again later.');
@@ -154,8 +158,29 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
       }));
     }
 
+    const fetchLogistics = async () => {
+      try {
+        const logistics = await axios.post('/api/loan/assess', {
+        loan_amount: parseFloat(formData.computations.loanAmount),
+        capital_share: parseFloat(formData.computations.paidUpCapital),
+        savings: parseFloat(formData.computations.savings)
+      });
+        setLoanRatio(logistics.data.ratios.ratio_loan);
+        setSavingsRatio(logistics.data.ratios.ratio_savings);
+        setApprovalRate(logistics.data.prob_approval);
+        setRecommendedAction(logistics.data.recommended_action === 1 ? 'Approve' : 'Reject');
+      } catch (error) {
+        console.error('Error fetching logistics:', error);
+        // Handle error appropriately, e.g., show an alert or set an error state
+        
+      }
+    }
+    fetchLogistics();
+
   }, [
     formData.computations.loanAmount,
+    formData.computations.paidUpCapital,
+    formData.computations.savings,
     cleanedData.loanInfo.paymentTerms
   ]);
 
@@ -280,8 +305,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                             <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
                               Loan Ratio:
                               <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
-                                {/* Replace with actual value if available */}
-                                N/A
+                                {loanRatio !== null ? `${loanRatio.toFixed(2)}%` : 'N/A'}
                               </span>
                             </label>
                           </div>
@@ -289,8 +313,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                             <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
                               Savings Ratio:
                               <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
-                                {/* Replace with actual value if available */}
-                                N/A
+                                {savingsRatio !== null ? `${savingsRatio.toFixed(2)}%` : 'N/A'}
                               </span>
                             </label>
                           </div>
@@ -298,8 +321,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                             <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
                               Approval Rate:
                               <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
-                                {/* Replace with actual value if available */}
-                                N/A
+                                {approvalRate !== null ? `${approvalRate.toFixed(2)}%` : 'N/A'}
                               </span>
                             </label>
                           </div>
@@ -307,8 +329,7 @@ const ApplicationFormSecond: React.FC<ApplicationFormSecondProps> = ({ onCancel 
                             <label className="form-label gothic-a1-bold" style={{ fontSize: '15px' }}>
                               Recommended Action:
                               <span className="ms-2 gothic-a1-regular" style={{ fontWeight: 400 }}>
-                                {/* Replace with actual value if available */}
-                                N/A
+                                {recommendedAction === '' ? 'N/A' : recommendedAction}
                               </span>
                             </label>
                           </div>
