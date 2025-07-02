@@ -12,6 +12,20 @@ const EmailVerif = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
+  const loggingIn = location.state?.logginIn;
+
+  useEffect(() => {
+    const sendForgotPassword = async () => {
+      if (loggingIn) {
+        try {
+          await axios.post("/api/auth/forgot-password", { email: email });
+        } catch (err) {
+          console.error("Error sending forgot password request:", err);
+        }
+      }
+    };
+    sendForgotPassword();
+  }, [loggingIn, email]);
 
   const handleInputChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -57,7 +71,12 @@ const EmailVerif = () => {
     }
     try {
       await axios.post("/api/auth/check-otp", { email: email, otp: fullCode });
-      navigate("/newpass", {state: { email } });
+
+      if (loggingIn) {
+        navigate("/dashboard");
+      } else {
+        navigate("/newpass", { state: { email } });
+      }
     } catch (error) {
       console.error("Error during email verification:", error);
       setError(true);

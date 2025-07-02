@@ -88,7 +88,7 @@ export const buildPasswordOTP = (otp: string): string => `
       border-bottom-left-radius: 8px;
       border-bottom-right-radius: 8px;
     ">
-      <p>We have received a request to reset your password. Please use the one-time code below to proceed:</p>
+      <p>Please use the one-time code below to proceed:</p>
       <div style="  
         background: #f7f7f7;
         padding: 16px;
@@ -102,7 +102,6 @@ export const buildPasswordOTP = (otp: string): string => `
         <strong>${otp}</strong>
       </div>
       <p>This code will expire in <strong>15 minutes</strong>.</p>
-      <p>If you did not request a password reset, please ignore this email or contact support.</p>
       <p style="font-size: 12px; color: #777;">Thank you,<br/>The Support Team</p>
     </div>
   </div>
