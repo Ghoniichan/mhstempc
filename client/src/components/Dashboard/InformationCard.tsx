@@ -114,9 +114,9 @@ const InformationCard: React.FC<InformationCardProps> = ({
                       <button
                         className="btn btn-danger shadow w-100 mt-2 gothic-a1-bold" 
                         style={{ padding: '10px', borderRadius: '20px'}}
-                        onClick={() => navigate('/clientSendSms')}
+                        onClick={() => navigate('/clientSendSms')} // Pass name and contactNumber to the SMS page
                       >
-                        Send SMS
+                        Send Email
                       </button>
                     </Col>
                   </Row>

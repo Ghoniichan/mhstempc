@@ -98,7 +98,9 @@ const TableCard: React.FC = () => {
 
   const handleRowClick = (row: React.ReactNode[]) => {
     const policyNumber = row[1] as string;
+    const email = row[2] as string;
     localStorage.setItem("selectedPolicyNumber", policyNumber);
+    localStorage.setItem("selectedEmail", email);
     navigate("/clientLoan");
   };
 

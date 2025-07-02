@@ -2,6 +2,7 @@
 import SendSms from "../components/Dashboard/SendSms";
 
 const ClientSendSmsScreen = () => {
+
   return (
     <div className="d-flex" style={{ minHeight: '100vh' }}>
       <div style={{ width: '200px', flexShrink: 0 }}>
@@ -12,7 +13,7 @@ const ClientSendSmsScreen = () => {
         style={{ padding: '40px 20px' }}
       >
         <h1>Clients</h1>
-        <SendSms />
+        <SendSms/>
       </div>
     </div>
   );
