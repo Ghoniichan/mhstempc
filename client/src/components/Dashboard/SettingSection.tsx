@@ -16,12 +16,7 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
     e.preventDefault();
     setShowSettingsChangePass(prev => !prev);
   };
-
-  const handleChangeNumberClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setShowSettingsChangePass(false);
-  };
-
+  
   const handleClosePanel = () => {
     setShowSettingsChangePass(false);
   };
@@ -50,11 +45,6 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
             <h6>Update Profile</h6>
             <p className="mb-0">Update your personal info</p>
           </button> */}
-
-          <button onClick={handleChangeNumberClick} type="button" className="btn text-nowrap text-start">
-            <h6>Update Mobile Number</h6>
-            <p className="mb-0">Used for OTP</p>
-          </button>
 
           <button onClick={handleSettingsClick} type="button" className="btn text-nowrap text-start">
             <h6>Change Password</h6>
