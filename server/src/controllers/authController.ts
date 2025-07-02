@@ -265,3 +265,49 @@ export const changePassword = async (req: Request, res: Response): Promise<void>
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+export const settingsChangePass = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+    if (!userId || !currentPassword || !newPassword) {
+      res.status(400).json({ error: 'User ID, current password, and new password are required' });
+      return;
+    }
+
+    // 1) Find the user
+    const userRes = await pool.query(
+      `SELECT account_id, password_hash FROM account_credentials WHERE account_id = $1 LIMIT 1;`,
+      [userId]
+    );
+    if (userRes.rowCount === 0) {
+      res.status(404).json({ error: 'No account found with that ID' });
+      return;
+    }
+    const account_id: string = userRes.rows[0].account_id;
+    const hashedPassword: string = userRes.rows[0].password_hash;
+
+    // 2) Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, hashedPassword);
+    if (!isMatch) {
+      res.status(401).json({ error: 'Current password is incorrect' });
+      return;
+    }
+
+    // 3) Hash the new password
+    const saltRounds = 10;
+    const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    // 4) Update the user's password
+    await pool.query(
+      `UPDATE account_credentials
+          SET password_hash = $1
+        WHERE account_id = $2;`,
+      [newHashedPassword, account_id]
+    );
+
+    res.status(200).json({ message: 'Password changed successfully' });
+  } catch (err) {
+    console.error('settingsChangePass error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
