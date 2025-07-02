@@ -1,5 +1,6 @@
 import { useState } from "react";
 import './PasswordField.css'
+import { useNavigate } from "react-router-dom";
 
 export interface PasswordFieldProps {
   value: string;
@@ -10,6 +11,7 @@ export interface PasswordFieldProps {
 
 const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error, placeholder }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="MainContainer mb-1">
@@ -48,13 +50,16 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange, error, p
           ) : (
             <div></div>
           )}
-          <a
-            href="/forgot-password"
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate("/forgot-password")}
+            onKeyDown={e => { if (e.key === "Enter" || e.key === " ") navigate("/forgot-password"); }}
             className="password gothic-a1-bold"
-            style={{ fontSize: '13px', color: '#002d62' }}
+            style={{ fontSize: '13px', color: '#002d62', cursor: 'pointer', textDecoration: 'underline' }}
           >
             Forgot Password?
-          </a>
+          </span>
         </div>
       </div>
     </div>
