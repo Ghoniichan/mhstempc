@@ -106,8 +106,12 @@ const LoginCard: React.FC = () => {
       setLockoutSeconds(null);
 
       log(getUserIdFromJwt(jwtToken) || '', 'logged in', 'User logged in');
-      navigate("/emailVerif", {state: { email, logginIn: true } });
-      // navigate('/dashboard');
+
+      if (isAdmin){
+        navigate("/dashboard");
+      }else{
+        navigate("/emailVerif", {state: { email, logginIn: true } });
+      }
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         const { status, headers } = err.response;
