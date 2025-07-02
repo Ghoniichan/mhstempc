@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingChangePass from './SettingChangePass';
-import SettingChangeNumber from './SettingChangeNumber';
 import './SettingSection.css';
 
 interface SettingSectionProps {
@@ -10,25 +9,21 @@ interface SettingSectionProps {
 
 const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
   const [showSettingsChangePass, setShowSettingsChangePass] = useState(false);
-  const [showSettingsChangeNumber, setShowSettingsChangeNumber] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSettingsClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowSettingsChangePass(prev => !prev);
-    setShowSettingsChangeNumber(false);
   };
 
   const handleChangeNumberClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setShowSettingsChangeNumber(prev => !prev);
     setShowSettingsChangePass(false);
   };
 
   const handleClosePanel = () => {
     setShowSettingsChangePass(false);
-    setShowSettingsChangeNumber(false);
   };
 
   const handleAuditLogClick = () => {
@@ -107,18 +102,6 @@ const SettingSection: React.FC<SettingSectionProps> = ({ role }) => {
           </div>
           <div className="p-3">
             <SettingChangePass />
-          </div>
-        </div>
-      )}
-
-      {showSettingsChangeNumber && (
-        <div className="settings-panel">
-          <div className="settings-header d-flex justify-content-between align-items-center p-2 border-bottom">
-            <h5 className="ms-3 mt-3 h5-setting">Update Mobile Number</h5>
-            <button className="btn-close" onClick={handleClosePanel}></button>
-          </div>
-          <div className="p-3">
-            <SettingChangeNumber />
           </div>
         </div>
       )}
