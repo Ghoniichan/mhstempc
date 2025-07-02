@@ -3,12 +3,21 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './MembershipFormSecond.css';
+import { useNavigate } from 'react-router-dom';
 
 interface MembershipFormSecondProps {
   onCancel: () => void;
 }
 
 const MembershipFormSecond: React.FC<MembershipFormSecondProps> = ({ onCancel }) => {
+  const navigate = useNavigate();
+
+  function handleSubmit(event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+    event.preventDefault();
+    alert('Membership application submitted successfully!');
+    navigate('/dashboard'); 
+  }
+
   return (
     <Container fluid className="py-5">
       <Row className="justify-content-center">
@@ -134,7 +143,7 @@ const MembershipFormSecond: React.FC<MembershipFormSecondProps> = ({ onCancel })
                   >
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary px-5" style={{backgroundColor: '#002d62'}}>
+                  <button type="submit" onClick={handleSubmit} className="btn btn-primary px-5" style={{backgroundColor: '#002d62'}}>
                     Submit
                   </button>
                 </div>

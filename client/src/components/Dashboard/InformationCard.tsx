@@ -144,10 +144,36 @@ const InformationCard: React.FC<InformationCardProps> = ({
                       navigate('/clientLoan');
                       break;
                     case 'Capital Share':
-                      navigate('/clientCapitalShare');
+                        navigate('/clientCapitalShare', { 
+                          state: { 
+                          title,
+                          name,
+                          department,
+                          policyNumber,
+                          address,
+                          contactNumber,
+                          loanStatus,
+                          membershipType,
+                          membershipDate,
+                          columnHeadings,
+                          rows
+                          } 
+                        });
                       break;
                     case 'Savings':
-                      navigate('/clientSavings');
+                      navigate('/clientSavings', {state: {                          
+                          title,
+                          name,
+                          department,
+                          policyNumber,
+                          address,
+                          contactNumber,
+                          loanStatus,
+                          membershipType,
+                          membershipDate,
+                          columnHeadings,
+                          rows
+                        }});
                       break;
                     default:
                       break;

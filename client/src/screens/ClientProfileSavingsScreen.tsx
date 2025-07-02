@@ -3,8 +3,12 @@ import React, { useState, useEffect } from 'react';
 import InformationCard from "../components/Dashboard/InformationCard";
 import CustomButton from "../components/Dashboard/CustomButton";
 import axios from "../api/axiosInstance";
+import { useLocation } from 'react-router-dom';
 
 const ClientProfileSavingsScreen = () => {
+  const location = useLocation();
+  const { title, name, department, policyNumber, address, contactNumber, loanStatus, membershipType, membershipDate } = location.state || {};
+
   const columnHeadings = [
     'Date',
     'REF',
@@ -101,15 +105,15 @@ const ClientProfileSavingsScreen = () => {
           className="no-scrollbar"
         >
           <InformationCard
-            title="Client Loan Profile"
-            name="John Doe"
-            department="Finance"
-            policyNumber="MHSTEMPC-123456"
-            address="123 Main St, City, Country"
-            contactNumber="+1234567890"
-            loanStatus="Active"
-            membershipType="Standard"
-            membershipDate="2023-01-01"
+            title= {title || "Client Savings Profile"}
+            name={name || "—"}
+            department={department || "—"}
+            policyNumber={policyNumber || "—"}
+            address={address || "—"}
+            contactNumber={contactNumber || "—"}
+            loanStatus={loanStatus || "—"}
+            membershipType={membershipType || "—"}
+            membershipDate={membershipDate || "—"}
             columnHeadings={columnHeadings}
             rows={rows}
           />

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import InformationCard from "../components/Dashboard/InformationCard";
 import CustomButton from "../components/Dashboard/CustomButton";
 import axios from '../api/axiosInstance';
+import { useLocation } from 'react-router-dom';
 
 type CapitalShareEntry = {
   date: string;
@@ -17,6 +18,17 @@ const ClientProfileCapitalShareScreen = () => {
 
   const [rows, setRows] = useState<CapitalShareEntry[]>([]);
   const [newRow, setNewRow] = useState({ date: '', amount: '' });
+  const location = useLocation();
+  const state = location.state as { 
+      name: string,
+      department: string,
+      policyNumber: string,
+      address: string,
+      contactNumber: string,
+      loanStatus: string,
+      membershipType: string,
+      membershipDate: string,
+  } | undefined;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -100,15 +112,15 @@ const ClientProfileCapitalShareScreen = () => {
           className="no-scrollbar"
         >
           <InformationCard
-            name="John Doe"
-            title="Client Loan Profile"
-            department="Finance"
-            policyNumber="MHSTEMPC-123456"
-            address="123 Main St, City, Country"
-            contactNumber="+1234567890"
-            loanStatus="Active"
-            membershipType="Standard"
-            membershipDate="2023-01-01"
+            name={state?.name || "—"}
+            title= "Client Capital Share Profile"
+            department={state?.department || "—"}
+            policyNumber={state?.policyNumber || "—"}
+            address={state?.address || "—"}
+            contactNumber={state?.contactNumber || "—"}
+            loanStatus={state?.loanStatus || "—"}
+            membershipType={state?.membershipType || "—"}
+            membershipDate={state?.membershipDate || "—"}
             columnHeadings={columnHeadings}
             rows={rows.map(r => [r.date, r.or, r.ref, `₱${r.amount}`, `₱${r.balance}`])}
           />
