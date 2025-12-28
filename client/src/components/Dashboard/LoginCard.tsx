@@ -107,11 +107,7 @@ const LoginCard: React.FC = () => {
 
       log(getUserIdFromJwt(jwtToken) || '', 'logged in', 'User logged in');
 
-      if (isAdmin){
-        navigate("/dashboard");
-      }else{
-        navigate("/emailVerif", {state: { email, logginIn: true } });
-      }
+      navigate("/dashboard");
     } catch (err) {
       if (err instanceof AxiosError && err.response) {
         const { status, headers } = err.response;
